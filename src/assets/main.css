@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Puedes añadir estilos globales MUY específicos aquí si es necesario,
+   pero la mayoría deberían manejarse con clases de Tailwind o en componentes. */
