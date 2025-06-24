@@ -4,19 +4,28 @@
       <h2 class="text-3xl md:text-4xl font-bold text-brand-negro text-center mb-8 md:mb-10 relative">
         Nuestros Próximos Eventos
       </h2>
-      <div v-if="proximosEventos.length > 0" class="flex flex-col lg:flex-row gap-8 items-stretch">
+      <div v-if="isLoading" class="text-center py-10">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
+        <p class="mt-4 text-brand-negro">Cargando eventos...</p>
+      </div>
+      <div v-else-if="error" class="text-center py-10 text-red-500">
+        <p>{{ error }}</p>
+      </div>
+      <div v-else-if="proximosEventos.length > 0" class="flex flex-col lg:flex-row gap-8 items-stretch">
         <!-- Evento Principal -->
         <div
           class="lg:w-7/12 bg-white shadow-xl rounded-lg overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl">
-          <img :src="proximosEventos[0].imagen" :alt="proximosEventos[0].titulo"
-            class="w-full h-64 md:h-80 lg:h-96 object-cover" />
+          <img
+            :src="proximosEventos[0].imagenUrl ? `${API_BASE_URL}${proximosEventos[0].imagenUrl}` : 'https://placehold.co/800x450/3498DB/FFFFFF?text=Evento'"
+            :alt="proximosEventos[0].nombre" class="w-full h-64 md:h-80 lg:h-96 object-cover" />
           <div class="p-4 md:p-6 flex flex-col flex-grow">
             <h3 class="text-2xl xl:text-3xl font-semibold text-brand-negro mb-2">
-              {{ proximosEventos[0].titulo }}
+              {{ proximosEventos[0].nombre }}
             </h3>
             <p class="text-brand-camel text-sm md:text-base mb-3">{{ proximosEventos[0].fechaFormateada }}</p>
             <p class="text-gray-700 text-base md:text-lg mb-6 flex-grow">
-              {{ proximosEventos[0].descripcionCorta }}
+              {{ proximosEventos[0].descripcion?.substring(0, 150) + (proximosEventos[0].descripcion &&
+                proximosEventos[0].descripcion.length > 150 ? '...' : '') }}
             </p>
             <router-link :to="`/eventos/${proximosEventos[0].id}`"
               class="mt-auto self-start bg-brand-borgona text-white py-2.5 px-7 rounded-md hover:bg-opacity-80 transition-colors text-base md:text-lg font-medium">
@@ -29,16 +38,17 @@
         <div class="lg:w-5/12 flex flex-col gap-8">
           <div v-if="proximosEventos.length > 1"
             class="bg-white shadow-xl rounded-lg overflow-hidden flex flex-col flex-grow transition-all duration-300 hover:shadow-2xl">
-            <img :src="proximosEventos[1].imagen" :alt="proximosEventos[1].titulo"
-              class="w-full h-40 md:h-48 object-cover" />
+            <img
+              :src="proximosEventos[1].imagenUrl ? `${API_BASE_URL}${proximosEventos[1].imagenUrl}` : 'https://placehold.co/800x450/E91E63/FFFFFF?text=Evento'"
+              :alt="proximosEventos[1].nombre" class="w-full h-40 md:h-48 object-cover" />
             <div class="p-4 md:p-5 flex flex-col flex-grow">
               <h4 class="text-xl font-semibold text-brand-negro mb-1">
-                {{ proximosEventos[1].titulo }}
+                {{ proximosEventos[1].nombre }}
               </h4>
               <p class="text-brand-camel text-sm mb-3">{{ proximosEventos[1].fechaFormateada }}</p>
               <p class="text-gray-600 text-sm mb-4 flex-grow">
-                {{ proximosEventos[1].descripcionCorta.substring(0, 80) + (proximosEventos[1].descripcionCorta.length >
-                  80 ? '...' : '') }}
+                {{ proximosEventos[1].descripcion?.substring(0, 80) + (proximosEventos[1].descripcion &&
+                  proximosEventos[1].descripcion.length > 80 ? '...' : '') }}
               </p>
               <router-link :to="`/eventos/${proximosEventos[1].id}`"
                 class="mt-auto self-start text-brand-verde-oscuro hover:text-brand-borgona font-medium transition-colors">
@@ -46,10 +56,10 @@
               </router-link>
             </div>
           </div>
-          <button @click="navegarATodosEventos" type="button"
-            class="w-full bg-brand-camel text-center text-white py-3 px-6 rounded-md hover:bg-opacity-80 transition-colors text-lg font-medium shadow-lg hover:shadow-xl mt-auto">
-            Todos los Eventos
-          </button>
+          <router-link to="/eventos"
+            class="w-full bg-brand-camel text-center text-white py-3 px-6 rounded-md hover:bg-opacity-80 transition-colors text-lg font-medium shadow-lg hover:shadow-xl mt-auto block">
+            Ver Todos los Eventos
+          </router-link>
         </div>
       </div>
       <div v-else class="text-center text-brand-negro py-10">
@@ -64,14 +74,14 @@
 import { useRouter } from 'vue-router';
 import { useUiStore } from '@/stores/uiStore';
 import { defineComponent, ref, onMounted, computed } from 'vue';
+import axios from 'axios';
 
 interface Evento {
-  id: string;
-  // o number si tu API devuelve number
-  titulo: string;
-  fecha: string; // Formato 'YYYY-MM-DD HH:mm:ss' desde la BD o 'YYYY-MM-DDTHH:mm:ss' para new Date()
-  descripcionCorta: string;
-  imagen: string; // Debería ser imagenUrl de tu BD
+  id: number;
+  nombre: string;
+  fecha: string;
+  descripcion?: string | null;
+  imagenUrl?: string | null;
   lugar?: string;
   link_compra?: string;
   fechaFormateada?: string;
@@ -82,24 +92,28 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const uiStore = useUiStore();
+    const todosLosEventos = ref<Evento[]>([]);
+    const isLoading = ref(true);
+    const error = ref<string | null>(null);
+    const API_URL = 'http://localhost:8000/api';
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-    // Asegúrate de que las fechas sean futuras para que el filtro funcione
-    const getFutureDate = (daysToAdd: number, hour: number = 20, minute: number = 0): string => {
-      const date = new Date();
-      date.setDate(date.getDate() + daysToAdd);
-      date.setHours(hour, minute, 0, 0);
-      return date.toISOString(); // Formato ISO que new Date() maneja bien
-    };
-
-    const todosLosEventos = ref<Evento[]>([
-      { id: 'evento-1', titulo: 'Concierto de Adoración: Noche de Paz', fecha: getFutureDate(15), descripcionCorta: 'Una noche especial de alabanza y adoración con artistas invitados. ¡No te lo pierdas!', imagen: 'https://placehold.co/800x450/3498DB/FFFFFF?text=Evento+1', lugar: 'Auditorio Principal' },
-      { id: 'evento-2', titulo: 'Taller de Composición Musical Cristiana', fecha: getFutureDate(30, 10), descripcionCorta: 'Aprende técnicas y fundamentos para componer canciones que glorifiquen a Dios.', imagen: 'https://placehold.co/800x450/E91E63/FFFFFF?text=Evento+2', lugar: 'Salón de Conferencias' },
-      { id: 'evento-3', titulo: 'Retiro Espiritual "Encuentro"', fecha: getFutureDate(60, 16), descripcionCorta: 'Un tiempo de renovación espiritual y comunión profunda.', imagen: 'https://placehold.co/800x450/2ECC71/FFFFFF?text=Evento+3', lugar: 'Casa de Retiro "El Refugio"' },
-      { id: 'evento-4', titulo: 'Conferencia "Fe en Acción"', fecha: getFutureDate(5), descripcionCorta: 'Descubre cómo vivir tu fe diariamente.', imagen: 'https://placehold.co/800x450/9B59B6/FFFFFF?text=Evento+4', lugar: 'Centro Comunitario' },
-    ]);
+    onMounted(async () => {
+      isLoading.value = true;
+      error.value = null;
+      try {
+        const response = await axios.get(`${API_URL}/eventos`);
+        todosLosEventos.value = response.data;
+      } catch (err) {
+        console.error("Error al cargar eventos destacados:", err);
+        error.value = "No se pudieron cargar los eventos.";
+      } finally {
+        isLoading.value = false;
+      }
+    });
 
     const formatearFecha = (fechaStr: string): string => {
-      const fechaObj = new Date(fechaStr);
+      const fechaObj = new Date(fechaStr.replace(/-/g, '/'));
       return fechaObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) +
         ' - ' + fechaObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });
     };
@@ -107,20 +121,17 @@ export default defineComponent({
     const proximosEventos = computed(() => {
       const ahora = new Date();
       return todosLosEventos.value
-        .filter(evento => new Date(evento.fecha) >= ahora)
-        .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime())
+        .filter(evento => new Date(evento.fecha.replace(/-/g, '/')) >= ahora)
+        .sort((a, b) => new Date(a.fecha.replace(/-/g, '/')).getTime() - new Date(b.fecha.replace(/-/g, '/')).getTime())
         .map(evento => ({ ...evento, fechaFormateada: formatearFecha(evento.fecha) }))
         .slice(0, 2);
     });
 
-    const navegarATodosEventos = async () => {
-      await uiStore.showLoadingOverlay(); // Muestra el overlay y espera un poco
-      router.push('/eventos');
-    };
-
     return {
       proximosEventos,
-      navegarATodosEventos,
+      isLoading,
+      error,
+      API_BASE_URL,
     };
   },
 });

@@ -63,15 +63,39 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'admin',
-      component: () => import('../views/AdminPanelView.vue'), // Crear esta vista
+      redirect: '/admin/artistas', // Redirige a la primera sección por defecto
+      component: () => import('../views/AdminLayout.vue'), // Usamos el nuevo layout
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore()
         if (authStore.isAuthenticated && authStore.isAdmin) {
           next()
         } else {
-          next({ name: 'home' }) // O a una página de "no autorizado"
+          next({ name: 'home' })
         }
       },
+      children: [
+        {
+          path: 'artistas',
+          name: 'admin-artistas',
+          component: () => import('../views/admin/AdminArtistasView.vue'),
+        },
+        // Aquí añadiremos las otras rutas de admin (eventos, galería, etc.)
+        {
+          path: 'eventos',
+          name: 'admin-eventos',
+          component: () => import('../views/admin/AdminEventosView.vue'),
+        },
+        {
+          path: 'galeria',
+          name: 'admin-galeria',
+          component: () => import('../views/admin/AdminGaleriaView.vue'),
+        },
+        {
+          path: 'testimonios',
+          name: 'admin-testimonios',
+          component: () => import('../views/admin/AdminTestimoniosView.vue'),
+        },
+      ],
     },
   ],
 })

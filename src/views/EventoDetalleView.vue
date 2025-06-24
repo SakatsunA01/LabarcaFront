@@ -16,8 +16,9 @@
     <div v-else-if="evento" class="evento-content">
       <!-- Hero Section -->
       <section class="relative h-[45vh] md:h-[60vh] bg-brand-negro group">
-        <img
-          :src="evento.imagenUrl || `https://placehold.co/1920x800/171C1E/E2E2E2?text=${encodeURIComponent(evento.nombre)}`"
+        <img :src="evento.imagenUrl
+          ? `${API_BASE_URL}${evento.imagenUrl}`
+          : `https://placehold.co/1920x800/171C1E/E2E2E2?text=${encodeURIComponent(evento.nombre)}`"
           :alt="`Imagen de ${evento.nombre}`"
           class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 transition-opacity duration-300" />
         <div class="absolute inset-0 flex items-center justify-center">
@@ -90,7 +91,7 @@
                         (index % 6 === 4 && evento.galeria.length > 2) ? 'col-span-2 row-span-1 aspect-square' :       // Cuadrada
                           'col-span-3 sm:col-span-2 aspect-square' // Default
               ]">
-              <img :src="imagen.url_imagen" :alt="imagen.descripcion || 'Imagen de la galería'"
+              <img :src="`${API_BASE_URL}${imagen.url_imagen}`" :alt="imagen.descripcion || 'Imagen de la galería'"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
               <div v-if="imagen.descripcion"
                 class="absolute bottom-0 left-0 right-0 bg-brand-negro bg-opacity-0 group-hover:bg-opacity-70 p-2 transition-all duration-300 opacity-0 group-hover:opacity-100">
@@ -139,6 +140,8 @@ interface EventoDetallado {
   fechaFormateada?: string;
   horaFormateada?: string;
 }
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const route = useRoute();
 const uiStore = useUiStore();

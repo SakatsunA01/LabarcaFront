@@ -27,7 +27,7 @@
     <!-- Actions: Login and Social Icons -->
     <div class="flex items-center space-x-4">
       <!-- User/Login Section -->
-      <div v-if="authStore.isAuthenticated && authStore.currentUser" class="relative">
+      <div v-if="authStore.isAuthenticated && authStore.currentUser" class="relative" ref="userMenuContainer">
         <button @click="toggleUserMenu" class="flex items-center hover:text-brand-camel">
           <span class="mr-2">{{ authStore.currentUser.name }}</span>
           <ChevronDownIcon class="h-5 w-5 transition-transform duration-200" :class="{ 'rotate-180': userMenuOpen }" />
@@ -35,7 +35,7 @@
         <transition name="user-menu-fade">
           <div v-if="userMenuOpen"
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-brand-negro z-50">
-            <router-link v-if="authStore.isAdmin" to="/admin"
+            <router-link v-if="authStore.isAdmin" to="/admin" @click="closeUserMenu"
               class="block px-4 py-2 text-sm hover:bg-brand-gris-claro">Panel Admin</router-link>
             <button @click="handleLogout"
               class="block w-full text-left px-4 py-2 text-sm hover:bg-brand-gris-claro">Cerrar Sesión</button>
@@ -66,11 +66,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, watch, onUnmounted } from 'vue';
 import { UserIcon, LinkIcon, ChatBubbleOvalLeftEllipsisIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { useUiStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -86,9 +85,14 @@ export default defineComponent({
     const authStore = useAuthStore();
     const router = useRouter();
     const userMenuOpen = ref(false);
+    const userMenuContainer = ref<HTMLElement | null>(null);
 
     const openLoginModal = () => {
       uiStore.setShowLoginModal(true);
+    };
+
+    const closeUserMenu = () => {
+      userMenuOpen.value = false;
     };
 
     const toggleUserMenu = () => {
@@ -97,11 +101,29 @@ export default defineComponent({
 
     const handleLogout = () => {
       authStore.logout();
-      userMenuOpen.value = false;
+      closeUserMenu();
       router.push('/'); // O a donde quieras redirigir tras logout
     };
 
-    return { openLoginModal, authStore, userMenuOpen, toggleUserMenu, handleLogout };
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuContainer.value && !userMenuContainer.value.contains(event.target as Node)) {
+        closeUserMenu();
+      }
+    };
+
+    watch(userMenuOpen, (isOpen) => {
+      if (isOpen) {
+        document.addEventListener('click', handleClickOutside);
+      } else {
+        document.removeEventListener('click', handleClickOutside);
+      }
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('click', handleClickOutside);
+    });
+
+    return { openLoginModal, authStore, userMenuOpen, userMenuContainer, toggleUserMenu, handleLogout, closeUserMenu };
   }
 });
 </script>

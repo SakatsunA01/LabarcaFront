@@ -6,7 +6,7 @@
       <EventosDestacados />
       <ArtistasDestacados />
 
-      <PalabraDeAnimo id="palabra-animo" />
+      <PalabraDeAnimo v-if="authStore.isAuthenticated" id="palabra-animo" />
 
     </main>
   </div>
@@ -18,6 +18,7 @@ import EventosDestacados from '@/components/EventosDestacados.vue';
 import ArtistasDestacados from '@/components/ArtistasDestacados.vue';
 import HeroCarousel from '@/components/HeroCarousel.vue';
 import PalabraDeAnimo from '@/components/PalabraDeAnimo.vue';
+import { useAuthStore } from '@/stores/authStore';
 
 export default defineComponent({
   name: 'HomeView',
@@ -26,6 +27,12 @@ export default defineComponent({
     ArtistasDestacados,
     HeroCarousel,
     PalabraDeAnimo,
+  },
+  setup() {
+    const authStore = useAuthStore();
+    return {
+      authStore,
+    };
   },
 });
 </script>

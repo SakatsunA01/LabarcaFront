@@ -1,7 +1,7 @@
 <template>
-  <section :id="id" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+  <section :id="id" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8">
     <div class="container mx-auto max-w-7xl"> <!-- Ajustado a max-w-7xl -->
-      <div class="bg-brand-gris-claro p-6 md:p-10 rounded-xl shadow-xl">
+      <div class="bg-white p-6 md:p-10 rounded-xl shadow-xl">
         <div class="max-w-2xl mx-auto"> <!-- Contenedor interno para centrar el contenido -->
           <header class="text-center mb-8 md:mb-10">
             <h2 class="text-3xl md:text-4xl font-bold text-brand-negro">Palabra de Ánimo</h2>

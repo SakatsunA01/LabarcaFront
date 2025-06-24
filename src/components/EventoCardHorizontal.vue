@@ -2,8 +2,9 @@
   <div
     class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:shadow-2xl">
     <div class="md:w-1/3 lg:w-2/5 xl:w-1/3 h-48 md:h-auto relative">
-      <img
-        :src="evento.imagenUrl || `https://placehold.co/600x400/E2E2E2/171C1E?text=${encodeURIComponent(evento.nombre.substring(0, 10))}`"
+      <img :src="evento.imagenUrl
+        ? `${API_BASE_URL}${evento.imagenUrl}`
+        : `https://placehold.co/600x400/E2E2E2/171C1E?text=${encodeURIComponent(evento.nombre.substring(0, 10))}`"
         :alt="`Imagen de ${evento.nombre}`" class="w-full h-full object-cover" />
     </div>
     <div class="md:w-2/3 lg:w-3/5 xl:w-2/3 p-5 md:p-6 flex flex-col">
@@ -41,6 +42,8 @@ defineProps<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   evento: any; // Deberías usar la interfaz Evento importada aquí también
 }>();
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 import { useUiStore } from '@/stores/uiStore';
 const uiStore = useUiStore();

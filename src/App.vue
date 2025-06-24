@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import AppNavbar from '@/components/Navbar.vue' // Cambiado para coincidir con el nombre del componente
+import AppFooter from '@/components/AppFooter.vue' // Importamos el nuevo footer
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import LoginModal from '@/components/LoginModal.vue';
 import { useUiStore } from '@/stores/uiStore';
@@ -10,15 +11,18 @@ const uiStore = useUiStore();
 </script>
 
 <template>
-  <div class="min-h-screen bg-brand-gris-claro text-brand-negro font-sans">
+  <div class="min-h-screen bg-brand-gris-claro text-brand-negro font-sans flex flex-col">
     <AppNavbar />
-    <RouterView v-slot="{ Component }">
-      <transition name="route-fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </RouterView>
+    <main class="flex-grow">
+      <RouterView v-slot="{ Component }">
+        <transition name="route-fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </RouterView>
+    </main>
     <LoadingOverlay :is-loading="uiStore.isRouteLoading" />
     <LoginModal :show="uiStore.showLoginModal" @close="uiStore.setShowLoginModal(false)" />
+    <AppFooter />
   </div>
 </template>
 

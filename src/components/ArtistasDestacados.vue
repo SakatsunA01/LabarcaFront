@@ -16,7 +16,9 @@
         <div v-for="artista in artistas" :key="artista.id"
           class="relative group aspect-square bg-brand-gris-claro rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
           <img
-            :src="artista.imageUrl || `https://placehold.co/300x300/${artista.color?.substring(1) || 'E2E2E2'}/171C1E?text=${encodeURIComponent(artista.name.substring(0, 3))}`"
+            :src="artista.imageUrl
+              ? `${API_BASE_URL}${artista.imageUrl}`
+              : `https://placehold.co/300x300/${artista.color?.substring(1) || 'E2E2E2'}/171C1E?text=${encodeURIComponent(artista.name.substring(0, 3))}`"
             :alt="`Foto de ${artista.name}`"
             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
           <div
@@ -52,6 +54,7 @@ export default defineComponent({
   name: 'ArtistasDestacados',
   setup() {
     const artistas = ref<Artista[]>([]);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     // Simulación de carga de datos (reemplazar con llamada a API)
     onMounted(async () => {
@@ -71,6 +74,7 @@ export default defineComponent({
 
     return {
       artistas,
+      API_BASE_URL,
     };
   },
 });

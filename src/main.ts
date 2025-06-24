@@ -1,16 +1,23 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-// import { LucideVueNext } from 'lucide-vue-next'; // Opcional: si quieres registrar todos globalmente
 
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from './stores/authStore'
 
 import './assets/main.css' // ¡Importante! Asegúrate de que esta línea esté presente y la ruta sea correcta.
 
-const app = createApp(App)
+async function startApp() {
+  const app = createApp(App)
 
-app.use(createPinia())
-app.use(router)
-// app.use(LucideVueNext); // Opcional: si quieres registrar todos globalmente
+  app.use(createPinia())
 
-app.mount('#app')
+  // Intentar obtener el usuario al iniciar la app
+  const authStore = useAuthStore()
+  await authStore.fetchUser()
+
+  app.use(router)
+  app.mount('#app')
+}
+
+startApp()
