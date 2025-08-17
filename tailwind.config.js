@@ -14,7 +14,10 @@ export default {
         'brand-negro': '#171C1E',
         'brand-gris-claro': '#E2E2E2',
       },
-      // Aquí puedes extender otras propiedades del tema si lo necesitas
+      fontFamily: {
+        playfair: ['"Playfair Display"', 'serif'],
+        inter: ['"Inter"', 'sans-serif'],
+      },
     },
   },
   plugins: [],

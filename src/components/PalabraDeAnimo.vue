@@ -199,6 +199,7 @@ const moodOptions = ref([
   { key: 'esperanza', text: 'Esperanza', iconComponent: shallowRef(StarIcon) },
   { key: 'paz', text: 'Paz', iconComponent: shallowRef(PeaceIcon) },
   { key: 'perdon', text: 'Perdón', iconComponent: shallowRef(UserGroupIcon) },
+  { key: 'sueño', text: 'sueño', iconComponent: shallowRef(UserGroupIcon) },
 ])
 
 const currentState = ref('initial') // 'initial', 'loadingVerse', 'verseContentLoaded', 'errorVerse'

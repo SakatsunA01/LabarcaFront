@@ -1,9 +1,10 @@
 <template>
-  <nav class="bg-brand-negro text-brand-gris-claro p-4 flex justify-between items-center sticky top-0 z-40">
+  <nav
+    :class="['fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ease-in-out p-4 flex justify-between items-center', { 'bg-brand-negro shadow-md': isScrolled, 'bg-transparent': !isScrolled }]"
+  >
     <!-- Logo -->
-    <!-- Brand -->
     <div class="navbar-brand">
-      <router-link to="/" class="text-2xl font-bold hover:text-brand-camel">
+      <router-link to="/" class="text-2xl font-bold hover:text-brand-camel text-white">
         LaBarca producciones
       </router-link>
     </div>
@@ -11,16 +12,16 @@
     <!-- Menu Items -->
     <ul class="hidden md:flex space-x-6">
       <li>
-        <router-link to="/eventos" class="hover:text-brand-camel">eventos</router-link>
+        <router-link to="/eventos" class="hover:text-brand-camel text-white">eventos</router-link>
       </li>
       <li>
-        <router-link to="/artistas" class="hover:text-brand-camel">artistas</router-link>
+        <router-link to="/artistas" class="hover:text-brand-camel text-white">artistas</router-link>
       </li>
       <li>
-        <router-link to="/lanzamientos" class="hover:text-brand-camel">lanzamientos</router-link>
+        <router-link to="/lanzamientos" class="hover:text-brand-camel text-white">lanzamientos</router-link>
       </li>
       <li>
-        <router-link to="/como-estas-hoy" class="hover:text-brand-camel">¿cómo estas hoy?</router-link>
+        <router-link to="/como-estas-hoy" class="hover:text-brand-camel text-white">¿cómo estas hoy?</router-link>
       </li>
     </ul>
 
@@ -28,35 +29,58 @@
     <div class="flex items-center space-x-4">
       <!-- User/Login Section -->
       <div v-if="authStore.isAuthenticated && authStore.currentUser" class="relative" ref="userMenuContainer">
-        <button @click="toggleUserMenu" class="flex items-center hover:text-brand-camel">
+        <button @click="toggleUserMenu" class="flex items-center hover:text-brand-camel text-white">
           <span class="mr-2">{{ authStore.currentUser.name }}</span>
           <ChevronDownIcon class="h-5 w-5 transition-transform duration-200" :class="{ 'rotate-180': userMenuOpen }" />
         </button>
         <transition name="user-menu-fade">
-          <div v-if="userMenuOpen"
-            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-brand-negro z-50">
-            <router-link v-if="authStore.isAdmin" to="/admin" @click="closeUserMenu"
-              class="block px-4 py-2 text-sm hover:bg-brand-gris-claro">Panel Admin</router-link>
-            <button @click="handleLogout"
-              class="block w-full text-left px-4 py-2 text-sm hover:bg-brand-gris-claro">Cerrar Sesión</button>
+          <div
+            v-if="userMenuOpen"
+            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-brand-negro z-50"
+          >
+            <router-link
+              v-if="authStore.isAdmin"
+              to="/admin"
+              @click="closeUserMenu"
+              class="block px-4 py-2 text-sm hover:bg-brand-gris-claro"
+            >Panel Admin</router-link>
+            <button
+              @click="handleLogout"
+              class="block w-full text-left px-4 py-2 text-sm hover:bg-brand-gris-claro"
+            >Cerrar Sesión</button>
           </div>
         </transition>
       </div>
-      <button v-else @click="openLoginModal" class="text-xl hover:text-brand-camel" aria-label="Login">
+      <button v-else @click="openLoginModal" class="text-xl hover:text-brand-camel text-white" aria-label="Login">
         <UserIcon class="h-7 w-7" />
       </button>
 
       <div class="flex space-x-3">
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-xl hover:text-brand-camel"
-          aria-label="Instagram">
+        <a
+          href="https://instagram.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xl hover:text-brand-camel text-white"
+          aria-label="Instagram"
+        >
           <LinkIcon class="h-6 w-6" /> <!-- Heroicons no tiene Instagram -->
         </a>
-        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-xl hover:text-brand-camel"
-          aria-label="Facebook">
+        <a
+          href="https://facebook.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xl hover:text-brand-camel text-white"
+          aria-label="Facebook"
+        >
           <LinkIcon class="h-6 w-6" /> <!-- Heroicons no tiene Facebook -->
         </a>
-        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="text-xl hover:text-brand-camel"
-          aria-label="WhatsApp">
+        <a
+          href="https://whatsapp.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xl hover:text-brand-camel text-white"
+          aria-label="WhatsApp"
+        >
           <ChatBubbleOvalLeftEllipsisIcon class="h-6 w-6" />
         </a>
       </div>
@@ -66,14 +90,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onUnmounted } from 'vue';
+import { defineComponent, ref, watch, onMounted, onUnmounted } from 'vue';
 import { UserIcon, LinkIcon, ChatBubbleOvalLeftEllipsisIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { useUiStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  name: 'AppNavbar', // Aseguramos que el nombre sea AppNavbar
+  name: 'AppNavbar',
   components: {
     UserIcon,
     LinkIcon,
@@ -86,6 +110,20 @@ export default defineComponent({
     const router = useRouter();
     const userMenuOpen = ref(false);
     const userMenuContainer = ref<HTMLElement | null>(null);
+    const isScrolled = ref(false);
+
+    const handleScroll = () => {
+      isScrolled.value = window.scrollY > 0;
+    };
+
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClickOutside);
+    });
 
     const openLoginModal = () => {
       uiStore.setShowLoginModal(true);
@@ -102,7 +140,7 @@ export default defineComponent({
     const handleLogout = () => {
       authStore.logout();
       closeUserMenu();
-      router.push('/'); // O a donde quieras redirigir tras logout
+      router.push('/');
     };
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -119,14 +157,20 @@ export default defineComponent({
       }
     });
 
-    onUnmounted(() => {
-      document.removeEventListener('click', handleClickOutside);
-    });
-
-    return { openLoginModal, authStore, userMenuOpen, userMenuContainer, toggleUserMenu, handleLogout, closeUserMenu };
-  }
+    return {
+      openLoginModal,
+      authStore,
+      userMenuOpen,
+      userMenuContainer,
+      toggleUserMenu,
+      handleLogout,
+      closeUserMenu,
+      isScrolled,
+    };
+  },
 });
 </script>
+
 <style scoped>
 .user-menu-fade-enter-active,
 .user-menu-fade-leave-active {

@@ -41,9 +41,19 @@ const router = createRouter({
       component: () => import('../views/ArtistaDetalleView.vue'),
     },
     {
-      path: '/lanzamientos',
-      name: 'lanzamientos',
-      component: PlaceholderView, // Usa la vista placeholder
+      path: '/noticias/:slug',
+      name: 'noticia-detalle',
+      component: () => import('../views/NoticiaDetalleView.vue'),
+    },
+    {
+      path: '/lanzamientos/:id',
+      name: 'lanzamiento-detalle',
+      component: () => import('../views/LanzamientoDetalleView.vue'),
+    },
+    {
+      path: '/tienda/:id',
+      name: 'producto-detalle',
+      component: () => import('../views/ProductoDetalleView.vue'),
     },
     {
       path: '/como-estas-hoy',

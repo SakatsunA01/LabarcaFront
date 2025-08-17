@@ -1,109 +1,128 @@
-<template>
-  <section
-    class="relative w-full h-[calc(100vh-var(--navbar-height,80px))] md:h-[calc(100vh-var(--navbar-height,80px)-2rem)] overflow-hidden">
-    <div class="relative h-full w-full" v-for="(slide, index) in slides" :key="slide.id" v-show="currentIndex === index"
-      :aria-hidden="currentIndex !== index" role="tabpanel" :aria-labelledby="`slide-tab-${index}`">
-      <img :src="slide.imageUrl" :alt="slide.altText"
-        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
-        :class="{ 'opacity-100': currentIndex === index, 'opacity-0': currentIndex !== index }" />
-      <div
-        class="absolute inset-0 bg-brand-negro bg-opacity-40 flex flex-col items-center justify-center text-center p-4">
-        <h1 class="text-4xl md:text-6xl font-bold text-brand-gris-claro mb-4 drop-shadow-md">
-          {{ slide.title }}
-        </h1>
-        <p class="text-xl md:text-2xl text-brand-gris-claro mb-8 max-w-2xl mx-auto drop-shadow-sm">
-          {{ slide.subtitle }}
-        </p>
-        <button v-if="slide.buttonText && slide.buttonLink" @click="() => navegarConOverlay(slide.buttonLink!)"
-          type="button"
-          class="bg-brand-camel text-white py-3 px-8 rounded-md hover:bg-opacity-80 transition-colors text-lg font-medium shadow-lg">
-          {{ slide.buttonText }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Indicadores de Burbuja -->
-    <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
-      <button v-for="(slide, index) in slides" :key="`indicator-${slide.id}`" @click="goToSlide(index)"
-        class="w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ease-in-out"
-        :class="currentIndex === index ? 'bg-brand-camel scale-125' : 'bg-brand-gris-claro bg-opacity-50 hover:bg-opacity-75'"
-        :aria-label="`Ir a la diapositiva ${index + 1}`" :id="`slide-tab-${index}`" role="tab"
-        :aria-selected="currentIndex === index"></button>
-    </div>
-  </section>
-</template>
-
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUiStore } from '@/stores/uiStore';
 
-interface Slide {
-  id: number;
-  imageUrl: string;
-  altText: string;
-  title: string;
-  subtitle: string;
-  buttonText?: string;
-  buttonLink?: string;
-}
-
-const router = useRouter();
-const uiStore = useUiStore();
-
-const slides = ref<Slide[]>([
-  {
-    id: 1,
-    imageUrl: 'https://placehold.co/1920x1080/234E4B/E2E2E2?text=LaBarca+Producciones',
-    altText: 'Imagen inspiradora de LaBarca Producciones',
-    title: 'LaBarca Producciones',
-    subtitle: 'Conectando corazones a través de la música y eventos que inspiran.',
-    buttonText: 'Ver Próximos Eventos',
-    buttonLink: '/eventos',
-  },
-  {
-    id: 2,
-    imageUrl: 'https://placehold.co/1920x1080/5F0E1F/E2E2E2?text=Nuevos+Lanzamientos',
-    altText: 'Nuevos lanzamientos musicales',
-    title: 'Música que Transforma',
-    subtitle: 'Descubre los últimos lanzamientos de nuestros artistas.',
-    buttonText: 'Explorar Música',
-    buttonLink: '/lanzamientos',
-  },
-  {
-    id: 3,
-    imageUrl: 'https://placehold.co/1920x1080/A18059/171C1E?text=Comunidad+Unida',
-    altText: 'Comunidad unida en un evento',
-    title: 'Eventos que Unen',
-    subtitle: 'Vive experiencias inolvidables en nuestros conciertos y conferencias.',
-    buttonText: 'Nuestros Artistas',
-    buttonLink: '/artistas',
-  },
-]);
-
-const currentIndex = ref(0);
+// --- State Management ---
+const currentSlide = ref(0);
 let intervalId: number | undefined = undefined;
 
-const goToSlide = (index: number) => {
-  currentIndex.value = index;
-};
+// --- Slide Content ---
+// Note: Vite handles asset imports like this to get the correct public path.
+const slides = [
+  {
+    videoUrl: new URL('../assets/videos/enzo.MP4', import.meta.url).href,
+    title: "Noche de Comunidad",
+    subtitle: "Únete a nosotros para una experiencia de adoración inolvidable. 28 de Septiembre - Buenos Aires.",
+    ctaText: "Conseguir Entradas",
+    ctaLink: "/eventos/noche-de-comunidad"
+  },
+  {
+    videoUrl: new URL('../assets/videos/tomi.MP4', import.meta.url).href,
+    title: "Conoce a Tomás",
+    subtitle: "Descubre la historia y la música detrás de su ministerio.",
+    ctaText: "Ver su Perfil",
+    ctaLink: "/artistas/tomas"
+  },
+  {
+    videoUrl: new URL('../assets/videos/enzo.MP4', import.meta.url).href, // Re-using video for example
+    title: "Nuevo Sencillo: 'Tu Paz'",
+    subtitle: "Ya disponible en todas las plataformas digitales.",
+    ctaText: "Escuchar Ahora",
+    ctaLink: "/musica/tu-paz"
+  }
+];
 
+// --- Carousel Logic ---
 const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % slides.value.length;
+  currentSlide.value = (currentSlide.value + 1) % slides.length;
 };
 
-const navegarConOverlay = async (path: string) => {
-  await uiStore.showLoadingOverlay();
-  router.push(path);
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length;
 };
 
+const goToSlide = (index: number) => {
+  currentSlide.value = index;
+};
+
+const startAutoplay = () => {
+  intervalId = window.setInterval(nextSlide, 7000); // Change slide every 7 seconds
+};
+
+const stopAutoplay = () => {
+  clearInterval(intervalId);
+};
+
+// --- Lifecycle Hooks ---
 onMounted(() => {
-  // Ajusta la altura del carrusel basado en la altura del navbar si es necesario
-  // document.documentElement.style.setProperty('--navbar-height', `${document.querySelector('nav')?.offsetHeight || 80}px`);
-  intervalId = window.setInterval(nextSlide, 7000); // Cambia cada 7 segundos
+  startAutoplay();
 });
 
 onUnmounted(() => {
-  if (intervalId) clearInterval(intervalId);
+  stopAutoplay();
 });
 </script>
+
+<template>
+  <div class="relative h-screen w-full overflow-hidden group" @mouseenter="stopAutoplay" @mouseleave="startAutoplay">
+    <!-- Slides Container -->
+    <div class="w-full h-full">
+      <transition-group name="fade" tag="div" class="relative w-full h-full">
+        <div v-for="(slide, index) in slides" :key="index" v-show="currentSlide === index"
+          class="absolute w-full h-full">
+          <!-- Background Video -->
+          <video :src="slide.videoUrl" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
+            playsinline></video>
+          <!-- Overlay -->
+          <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40"></div>
+
+          <!-- Text Content -->
+          <div class="relative z-10 flex flex-col items-start justify-end w-full h-full text-white text-left p-8 md:p-12 lg:p-16">
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-lg">
+              {{ slide.title }}
+            </h1>
+            <a :href="slide.ctaLink"
+              class="border-2 border-white text-white font-bold py-3 px-8 rounded-full uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300">
+              {{ slide.ctaText }}
+            </a>
+          </div>
+        </div>
+      </transition-group>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button @click="prevSlide"
+      class="absolute top-1/2 left-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300">
+      &#10094;
+    </button>
+    <button @click="nextSlide"
+      class="absolute top-1/2 right-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300">
+      &#10095;
+    </button>
+
+    <!-- Navigation Dots -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
+      <button v-for="(_, index) in slides" :key="`dot-${index}`" @click="goToSlide(index)" :class="[
+        'w-3 h-3 rounded-full transition-all duration-300',
+        currentSlide === index ? 'bg-white' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+      ]"></button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* Fade Transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+</style>
