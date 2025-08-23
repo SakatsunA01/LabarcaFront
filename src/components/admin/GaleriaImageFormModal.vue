@@ -89,37 +89,64 @@ watch(() => props.show, (newVal) => {
 });
 
 const handleFileChange = (file: File | null) => {
+    errorMessage.value = ''; // Limpiar errores previos
+    if (file) {
+        const maxSizeInMB = 10; // Límite de 10MB
+        const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+        if (file.size > maxSizeInBytes) {
+            errorMessage.value = `El archivo es demasiado grande. El tamaño máximo es ${maxSizeInMB}MB.`;
+            imageFile.value = null; // Rechazar el archivo y limpiar la selección
+            // Es posible que necesites una forma de notificar a ImageUploader para que limpie su vista previa
+            return;
+        }
+    }
     imageFile.value = file;
 };
 
 const handleSubmit = async () => {
+    // Pre-validación antes de empezar la carga
+    if (!isEditing.value && !imageFile.value) {
+        errorMessage.value = 'Por favor, selecciona un archivo de imagen.';
+        return;
+    }
+    // Si hay un error (p. ej. de tamaño), no continuar.
+    if (errorMessage.value && !errorMessage.value.includes('Ocurrió un error')) {
+        return;
+    }
+
     isLoading.value = true;
     errorMessage.value = '';
 
     const submissionData = new FormData();
-    submissionData.append('id_evento', props.eventoId!.toString()); // Aseguramos que eventoId no sea null
+    submissionData.append('id_evento', props.eventoId!.toString());
     if (formData.value.descripcion) {
         submissionData.append('descripcion', formData.value.descripcion);
     }
 
     if (imageFile.value) {
         submissionData.append('imagen_file', imageFile.value);
-    } else if (isEditing.value && formData.value.url_imagen === null) {
-        // Si estamos editando y la imagen fue explícitamente borrada (url_imagen = null)
-        submissionData.append('url_imagen', ''); // Enviamos cadena vacía para indicar que se debe borrar
     }
 
     try {
         if (isEditing.value && props.image) {
-            submissionData.append('_method', 'PUT'); // Laravel espera POST para FormData con _method para PUT/PATCH
-            await axios.post(`${API_URL}/galerias-eventos/${props.image.id}`, submissionData);
+            submissionData.append('_method', 'PUT');
+            await axios.post(`${API_URL}/galerias-eventos/${props.image.id}`, submissionData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
         } else {
-            await axios.post(`${API_URL}/galerias-eventos`, submissionData);
+            await axios.post(`${API_URL}/galerias-eventos`, submissionData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
         }
         emit('save');
+        close();
     } catch (error: any) {
         console.error("Error al guardar imagen de galería:", error);
-        errorMessage.value = error.response?.data?.message || 'Ocurrió un error al guardar la imagen.';
+        if (error.response?.status === 413) { // 413: Payload Too Large
+             errorMessage.value = 'El archivo es demasiado grande para el servidor. Intenta con uno más pequeño.';
+        } else {
+             errorMessage.value = error.response?.data?.message || 'Ocurrió un error al guardar la imagen.';
+        }
     } finally {
         isLoading.value = false;
     }

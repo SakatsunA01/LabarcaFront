@@ -54,8 +54,8 @@
             <div class="lg:w-3/5"> <!-- Ajustado el ancho para Spotify -->
               <h2 class="text-2xl md:text-3xl font-bold mb-6" :class="textColorClass">Escucha en Spotify</h2>
               <div v-if="artista.spotifyEmbedUrl" class="aspect-video rounded-xl overflow-hidden shadow-lg">
-                <iframe style="border-radius:12px" :src="artista.spotifyEmbedUrl" width="100%" height="100%"
-                  frameBorder="0" allowfullscreen=""
+                <iframe data-testid="embed-iframe" style="border-radius:12px" :src="artista.spotifyEmbedUrl"
+                  width="100%" height="352" frameBorder="0"
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   loading="lazy"></iframe>
               </div>

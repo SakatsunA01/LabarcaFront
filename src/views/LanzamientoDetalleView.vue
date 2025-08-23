@@ -17,7 +17,7 @@
         <div class="md:col-span-2">
           <h1 class="text-4xl md:text-5xl font-bold font-playfair text-brand-negro">{{ album.title }}</h1>
           <h2 class="text-2xl font-inter text-brand-camel mt-2">{{ album.artist }}</h2>
-          
+
           <p class="font-inter text-brand-negro mt-6 leading-relaxed">{{ album.description }}</p>
 
           <!-- Plataformas de Streaming -->
@@ -60,54 +60,52 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import enzoNoMoreCover from '@/assets/album/enzo_no_more.png';
+import deVueltaCover from '@/assets/album/de_vuelta.png';
+import trapficandoCover from '@/assets/album/trapficando.png';
 
 // Mock data para los álbumes
 const albums = ref([
   {
     id: 1,
-    title: 'Cielos Abiertos',
-    artist: 'Comunidad Adoración',
-    cover: 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?q=80&w=1974&auto=format&fit=crop',
-    description: 'Un álbum que explora la majestuosidad de Dios a través de sonidos contemporáneos y letras profundas. Grabado en vivo, captura la energía de una comunidad unida en adoración.',
-    spotifyUrl: '#',
+    title: 'No More',
+    artist: 'Enzo FNZ',
+    cover: enzoNoMoreCover,
+    description: 'nuevo lanzamiento de Enzo FNZ',
+    spotifyUrl: 'https://open.spotify.com/intl-es/album/002Uu26kNV28jYfD9cGGCm',
     youtubeUrl: '#',
     tracklist: [
-      { title: 'Intro (Apertura)', duration: '1:15' },
-      { title: 'Tu Reino Aquí', duration: '4:30' },
-      { title: 'Cielos Abiertos', duration: '5:12' },
-      { title: 'Digno Eres', duration: '6:02' },
-      { title: 'Interludio (Oración)', duration: '2:05' },
-      { title: 'Mi Refugio', duration: '4:55' },
+      { title: 'No More', duration: '2:29' },
+
     ]
   },
   {
     id: 2,
-    title: 'Tu Paz Inunda',
-    artist: 'Salmistas Unidos',
-    cover: 'https://images.unsplash.com/photo-1593533923213-fc6a6a3a3341?q=80&w=1974&auto=format&fit=crop',
-    description: 'Canciones de quietud y confianza en medio de la tormenta. Este proyecto acústico es una invitación a encontrar descanso en la presencia de Dios.',
-    spotifyUrl: '#',
+    title: 'De Vuelta',
+    artist: 'Joni Tevez',
+    cover: deVueltaCover,
+    description: 'Interpretada por: Joni Tevez, Escrita: por Jorge ZarzaJosep Prada',
+    spotifyUrl: 'https://open.spotify.com/intl-es/album/35CkYiKBchBrSgKPvdjI7n',
     youtubeUrl: '#',
     tracklist: [
-      { title: 'Al Contemplarte', duration: '3:45' },
-      { title: 'Tu Paz Inunda', duration: '4:20' },
-      { title: 'Selah', duration: '1:30' },
-      { title: 'Confiaré', duration: '5:01' },
+      { title: 'Perfume de Alabanza', duration: '5:09' },
+      { title: 'Atrios', duration: '5:29' },
+      { title: 'Purificante', duration: '6:27' },
+      { title: 'Solo a Ti', duration: '5:13' },
+      { title: 'Promesas', duration: '8:55' },
+      { title: 'Rey de Reyes', duration: '7:10' },
     ]
   },
   {
     id: 3,
     title: 'Eco de Tu Voz',
     artist: 'La Barca Collective',
-    cover: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop',
+    cover: trapficandoCover,
     description: 'El álbum debut de nuestro colectivo de artistas. Una fusión de estilos que celebra la diversidad del cuerpo de Cristo y la unidad en Su Espíritu.',
     spotifyUrl: '#',
     youtubeUrl: '#',
     tracklist: [
       { title: 'Somos Tu Eco', duration: '4:10' },
-      { title: 'Libre Soy', duration: '3:50' },
-      { title: 'Nuevo Amanecer', duration: '5:15' },
-      { title: 'Danzaré', duration: '4:05' },
     ]
   },
 ]);

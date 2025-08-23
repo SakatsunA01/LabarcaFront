@@ -80,16 +80,11 @@
         <!-- Galería -->
         <section>
           <h2 class="text-3xl font-bold text-brand-negro mb-10 text-center">Galería del Evento</h2>
-          <div v-if="evento.galeria && evento.galeria.length > 0" class="grid grid-cols-6 gap-3 md:gap-4">
+          <div v-if="evento.galeria && evento.galeria.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-4 [grid-auto-flow:dense]">
             <div v-for="(imagen, index) in evento.galeria" :key="imagen.id"
-              class="bg-gray-300 rounded-lg overflow-hidden group relative shadow-sm border border-brand-gris-claro/30"
               :class="[
-                (index % 6 === 0 && evento.galeria.length > 1) ? 'col-span-3 row-span-2 aspect-video' :         // Imagen grande horizontal
-                  (index % 6 === 1 && evento.galeria.length > 3) ? 'col-span-3 row-span-1 aspect-video' :         // Imagen mediana horizontal
-                    (index % 6 === 2 && evento.galeria.length > 4) ? 'col-span-2 row-span-2 aspect-[3/4]' :        // Imagen alta
-                      (index % 6 === 3 && evento.galeria.length > 5) ? 'col-span-2 row-span-1 aspect-square' :       // Cuadrada
-                        (index % 6 === 4 && evento.galeria.length > 2) ? 'col-span-2 row-span-1 aspect-square' :       // Cuadrada
-                          'col-span-3 sm:col-span-2 aspect-square' // Default
+                'bg-gray-300 rounded-lg overflow-hidden group relative shadow-sm border border-brand-gris-claro/30',
+                index % 4 === 0 ? 'md:row-span-2' : ''
               ]">
               <img :src="`${API_BASE_URL}${imagen.url_imagen}`" :alt="imagen.descripcion || 'Imagen de la galería'"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />

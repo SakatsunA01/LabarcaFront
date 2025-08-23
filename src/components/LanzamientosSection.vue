@@ -1,7 +1,7 @@
 <template>
   <section ref="sectionRef" class="py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="max-w-7xl mx-auto">
-      <div 
+      <div
         class="text-center mb-16 transition-all duration-1000 ease-out"
         :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
       >
@@ -32,6 +32,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import AlbumCard from './AlbumCard.vue';
+import enzoNoMoreCover from '@/assets/album/enzo_no_more.png';
+import deVueltaCover from '@/assets/album/de_vuelta.png';
+import trapficandoCover from '@/assets/album/trapficando.png';
 
 const sectionRef = ref(null);
 const isVisible = ref(false);
@@ -39,26 +42,26 @@ const isVisible = ref(false);
 const recentReleases = ref([
   {
     id: 1,
-    title: 'Cielos Abiertos',
-    artist: 'Comunidad Adoración',
-    cover: 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?q=80&w=1974&auto=format&fit=crop',
-    spotifyUrl: '#',
+    title: 'No More',
+    artist: 'Enzo FNZ',
+    cover: enzoNoMoreCover,
+    spotifyUrl: 'https://open.spotify.com/intl-es/album/002Uu26kNV28jYfD9cGGCm?si=pPG0zcfLSn-6N0nuKuhogw',
     youtubeUrl: '#',
   },
   {
     id: 2,
-    title: 'Tu Paz Inunda',
-    artist: 'Salmistas Unidos',
-    cover: 'https://images.unsplash.com/photo-1593533923213-fc6a6a3a3341?q=80&w=1974&auto=format&fit=crop',
+    title: 'De Vuelta',
+    artist: 'Joni Tevez',
+    cover: deVueltaCover,
     spotifyUrl: '#',
     youtubeUrl: '#',
   },
   {
     id: 3,
-    title: 'Eco de Tu Voz',
-    artist: 'La Barca Collective',
-    cover: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop',
-    spotifyUrl: '#',
+    title: 'TRAPFICANDO',
+    artist: 'Matu Seven',
+    cover: trapficandoCover,
+    spotifyUrl: 'https://open.spotify.com/intl-es/album/0dI0KymwTHwnaBoSR4N8zw',
     youtubeUrl: '#',
   },
 ]);
