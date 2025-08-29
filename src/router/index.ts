@@ -51,6 +51,11 @@ const router = createRouter({
       component: () => import('../views/LanzamientoDetalleView.vue'),
     },
     {
+        path: '/lanzamientos',
+        name: 'lanzamientos',
+        component: () => import('../views/LanzamientosView.vue'),
+    },
+    {
       path: '/tienda/:id',
       name: 'producto-detalle',
       component: () => import('../views/ProductoDetalleView.vue'),
@@ -61,15 +66,17 @@ const router = createRouter({
       component: PlaceholderView, // Usa la vista placeholder
     },
     {
-      path: '/login',
-      name: 'login',
-      // Ya no necesitamos una vista /login, se maneja con modal.
-      // Si quieres mantenerla por alguna razón, puedes hacerlo,
-      // pero el flujo principal será el modal.
-      // Por ahora, la redirigimos o la quitamos si el modal es suficiente.
-      // component: PlaceholderView,
-      redirect: '/', // Opcional: redirigir si se intenta acceder directamente
+        path: '/contacto',
+        name: 'contacto',
+        component: PlaceholderView,
     },
+    {
+        path: '/privacidad',
+        name: 'privacidad',
+        component: PlaceholderView,
+    },
+    // Las rutas de login y registro ahora se manejan a través de modales
+    // y no como páginas independientes.
     {
       path: '/admin',
       name: 'admin',
@@ -96,6 +103,11 @@ const router = createRouter({
           component: () => import('../views/admin/AdminEventosView.vue'),
         },
         {
+          path: 'lanzamientos',
+          name: 'admin-lanzamientos',
+          component: () => import('../views/admin/AdminLanzamientosView.vue'),
+        },
+        {
           path: 'galeria',
           name: 'admin-galeria',
           component: () => import('../views/admin/AdminGaleriaView.vue'),
@@ -104,6 +116,16 @@ const router = createRouter({
           path: 'testimonios',
           name: 'admin-testimonios',
           component: () => import('../views/admin/AdminTestimoniosView.vue'),
+        },
+        {
+            path: 'sorteos',
+            name: 'admin-sorteos',
+            component: PlaceholderView,
+        },
+        {
+            path: 'configuraciones',
+            name: 'admin-configuraciones',
+            component: PlaceholderView,
         },
       ],
     },

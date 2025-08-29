@@ -59,6 +59,7 @@ const authStore = useAuthStore();
 const navItems = [
   { name: 'Artistas', path: '/admin/artistas', icon: UserGroupIcon },
   { name: 'Eventos', path: '/admin/eventos', icon: CalendarDaysIcon },
+  { name: 'Lanzamientos', path: '/admin/lanzamientos', icon: CalendarDaysIcon },
   { name: 'Galería', path: '/admin/galeria', icon: PhotoIcon },
   { name: 'Testimonios', path: '/admin/testimonios', icon: ChatBubbleBottomCenterTextIcon },
   { name: 'Sorteos', path: '/admin/sorteos', icon: GiftIcon },

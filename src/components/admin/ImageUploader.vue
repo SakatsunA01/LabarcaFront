@@ -16,7 +16,7 @@
           </label>
           <p class="pl-1">o arrástralo aquí</p>
         </div>
-        <p class="text-xs text-gray-500">PNG, JPG, GIF hasta 2MB</p>
+        <p class="text-xs text-gray-500">PNG, JPG, GIF hasta 10MB</p>
       </div>
     </div>
   </div>
@@ -44,6 +44,10 @@ watch(() => props.initialPreview, (newVal) => {
 
 const handleFile = (file: File | null) => {
   if (file && file.type.startsWith('image/')) {
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+      alert('El archivo es demasiado grande. El tamaño máximo es de 10MB.');
+      return;
+    }
     previewUrl.value = URL.createObjectURL(file);
     emit('file-change', file);
   }

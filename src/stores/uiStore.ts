@@ -4,6 +4,7 @@ export const useUiStore = defineStore('ui', {
   state: () => ({
     isRouteLoading: false,
     showLoginModal: false,
+    showRegisterModal: false, // Nuevo estado para el modal de registro
   }),
   actions: {
     setRouteLoading(isLoading: boolean) {
@@ -16,6 +17,11 @@ export const useUiStore = defineStore('ui', {
     },
     setShowLoginModal(show: boolean) {
       this.showLoginModal = show
+      if (show) this.showRegisterModal = false // Cierra el otro modal si se abre este
+    },
+    setShowRegisterModal(show: boolean) {
+      this.showRegisterModal = show
+      if (show) this.showLoginModal = false // Cierra el otro modal si se abre este
     },
   },
 })

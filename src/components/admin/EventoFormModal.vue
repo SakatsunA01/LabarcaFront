@@ -173,7 +173,17 @@ const handleSubmit = async () => {
         emit('save');
     } catch (error: any) {
         console.error("Error al guardar evento:", error);
-        errorMessage.value = error.response?.data?.message || 'Ocurrió un error al guardar.';
+        if (error.response && error.response.data) {
+            const errors = error.response.data.errors || error.response.data;
+            if (typeof errors === 'object' && errors !== null) {
+                const firstErrorKey = Object.keys(errors)[0];
+                errorMessage.value = errors[firstErrorKey]?.[0] || 'Error de validación desconocido.';
+            } else {
+                errorMessage.value = error.response.data.message || 'Ocurrió un error al guardar.';
+            }
+        } else {
+            errorMessage.value = 'Ocurrió un error de red o del servidor.';
+        }
     } finally {
         isLoading.value = false;
     }

@@ -4,6 +4,7 @@ import AppNavbar from '@/components/Navbar.vue' // Cambiado para coincidir con e
 import AppFooter from '@/components/AppFooter.vue' // Importamos el nuevo footer
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import LoginModal from '@/components/LoginModal.vue';
+import RegisterModal from '@/components/RegisterModal.vue';
 import { useUiStore } from '@/stores/uiStore';
 
 const uiStore = useUiStore();
@@ -22,6 +23,7 @@ const uiStore = useUiStore();
     </main>
     <LoadingOverlay :is-loading="uiStore.isRouteLoading" />
     <LoginModal :show="uiStore.showLoginModal" @close="uiStore.setShowLoginModal(false)" />
+    <RegisterModal :show="uiStore.showRegisterModal" @close="uiStore.setShowRegisterModal(false)" />
     <AppFooter />
   </div>
 </template>

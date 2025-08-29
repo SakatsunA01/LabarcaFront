@@ -8,18 +8,29 @@
                     class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors">
                     <XMarkIcon class="h-6 w-6" />
                 </button>
-                <h2 class="text-2xl font-bold text-brand-negro text-center mb-6">Iniciar Sesión</h2>
-                <form @submit.prevent="handleLogin">
+                <h2 class="text-2xl font-bold text-brand-negro text-center mb-6">Crear Cuenta</h2>
+                <form @submit.prevent="handleRegister">
                     <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-brand-negro mb-1">Correo
-                            Electrónico</label>
-                        <input type="email" id="email" v-model="email"
+                        <label for="name" class="block text-sm font-medium text-brand-negro mb-1">Nombre</label>
+                        <input type="text" id="name" v-model="name"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+                            required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="email-reg" class="block text-sm font-medium text-brand-negro mb-1">Correo Electrónico</label>
+                        <input type="email" id="email-reg" v-model="email"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+                            required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="password-reg" class="block text-sm font-medium text-brand-negro mb-1">Contraseña</label>
+                        <input type="password" id="password-reg" v-model="password"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
                     <div class="mb-6">
-                        <label for="password" class="block text-sm font-medium text-brand-negro mb-1">Contraseña</label>
-                        <input type="password" id="password" v-model="password"
+                        <label for="password-confirm" class="block text-sm font-medium text-brand-negro mb-1">Confirmar Contraseña</label>
+                        <input type="password" id="password-confirm" v-model="password_confirmation"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
@@ -28,16 +39,13 @@
                     </div>
                     <button type="submit" :disabled="isLoading"
                         class="w-full bg-brand-camel text-white py-3 px-4 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-camel focus:ring-offset-2">
-                        <span v-if="isLoading" class="animate-pulse">Procesando...</span>
-                        <span v-else>Iniciar Sesión</span>
+                        <span v-if="isLoading" class="animate-pulse">Creando cuenta...</span>
+                        <span v-else>Registrarse</span>
                     </button>
                 </form>
                 <div class="mt-6 text-center text-sm">
-                    <a href="#" class="text-brand-verde-oscuro hover:underline">¿Olvidaste tu contraseña?</a>
-                </div>
-                <div class="mt-2 text-center text-sm">
-                    <span class="text-gray-600">¿No tienes cuenta? </span>
-                    <button @click="switchToRegister" class="text-brand-borgona hover:underline">Regístrate</button>
+                    <span class="text-gray-600">¿Ya tienes cuenta? </span>
+                    <button @click="switchToLogin" class="text-brand-borgona hover:underline">Inicia Sesión</button>
                 </div>
             </div>
         </div>
@@ -56,46 +64,53 @@ defineProps<{
 
 const emit = defineEmits(['close']);
 
+const name = ref('');
 const email = ref('');
 const password = ref('');
+const password_confirmation = ref('');
 const isLoading = ref(false);
 const errorMessage = ref('');
 
 const authStore = useAuthStore();
 const uiStore = useUiStore();
 
-const handleLogin = async () => {
+const handleRegister = async () => {
     isLoading.value = true;
     errorMessage.value = '';
+    if (password.value !== password_confirmation.value) {
+        errorMessage.value = 'Las contraseñas no coinciden.';
+        isLoading.value = false;
+        return;
+    }
     try {
-        await authStore.login({ email: email.value, password: password.value });
-        // Si el login es exitoso en el store, cerramos el modal
-        if (authStore.isAuthenticated) {
-            closeModal();
-        } else {
-            // Esto podría ser manejado por el store si lanza un error específico
-            errorMessage.value = authStore.error || 'Credenciales incorrectas. Intenta de nuevo.';
-        }
+        await authStore.register({
+            name: name.value,
+            email: email.value,
+            password: password.value,
+            password_confirmation: password_confirmation.value,
+        });
+        // Si el registro es exitoso, cerramos este modal y abrimos el de login
+        switchToLogin();
     } catch (error: any) {
-        // The authStore already sets and logs the error. We just need to display it.
-        errorMessage.value = authStore.error || 'Ocurrió un error al iniciar sesión.';
+        errorMessage.value = error.response?.data?.message || 'Ocurrió un error en el registro.';
     } finally {
         isLoading.value = false;
     }
 };
 
 const closeModal = () => {
-    uiStore.setShowLoginModal(false); // Usamos el store para cerrar
-    emit('close'); // También emitimos por si el padre necesita saber
+    uiStore.setShowRegisterModal(false);
+    emit('close');
 };
 
-const switchToRegister = () => {
-    uiStore.setShowLoginModal(false);
-    uiStore.setShowRegisterModal(true);
+const switchToLogin = () => {
+    uiStore.setShowRegisterModal(false);
+    uiStore.setShowLoginModal(true);
 };
 </script>
 
 <style scoped>
+/* Estilos de transición idénticos a LoginModal.vue */
 .modal-fade-enter-active,
 .modal-fade-leave-active {
     transition: opacity 0.3s ease-out;

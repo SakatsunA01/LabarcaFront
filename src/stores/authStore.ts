@@ -53,11 +53,37 @@ export const useAuthStore = defineStore('auth', {
         }
       } catch (error: any) {
         this.user = null
-        this.error = error.response?.data?.message || 'Error en el inicio de sesión.'
+        if (error.response && error.response.data) {
+            const errors = error.response.data.errors || error.response.data;
+            if (typeof errors === 'object' && errors !== null) {
+                const firstErrorKey = Object.keys(errors)[0];
+                this.error = errors[firstErrorKey]?.[0] || 'Error de validación desconocido.';
+            } else {
+                this.error = error.response.data.message || 'Error en el inicio de sesión.';
+            }
+        } else {
+            this.error = 'Ocurrió un error de red o del servidor.';
+        }
         console.error('Login error:', error)
         throw error // Relanzar para que el componente lo maneje si es necesario
       } finally {
         this.isLoading = false
+      }
+    },
+    async register(userInfo: any) {
+      this.isLoading = true;
+      this.error = null;
+      try {
+        await axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true });
+        const response = await axios.post(`${API_URL}/register`, userInfo, { withCredentials: true });
+        // No se loguea al usuario, solo se crea. El backend devuelve el usuario creado.
+        return response.data;
+      } catch (error: any) {
+        this.error = error.response?.data?.message || 'Error en el registro.';
+        console.error('Register error:', error.response?.data);
+        throw error;
+      } finally {
+        this.isLoading = false;
       }
     },
     async fetchUser() {
