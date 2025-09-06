@@ -48,7 +48,7 @@ import { RouterView, useRoute, useRouter } from 'vue-router'; // Import ref
 import {
   Cog6ToothIcon, UserGroupIcon, CalendarDaysIcon, GiftIcon,
   ChatBubbleBottomCenterTextIcon, PhotoIcon, ArrowLeftOnRectangleIcon,
-  Bars3Icon // Import Bars3Icon
+  Bars3Icon, NewspaperIcon, TagIcon // Import Bars3Icon
 } from '@heroicons/vue/24/outline';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -58,10 +58,15 @@ const authStore = useAuthStore();
 
 const navItems = [
   { name: 'Artistas', path: '/admin/artistas', icon: UserGroupIcon },
+  { name: 'Historias', path: '/admin/posts', icon: NewspaperIcon },
+  { name: 'Categorías', path: '/admin/categories', icon: TagIcon },
+  { name: 'Hero Carousel', path: '/admin/hero', icon: PhotoIcon }, // Using PhotoIcon for now, can be changed later
   { name: 'Eventos', path: '/admin/eventos', icon: CalendarDaysIcon },
   { name: 'Lanzamientos', path: '/admin/lanzamientos', icon: CalendarDaysIcon },
   { name: 'Galería', path: '/admin/galeria', icon: PhotoIcon },
   { name: 'Testimonios', path: '/admin/testimonios', icon: ChatBubbleBottomCenterTextIcon },
+  { name: 'Peticiones Oración', path: '/admin/prayer-requests', icon: ChatBubbleBottomCenterTextIcon },
+  { name: 'Usuarios', path: '/admin/users', icon: UserGroupIcon },
   { name: 'Sorteos', path: '/admin/sorteos', icon: GiftIcon },
   { name: 'Configuraciones', path: '/admin/configuraciones', icon: Cog6ToothIcon },
 ];

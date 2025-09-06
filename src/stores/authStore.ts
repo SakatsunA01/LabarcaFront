@@ -6,27 +6,30 @@ interface User {
   name: string
   email: string
   admin_sn: 0 | 1
-  // Agrega otros campos que esperas del backend
+  phone?: string;
+  belongs_to_church?: boolean;
+  church_name?: string | null;
+  pastor_name?: string | null;
 }
 
 interface AuthState {
   user: User | null
-  token: string | null // O el mecanismo de sesión que uses
+  token: string | null
   error: string | null
   isLoading: boolean
 }
 
-const API_URL = 'http://localhost:8000/api' // Asegúrate que esta sea la URL de tu backend Laravel
+const API_URL = 'http://localhost:8000/api'
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
-    token: localStorage.getItem('authToken') || null, // Ejemplo si usas token
+    token: localStorage.getItem('authToken') || null,
     error: null,
     isLoading: false,
   }),
   getters: {
-    isAuthenticated: (state) => !!state.user, // O !!state.token si usas tokens y no cargas el user inmediatamente
+    isAuthenticated: (state) => !!state.user || !!state.token,
     currentUser: (state) => state.user,
     isAdmin: (state) => state.user?.admin_sn === 1,
   },
@@ -35,24 +38,23 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true
       this.error = null
       try {
-        // Paso 1: Obtener la cookie CSRF (necesario para Laravel Sanctum con SPA)
         await axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true })
 
-        // Paso 2: Intentar el login
         const response = await axios.post(`${API_URL}/login`, credentials, {
           withCredentials: true,
         })
 
-        // Si Laravel devuelve el usuario directamente tras el login:
         if (response.data && response.data.user) {
-          // Ajusta esto según la respuesta de tu API
           this.user = response.data.user
+          this.token = response.data.token
+          localStorage.setItem('authToken', response.data.token)
         } else {
-          // Si no devuelve el usuario, lo pedimos
           await this.fetchUser()
         }
       } catch (error: any) {
         this.user = null
+        this.token = null
+        localStorage.removeItem('authToken')
         if (error.response && error.response.data) {
             const errors = error.response.data.errors || error.response.data;
             if (typeof errors === 'object' && errors !== null) {
@@ -65,7 +67,7 @@ export const useAuthStore = defineStore('auth', {
             this.error = 'Ocurrió un error de red o del servidor.';
         }
         console.error('Login error:', error)
-        throw error // Relanzar para que el componente lo maneje si es necesario
+        throw error
       } finally {
         this.isLoading = false
       }
@@ -76,8 +78,11 @@ export const useAuthStore = defineStore('auth', {
       try {
         await axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true });
         const response = await axios.post(`${API_URL}/register`, userInfo, { withCredentials: true });
-        // No se loguea al usuario, solo se crea. El backend devuelve el usuario creado.
-        return response.data;
+        
+        // Después de un registro exitoso, intentar loguear al usuario
+        await this.login({ email: userInfo.email, password: userInfo.password });
+
+        return response.data; // Devuelve la respuesta de registro si es necesario
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Error en el registro.';
         console.error('Register error:', error.response?.data);
@@ -87,24 +92,23 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async fetchUser() {
-      // Esta acción se llamaría después del login o al cargar la app si hay una sesión/token
       try {
-        const response = await axios.get(`${API_URL}/user`, { withCredentials: true }) // Asumiendo que /api/user devuelve el usuario autenticado
+        const response = await axios.get(`${API_URL}/user`, { withCredentials: true, headers: { 'Authorization': `Bearer ${this.token}` } })
         this.user = response.data
       } catch (error: any) {
         this.user = null
+        this.token = null
+        localStorage.removeItem('authToken')
         console.error('Error fetching user:', error)
       }
     },
     logout() {
       this.user = null
       this.token = null
-      localStorage.removeItem('authToken') // Limpia el token si usas
-      // Aquí también deberías llamar a tu endpoint de logout en el backend:
+      localStorage.removeItem('authToken')
       axios
-        .post(`${API_URL}/logout`, {}, { withCredentials: true })
+        .post(`${API_URL}/logout`, {}, { withCredentials: true, headers: { 'Authorization': `Bearer ${this.token}` } })
         .catch((error) => console.error('Logout API error:', error))
-      // Considera redirigir al home o a la página de login
     },
   },
 })

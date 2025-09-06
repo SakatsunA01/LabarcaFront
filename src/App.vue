@@ -1,13 +1,25 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { RouterView } from 'vue-router'
-import AppNavbar from '@/components/Navbar.vue' // Cambiado para coincidir con el nombre del componente
-import AppFooter from '@/components/AppFooter.vue' // Importamos el nuevo footer
+import AppNavbar from '@/components/Navbar.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import LoginModal from '@/components/LoginModal.vue';
 import RegisterModal from '@/components/RegisterModal.vue';
+import FaithPrayerModal from '@/components/FaithPrayerModal.vue'; // Importar el nuevo modal
 import { useUiStore } from '@/stores/uiStore';
 
 const uiStore = useUiStore();
+const showFaithPrayerModal = ref(false);
+
+const handleRegistrationSuccess = () => {
+  uiStore.setShowRegisterModal(false); // Asegurarse de que el modal de registro se cierre
+  showFaithPrayerModal.value = true; // Mostrar el modal de oración
+};
+
+const closeFaithPrayerModal = () => {
+  showFaithPrayerModal.value = false;
+};
 
 </script>
 
@@ -23,7 +35,8 @@ const uiStore = useUiStore();
     </main>
     <LoadingOverlay :is-loading="uiStore.isRouteLoading" />
     <LoginModal :show="uiStore.showLoginModal" @close="uiStore.setShowLoginModal(false)" />
-    <RegisterModal :show="uiStore.showRegisterModal" @close="uiStore.setShowRegisterModal(false)" />
+    <RegisterModal :show="uiStore.showRegisterModal" @close="uiStore.setShowRegisterModal(false)" @registration-success="handleRegistrationSuccess" />
+    <FaithPrayerModal :show="showFaithPrayerModal" @close="closeFaithPrayerModal" />
     <AppFooter />
   </div>
 </template>

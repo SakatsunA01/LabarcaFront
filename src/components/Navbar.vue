@@ -12,16 +12,19 @@
     <!-- Menu Items -->
     <ul class="hidden md:flex space-x-6">
       <li>
-        <router-link to="/eventos" class="hover:text-brand-camel text-white">eventos</router-link>
+        <router-link to="/about" class="hover:text-brand-camel text-white">Nosotros</router-link>
       </li>
       <li>
-        <router-link to="/artistas" class="hover:text-brand-camel text-white">artistas</router-link>
+        <router-link to="/eventos" class="hover:text-brand-camel text-white">Eventos</router-link>
       </li>
       <li>
-        <router-link to="/lanzamientos" class="hover:text-brand-camel text-white">lanzamientos</router-link>
+        <router-link to="/artistas" class="hover:text-brand-camel text-white">Artistas</router-link>
       </li>
       <li>
-        <router-link to="/como-estas-hoy" class="hover:text-brand-camel text-white">¿cómo estas hoy?</router-link>
+        <router-link to="/lanzamientos" class="hover:text-brand-camel text-white">Lanzamientos</router-link>
+      </li>
+      <li>
+        <router-link to="/comunidad" class="hover:text-brand-camel text-white">Comunidad</router-link>
       </li>
     </ul>
 
@@ -44,6 +47,11 @@
               @click="closeUserMenu"
               class="block px-4 py-2 text-sm hover:bg-brand-gris-claro"
             >Panel Admin</router-link>
+            <router-link
+              to="/peticion-oracion"
+              @click="closeUserMenu"
+              class="block px-4 py-2 text-sm hover:bg-brand-gris-claro"
+            >Pedido de Oración</router-link>
             <button
               @click="handleLogout"
               class="block w-full text-left px-4 py-2 text-sm hover:bg-brand-gris-claro"

@@ -23,6 +23,31 @@
                             required />
                     </div>
                     <div class="mb-4">
+                        <label for="phone" class="block text-sm font-medium text-brand-negro mb-1">Teléfono</label>
+                        <input type="tel" id="phone" v-model="phone"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+                            required />
+                    </div>
+                    <div class="mb-4 flex items-center">
+                        <input type="checkbox" id="belongs_to_church" v-model="belongs_to_church"
+                            class="h-4 w-4 text-brand-camel focus:ring-brand-camel border-gray-300 rounded">
+                        <label for="belongs_to_church" class="ml-2 block text-sm text-gray-900">¿Perteneces a una iglesia?</label>
+                    </div>
+                    <div v-if="belongs_to_church">
+                        <div class="mb-4">
+                            <label for="church_name" class="block text-sm font-medium text-brand-negro mb-1">Nombre de la Iglesia</label>
+                            <input type="text" id="church_name" v-model="church_name"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+                                :required="belongs_to_church" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="pastor_name" class="block text-sm font-medium text-brand-negro mb-1">Nombre del Pastor</label>
+                            <input type="text" id="pastor_name" v-model="pastor_name"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+                                :required="belongs_to_church" />
+                        </div>
+                    </div>
+                    <div class="mb-4">
                         <label for="password-reg" class="block text-sm font-medium text-brand-negro mb-1">Contraseña</label>
                         <input type="password" id="password-reg" v-model="password"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
@@ -62,10 +87,14 @@ defineProps<{
     show: boolean;
 }>();
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'registration-success']);
 
 const name = ref('');
 const email = ref('');
+const phone = ref('');
+const belongs_to_church = ref(false);
+const church_name = ref('');
+const pastor_name = ref('');
 const password = ref('');
 const password_confirmation = ref('');
 const isLoading = ref(false);
@@ -86,11 +115,16 @@ const handleRegister = async () => {
         await authStore.register({
             name: name.value,
             email: email.value,
+            phone: phone.value,
+            belongs_to_church: belongs_to_church.value,
+            church_name: church_name.value,
+            pastor_name: pastor_name.value,
             password: password.value,
             password_confirmation: password_confirmation.value,
         });
-        // Si el registro es exitoso, cerramos este modal y abrimos el de login
-        switchToLogin();
+        // Si el registro es exitoso, emitimos el evento de éxito
+        closeModal();
+        emit('registration-success');
     } catch (error: any) {
         errorMessage.value = error.response?.data?.message || 'Ocurrió un error en el registro.';
     } finally {

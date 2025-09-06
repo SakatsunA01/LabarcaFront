@@ -130,13 +130,9 @@ const handleSubmit = async () => {
     try {
         if (isEditing.value && props.image) {
             submissionData.append('_method', 'PUT');
-            await axios.post(`${API_URL}/galerias-eventos/${props.image.id}`, submissionData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await axios.post(`${API_URL}/galerias-eventos/${props.image.id}`, submissionData);
         } else {
-            await axios.post(`${API_URL}/galerias-eventos`, submissionData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await axios.post(`${API_URL}/galerias-eventos`, submissionData);
         }
         emit('save');
         close();

@@ -1,9 +1,9 @@
 <template>
-  <section ref="sectionRef" class="bg-brand-gris-claro py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+  <section ref="sectionRef" class="bg-gray-50 py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16 transition-all duration-1000 ease-out"
+      <div class="text-center mb-12 transition-all duration-1000 ease-out"
         :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'">
-        <h2 class="font-playfair text-4xl md:text-5xl font-bold text-brand-negro">
+        <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">
           Historias de Nuestra Comunidad
         </h2>
         <p class="mt-4 font-inter text-lg text-brand-camel">
@@ -11,101 +11,115 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
-        <!-- Post Destacado -->
-        <router-link :to="{ name: 'noticia-detalle', params: { slug: articles[0].slug } }"
-          class="lg:col-span-2 mb-8 lg:mb-0 transition-all duration-1000 ease-out block group"
-          :class="isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'">
-          <div class="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden shadow-lg">
-            <img :src="articles[0].imageUrl" :alt="articles[0].title"
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-8 text-white">
-              <span class="inline-block bg-brand-borgona text-white text-sm font-semibold px-3 py-1 rounded-md mb-2">{{
-                articles[0].category }}</span>
-              <h3 class="font-playfair text-3xl font-bold">{{ articles[0].title }}</h3>
-              <p class="font-inter mt-2 opacity-90">{{ articles[0].excerpt }}</p>
-              <div
-                class="font-inter font-bold text-brand-camel mt-4 inline-block relative after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-0 after:left-0 after:bg-brand-camel after:transform after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-bottom-left">
-                Leer Historia Completa
-              </div>
-            </div>
-          </div>
-        </router-link>
+      <!-- Filtros de Categoría -->
+      <div v-if="!isLoading && categories.length > 0"
+        class="flex justify-center flex-wrap gap-2 md:gap-3 mb-12 transition-all duration-1000 ease-out"
+        :class="isVisible ? 'opacity-100' : 'opacity-0'">
+        <button @click="goToCategory(null)"
+          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm bg-white text-brand-negro hover:bg-brand-camel/20">
+          Todas
+        </button>
+        <button v-for="category in categories" :key="category.id" @click="goToCategory(category.id)"
+          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm bg-white text-brand-negro hover:bg-brand-camel/20">
+          {{ category.name }}
+        </button>
+      </div>
 
-        <!-- Posts Secundarios -->
-        <div class="flex flex-col space-y-8">
-          <router-link v-for="(article, index) in articles.slice(1)" :key="article.slug"
-            :to="{ name: 'noticia-detalle', params: { slug: article.slug } }"
-            class="group relative block w-full rounded-lg overflow-hidden shadow-lg transition-all duration-1000 ease-out"
-            :style="{ transitionDelay: `${(index + 1) * 200}ms` }"
-            :class="isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'">
-            <img :src="article.imageUrl" :alt="article.title"
-              class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-6 text-white">
-              <span class="inline-block bg-brand-borgona text-white text-sm font-semibold px-3 py-1 rounded-md mb-2">{{
-                article.category }}</span>
-              <h3 class="font-playfair text-xl font-bold">{{ article.title }}</h3>
-              <div
-                class="font-inter font-bold text-brand-camel mt-2 inline-block text-sm relative after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-0 after:left-0 after:bg-brand-camel after:transform after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-bottom-left">
-                Leer Historia
+      <div v-if="isLoading" class="text-center py-10">
+        <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-camel mb-4"></div>
+        <p class="text-xl">Cargando historias...</p>
+      </div>
+      <div v-else-if="error" class="text-center text-red-500 bg-red-100 p-4 rounded-lg">
+        <p>{{ error }}</p>
+      </div>
+
+      <div v-else-if="posts.length > 0" class="transition-opacity duration-500">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+          <!-- Post Destacado -->
+          <router-link :to="{ name: 'comunidad-detalle', params: { id: featuredPost.id } }"
+            class="md:col-span-2 lg:col-span-2 rounded-lg overflow-hidden shadow-lg group transform hover:-translate-y-2 transition-transform duration-300 ease-in-out">
+            <div class="relative w-full h-96">
+              <img :src="featuredPost.url_imagen" :alt="featuredPost.titulo"
+                class="absolute inset-0 w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 p-6 text-white">
+                <h3 class="text-2xl font-bold">{{ featuredPost.titulo }}</h3>
+                <p class="mt-2 text-sm opacity-90">{{ featuredPost.contenido.substring(0, 120) }}...</p>
               </div>
             </div>
           </router-link>
+
+          <!-- Posts Secundarios -->
+          <div class="lg:col-span-1 flex flex-col space-y-8">
+            <PostCard v-for="(post, index) in secondaryPosts" :key="post.id" :post="post"
+              :style="{ transitionDelay: `${index * 150}ms` }" />
+          </div>
         </div>
+        
+        <div class="text-center mt-16">
+          <router-link to="/comunidad"
+            class="bg-brand-camel text-white py-3 px-8 rounded-md hover:bg-opacity-80 transition-colors text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+            Ver Todas las Historias
+          </router-link>
+        </div>
+      </div>
+
+      <div v-else class="text-center py-10 bg-white/50 rounded-lg">
+        <p class="text-xl text-brand-negro">Próximamente, más historias de nuestra comunidad.</p>
       </div>
     </div>
   </section>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import enzoNoMoreCover from '@/assets/album/enzo_no_more.png';
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { getLatestPosts, type Post } from '@/services/postService';
+import { getCategories, type Category } from '@/services/categoryService';
+import PostCard from '@/components/PostCard.vue';
+import { useIntersectionObserver } from '@vueuse/core';
+
 const sectionRef = ref(null);
 const isVisible = ref(false);
+const router = useRouter();
 
-const articles = ref([
-  {
-    slug: 'la-historia-detras-de-tu-paz',
-    title: "Más de 40 personas entregan sus vidas a Jesús y se bautizan en calle concurrida de Nueva York",
-    category: 'Noticia',
-    excerpt: "Una reciente jornada de fe en Nueva York impactó a toda la ciudad cuando 46 personas fueron bautizadas públicamente en la calle 24 de Midtown Manhattan. El evento fue promovido por la Movement Church, que instaló una piscina improvisada en medio de una de las ciudades más emblemáticas del mundo, marcando un poderoso testimonio cristiano a cielo abierto.",
-    imageUrl: 'https://www.bibliatodo.com/NoticiasCristianas/wp-content/uploads/2025/08/mas-de-40-personas-entregan-sus-vidas-a-jesus-y-se-bautizan-en-calle-concurrida-de-nueva-york.jpg',
-  },
-  {
-    slug: 'entrevista-salmistas-unidos',
-    title: "Honduras: Miles de cristianos salieron a las calles para clamar a Dios por justicia, paz y democracia",
-    category: 'Noticia',
-    imageUrl: 'https://www.bibliatodo.com/NoticiasCristianas/wp-content/uploads/2025/08/honduras-miles-de-cristianos-salieron-a-las-calles-para-clamar-a-dios-por-justicia-paz-y-democracia.jpg',
-  },
-  {
-    slug: 'resumen-ultimo-evento',
-    title: "Resumen de nuestro último evento: una noche inolvidable",
-    category: 'Eventos',
-    imageUrl: enzoNoMoreCover,
-  }
-]);
+const posts = ref<Post[]>([]);
+const categories = ref<Category[]>([]);
+const isLoading = ref(true);
+const error = ref<string | null>(null);
 
-onMounted(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          isVisible.value = true;
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      threshold: 0.1,
-    }
-  );
+const featuredPost = computed(() => posts.value.length > 0 ? posts.value[0] : null);
+const secondaryPosts = computed(() => posts.value.slice(1, 3));
 
-  if (sectionRef.value) {
-    observer.observe(sectionRef.value);
+onMounted(async () => {
+  try {
+    isLoading.value = true;
+    const [postsData, categoriesData] = await Promise.all([
+      getLatestPosts(),
+      getCategories()
+    ]);
+    posts.value = postsData;
+    categories.value = categoriesData;
+  } catch (err) {
+    console.error('Error fetching section data:', err);
+    error.value = 'No se pudieron cargar los datos de la comunidad.';
+  } finally {
+    isLoading.value = false;
   }
 });
-</script>
 
-<style scoped></style>
+const goToCategory = (categoryId: number | null) => {
+  const query = categoryId ? { category: categoryId } : {};
+  router.push({ name: 'Comunidad', query });
+};
+
+useIntersectionObserver(
+  sectionRef,
+  ([{ isIntersecting }]) => {
+    if (isIntersecting) {
+      isVisible.value = true;
+    }
+  },
+  { threshold: 0.1 }
+);
+</script>

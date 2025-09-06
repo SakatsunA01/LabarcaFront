@@ -1,9 +1,9 @@
 <template>
-  <section ref="sectionRef" class="py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+  <section ref="sectionRef" class="bg-gray-50 py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-16 transition-all duration-1000 ease-out"
         :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'">
-        <h2 class="font-playfair text-4xl md:text-5xl font-bold text-brand-negro">
+        <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">
           Viste la Misión
         </h2>
         <p class="mt-4 font-inter text-lg text-brand-camel max-w-2xl mx-auto">

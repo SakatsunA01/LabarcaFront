@@ -1,8 +1,8 @@
 <template>
   <main>
     <HeroCarousel />
-    <LanzamientosRecientes /> <!-- Aquí se muestran los 3 lanzamientos más recientes -->
     <EventosDestacados />
+    <LanzamientosRecientes />
     <ArtistasDestacados />
     <NoticiasSection />
     <MisionSection />

@@ -41,6 +41,16 @@ const router = createRouter({
       component: () => import('../views/ArtistaDetalleView.vue'),
     },
     {
+      path: '/comunidad',
+      name: 'comunidad',
+      component: () => import('../views/ComunidadView.vue'),
+    },
+    {
+      path: '/comunidad/:id',
+      name: 'comunidad-detalle',
+      component: () => import('../views/PostDetailView.vue'),
+    },
+    {
       path: '/noticias/:slug',
       name: 'noticia-detalle',
       component: () => import('../views/NoticiaDetalleView.vue'),
@@ -75,6 +85,11 @@ const router = createRouter({
         name: 'privacidad',
         component: PlaceholderView,
     },
+    {
+      path: '/peticion-oracion',
+      name: 'peticion-oracion',
+      component: () => import('../views/PrayerRequestView.vue'),
+    },
     // Las rutas de login y registro ahora se manejan a través de modales
     // y no como páginas independientes.
     {
@@ -96,6 +111,21 @@ const router = createRouter({
           name: 'admin-artistas',
           component: () => import('../views/admin/AdminArtistasView.vue'),
         },
+        {
+          path: 'posts',
+          name: 'admin-posts',
+          component: () => import('../views/admin/AdminPostsView.vue'),
+        },
+        {
+          path: 'categories',
+          name: 'admin-categories',
+          component: () => import('../views/admin/AdminCategoriesView.vue'),
+        },
+        {
+          path: 'hero',
+          name: 'admin-hero',
+          component: () => import('../views/admin/AdminHeroView.vue'),
+        },
         // Aquí añadiremos las otras rutas de admin (eventos, galería, etc.)
         {
           path: 'eventos',
@@ -116,6 +146,16 @@ const router = createRouter({
           path: 'testimonios',
           name: 'admin-testimonios',
           component: () => import('../views/admin/AdminTestimoniosView.vue'),
+        },
+        {
+          path: 'prayer-requests',
+          name: 'admin-prayer-requests',
+          component: () => import('../views/admin/AdminPrayerRequestsView.vue'),
+        },
+        {
+          path: 'users',
+          name: 'admin-users',
+          component: () => import('../views/admin/AdminUsersView.vue'),
         },
         {
             path: 'sorteos',

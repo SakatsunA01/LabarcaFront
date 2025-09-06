@@ -1,8 +1,8 @@
 <template>
-  <section class="py-8 md:py-12 px-2 sm:px-4 lg:px-6 bg-white">
+  <section class="py-16 lg:py-20 px-2 sm:px-4 lg:px-6 bg-gray-50">
     <div class="container mx-auto max-w-7xl">
       <div class="flex justify-between items-center mb-6 md:mb-8">
-        <h2 class="text-3xl md:text-4xl font-bold text-brand-negro">Nuestra Música Más Reciente</h2>
+        <h2 class="text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">Nuestra Música Más Reciente</h2>
         <router-link to="/lanzamientos"
           class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80 transition-colors text-md font-medium">
           Ver Todos

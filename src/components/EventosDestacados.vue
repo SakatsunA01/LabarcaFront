@@ -1,7 +1,7 @@
 <template>
-  <section class="py-8 md:py-12 px-2 sm:px-4 lg:px-6">
+  <section class="py-16 lg:py-20 px-2 sm:px-4 lg:px-6 bg-white">
     <div class="container mx-auto max-w-7xl">
-      <h2 class="text-3xl md:text-4xl font-bold text-brand-negro text-center mb-8 md:mb-10 relative">
+      <h2 class="text-3xl md:text-4xl font-bold text-brand-negro text-center mb-6 md:mb-8 relative">
         Nuestros Próximos Eventos
       </h2>
       <div v-if="isLoading" class="text-center py-10">

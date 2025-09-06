@@ -1,43 +1,38 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios';
+
+interface HeroSlide {
+  id: number;
+  title: string;
+  video_path: string;
+  button_text: string;
+  button_url: string;
+  order: number;
+  is_active: boolean;
+}
 
 // --- State Management ---
 const currentSlide = ref(0);
 let intervalId: number | undefined = undefined;
+const slides = ref<HeroSlide[]>([]);
+const isLoading = ref(true);
+const error = ref<string | null>(null);
 
-// --- Slide Content ---
-// Note: Vite handles asset imports like this to get the correct public path.
-const slides = [
-  {
-    videoUrl: new URL('../assets/videos/enzo.MP4', import.meta.url).href,
-    title: "Noche de Comunidad",
-    subtitle: "Únete a nosotros para una experiencia de adoración inolvidable. 28 de Septiembre - Buenos Aires.",
-    ctaText: "Conseguir Entradas",
-    ctaLink: "/eventos/noche-de-comunidad"
-  },
-  {
-    videoUrl: new URL('../assets/videos/tomi.MP4', import.meta.url).href,
-    title: "Conoce a Tomás",
-    subtitle: "Descubre la historia y la música detrás de su ministerio.",
-    ctaText: "Ver su Perfil",
-    ctaLink: "/artistas/tomas"
-  },
-  {
-    videoUrl: new URL('../assets/videos/enzo.MP4', import.meta.url).href, // Re-using video for example
-    title: "Nuevo Sencillo: 'Tu Paz'",
-    subtitle: "Ya disponible en todas las plataformas digitales.",
-    ctaText: "Escuchar Ahora",
-    ctaLink: "/musica/tu-paz"
-  }
-];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${API_BASE_URL}/api`;
 
 // --- Carousel Logic ---
 const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % slides.length;
+  if (slides.value.length > 0) {
+    currentSlide.value = (currentSlide.value + 1) % slides.value.length;
+  }
 };
 
 const prevSlide = () => {
-  currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length;
+  if (slides.value.length > 0) {
+    currentSlide.value = (currentSlide.value - 1 + slides.value.length) % slides.value.length;
+  }
 };
 
 const goToSlide = (index: number) => {
@@ -45,7 +40,10 @@ const goToSlide = (index: number) => {
 };
 
 const startAutoplay = () => {
-  intervalId = window.setInterval(nextSlide, 7000); // Change slide every 7 seconds
+  stopAutoplay(); // Clear any existing interval
+  if (slides.value.length > 1) { // Only autoplay if there's more than one slide
+    intervalId = window.setInterval(nextSlide, 7000); // Change slide every 7 seconds
+  }
 };
 
 const stopAutoplay = () => {
@@ -53,8 +51,26 @@ const stopAutoplay = () => {
 };
 
 // --- Lifecycle Hooks ---
-onMounted(() => {
-  startAutoplay();
+onMounted(async () => {
+  isLoading.value = true;
+  try {
+    const response = await axios.get(`${API_URL}/hero-slides`);
+    // Filter for active slides and sort by order
+    slides.value = response.data
+      .filter((slide: HeroSlide) => slide.is_active)
+      .sort((a: HeroSlide, b: HeroSlide) => a.order - b.order);
+    
+    console.log('Slides cargados y filtrados:', slides.value); // Debugging line
+
+    if (slides.value.length > 0) {
+      startAutoplay();
+    }
+  } catch (err) {
+    console.error('Error al cargar slides del carrusel:', err);
+    error.value = 'No se pudieron cargar los slides del carrusel.';
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 onUnmounted(() => {
@@ -64,13 +80,19 @@ onUnmounted(() => {
 
 <template>
   <div class="relative h-screen w-full overflow-hidden group" @mouseenter="stopAutoplay" @mouseleave="startAutoplay">
-    <!-- Slides Container -->
-    <div class="w-full h-full">
+    <div v-if="isLoading" class="flex items-center justify-center h-full bg-brand-negro text-white">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+      <p class="ml-4">Cargando carrusel...</p>
+    </div>
+    <div v-else-if="error" class="flex items-center justify-center h-full bg-red-800 text-white">
+      <p>{{ error }}</p>
+    </div>
+    <div v-else-if="slides.length > 0" class="w-full h-full">
       <transition-group name="fade" tag="div" class="relative w-full h-full">
-        <div v-for="(slide, index) in slides" :key="index" v-show="currentSlide === index"
+        <div v-for="(slide, index) in slides" :key="slide.id" v-show="currentSlide === index"
           class="absolute w-full h-full">
           <!-- Background Video -->
-          <video :src="slide.videoUrl" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
+          <video :src="`${API_BASE_URL}${slide.video_path}`" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
             playsinline></video>
           <!-- Overlay -->
           <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40"></div>
@@ -80,27 +102,30 @@ onUnmounted(() => {
             <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-lg">
               {{ slide.title }}
             </h1>
-            <a :href="slide.ctaLink"
+            <a :href="slide.button_url"
               class="border-2 border-white text-white font-bold py-3 px-8 rounded-full uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300">
-              {{ slide.ctaText }}
+              {{ slide.button_text }}
             </a>
           </div>
         </div>
       </transition-group>
     </div>
+    <div v-else class="flex items-center justify-center h-full bg-brand-negro text-white">
+      <p>No hay slides activos para mostrar.</p>
+    </div>
 
     <!-- Navigation Arrows -->
-    <button @click="prevSlide"
+    <button v-if="slides.length > 1" @click="prevSlide"
       class="absolute top-1/2 left-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300">
       &#10094;
     </button>
-    <button @click="nextSlide"
+    <button v-if="slides.length > 1" @click="nextSlide"
       class="absolute top-1/2 right-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300">
       &#10095;
     </button>
 
     <!-- Navigation Dots -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
+    <div v-if="slides.length > 1" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
       <button v-for="(_, index) in slides" :key="`dot-${index}`" @click="goToSlide(index)" :class="[
         'w-3 h-3 rounded-full transition-all duration-300',
         currentSlide === index ? 'bg-white' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
