@@ -1,6 +1,7 @@
 <template>
   <transition name="modal-fade">
-    <div v-if="show" tabindex="-1"
+    <div
+v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
       @click.self="close">
       <div
@@ -16,14 +17,16 @@
                   <div>
                     <label for="titulo" class="block text-sm font-medium text-gray-700">Título <span
                         class="text-red-500">*</span></label>
-                    <input type="text" id="titulo" v-model="formData.titulo" required
+                    <input
+id="titulo" v-model="formData.titulo" type="text" required
                       placeholder="Título del lanzamiento"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="artista" class="block text-sm font-medium text-gray-700">Artista <span
                         class="text-red-500">*</span></label>
-                    <select id="artista" v-model="formData.artista_id" required
+                    <select
+id="artista" v-model="formData.artista_id" required
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                       <option value="" disabled>Selecciona un artista</option>
                       <option v-for="artista in artistas" :key="artista.id" :value="artista.id">{{ artista.name }}
@@ -33,18 +36,21 @@
                   <div>
                     <label for="fecha_lanzamiento" class="block text-sm font-medium text-gray-700">Fecha de
                       Lanzamiento <span class="text-red-500">*</span></label>
-                    <input type="date" id="fecha_lanzamiento" v-model="formData.fecha_lanzamiento" required
+                    <input
+id="fecha_lanzamiento" v-model="formData.fecha_lanzamiento" type="date" required
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="youtube_link" class="block text-sm font-medium text-gray-700">Enlace de YouTube</label>
-                    <input type="url" id="youtube_link" v-model="formData.youtube_link"
+                    <input
+id="youtube_link" v-model="formData.youtube_link" type="url"
                       placeholder="URL de YouTube"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="spotify_link" class="block text-sm font-medium text-gray-700">Enlace de Spotify</label>
-                    <input type="url" id="spotify_link" v-model="formData.spotify_link"
+                    <input
+id="spotify_link" v-model="formData.spotify_link" type="url"
                       placeholder="URL de Spotify"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -54,19 +60,24 @@
               <fieldset class="border p-4 rounded-md shadow-sm">
                 <legend class="text-lg font-semibold text-brand-negro px-2">Pistas</legend>
                 <div class="space-y-4 mt-2">
-                  <div v-for="(track, index) in formData.tracks" :key="index"
+                  <div
+v-for="(track, index) in formData.tracks" :key="index"
                     class="flex items-center space-x-2 bg-gray-50 p-2 rounded-md">
-                    <input type="text" v-model="track.titulo" placeholder="Título de la pista"
+                    <input
+v-model="track.titulo" type="text" placeholder="Título de la pista"
                       class="flex-grow px-3 py-2 border border-gray-300 rounded-md" required>
-                    <input type="text" v-model="track.duracion" placeholder="Duración (ej: 3:45)"
+                    <input
+v-model="track.duracion" type="text" placeholder="Duración (ej: 3:45)"
                       class="w-24 px-3 py-2 border border-gray-300 rounded-md" required>
-                    <button type="button" @click="removeTrack(index)"
-                      class="text-red-500 hover:text-red-700 p-1 rounded-full">
+                    <button
+type="button" class="text-red-500 hover:text-red-700 p-1 rounded-full"
+                      @click="removeTrack(index)">
                       <XMarkIcon class="h-5 w-5" />
                     </button>
                   </div>
-                  <button type="button" @click="addTrack"
-                    class="w-full bg-brand-verde-oscuro text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors flex items-center justify-center space-x-2">
+                  <button
+type="button" class="w-full bg-brand-verde-oscuro text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors flex items-center justify-center space-x-2"
+                    @click="addTrack">
                     <PlusIcon class="h-5 w-5" />
                     <span>Añadir Pista</span>
                   </button>
@@ -76,8 +87,9 @@
 
             <!-- Columna 2: Carga de Imagen -->
             <div class="space-y-6">
-              <ImageUploader label="Imagen de Portada" :initial-preview="formData.cover_image_url"
-                @file-change="file => handleFileChange(file, 'cover_image_url')" />
+              <ImageUploader
+label="Imagen de Portada" :initial-preview="formData.cover_image_url"
+                @file-change="file => handleFileChange(file)" />
             </div>
           </div>
 
@@ -87,11 +99,13 @@
 
           <!-- Botones de Acción -->
           <div class="mt-8 flex justify-end space-x-4">
-            <button type="button" @click="close"
-              class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+            <button
+type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+              @click="close">
               Cancelar
             </button>
-            <button type="submit" :disabled="isLoading"
+            <button
+type="submit" :disabled="isLoading"
               class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
               <span v-if="isLoading">Guardando...</span>
               <span v-else>Guardar</span>
@@ -118,7 +132,7 @@ interface Lanzamiento {
   cover_image_url?: string | null;
   youtube_link?: string | null; // Add this
   spotify_link?: string | null; // Add this
-  tracks: Track;
+  tracks: Track[];
 }
 
 interface Track {
@@ -138,17 +152,27 @@ const props = defineProps<{
 
 const emit = defineEmits(['close', 'save']);
 
-const defaultFormData = {
+interface LanzamientoFormData {
+  titulo: string;
+  artista_id: number | null;
+  fecha_lanzamiento: string;
+  cover_image_url: string | null;
+  youtube_link: string | null;
+  spotify_link: string | null;
+  tracks: Track[];
+}
+
+const defaultFormData: LanzamientoFormData = {
   titulo: '',
-  artista_id: null as number | null,
+  artista_id: null,
   fecha_lanzamiento: '',
   cover_image_url: null,
-  youtube_link: null as string | null,
-  spotify_link: null as string | null,
-  tracks: [] as Track[],
+  youtube_link: null,
+  spotify_link: null,
+  tracks: [],
 };
 
-const formData = ref({ ...defaultFormData });
+const formData = ref<LanzamientoFormData>({ ...defaultFormData });
 const imageFiles = ref<{ [key: string]: File | null }> ({
   cover_image_url: null,
 });
@@ -158,7 +182,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.lanzamiento);
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 onMounted(async () => {
   try {
@@ -184,8 +208,8 @@ watch(() => props.show, (newVal) => {
   }
 });
 
-const handleFileChange = (file: File | null, fieldName: string) => {
-  imageFiles.value[fieldName] = file;
+const handleFileChange = (file: File | null) => {
+  imageFiles.value['cover_image_url'] = file;
 };
 
 const addTrack = () => {
@@ -206,7 +230,7 @@ const handleSubmit = async () => {
       // Convert tracks array to JSON string
       submissionData.append(key, JSON.stringify(value));
     } else if (value !== null && value !== undefined) {
-      submissionData.append(key, value);
+      submissionData.append(key, String(value));
     }
   });
 

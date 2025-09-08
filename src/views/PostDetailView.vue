@@ -7,7 +7,8 @@
     <div v-else-if="error" class="text-center py-16 md:py-24 px-6">
       <h2 class="text-3xl text-brand-negro mb-4 font-semibold">Error al cargar la historia</h2>
       <p class="text-gray-700 leading-relaxed max-w-md mx-auto">{{ error }}</p>
-      <router-link to="/comunidad"
+      <router-link
+to="/comunidad"
         class="mt-6 inline-block bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80">
         Volver a la Comunidad
       </router-link>
@@ -16,7 +17,8 @@
     <div v-else-if="post" class="post-content">
       <!-- Hero Section -->
       <section class="relative h-[45vh] md:h-[60vh] bg-brand-negro group">
-        <img :src="fullImageUrl"
+        <img
+:src="fullImageUrl"
           :alt="`Imagen de ${post.titulo}`"
           class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 transition-opacity duration-300" />
         <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/50 to-transparent">
@@ -36,7 +38,8 @@
                     <span v-if="post.fecha_publicacion">{{ formatDate(post.fecha_publicacion) }}</span>
                 </div>
                 <div class="flex gap-2">
-                    <span v-for="category in post.categories" :key="category.id" 
+                    <span
+v-for="category in post.categories" :key="category.id" 
                         class="inline-block bg-brand-borgona text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
                         {{ category.name }}
                     </span>

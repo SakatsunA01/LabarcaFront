@@ -1,6 +1,7 @@
 <template>
     <transition name="modal-fade">
-        <div v-if="show" tabindex="-1"
+        <div
+v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
             @click.self="close">
             <div
@@ -12,28 +13,33 @@
                         <div class="md:col-span-2 space-y-6">
                             <div>
                                 <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
-                                <input type="text" id="titulo" v-model="formData.titulo"
+                                <input
+id="titulo" v-model="formData.titulo" type="text"
                                     class="mt-1 block w-full input-class" required>
                             </div>
                             <div class="mt-6">
                                 <label class="block text-sm font-medium text-gray-700">Contenido</label>
-                                <textarea id="contenido" v-model="formData.contenido" rows="12"
+                                <textarea
+id="contenido" v-model="formData.contenido" rows="12"
                                     class="mt-1 block w-full input-class" required></textarea>
                             </div>
                         </div>
 
                         <!-- Columna Derecha (1/3) -->
                         <div class="space-y-6">
-                             <ImageUploader label="Imagen de Portada" :initial-preview="formData.url_imagen"
+                             <ImageUploader
+label="Imagen de Portada" :initial-preview="formData.url_imagen"
                                 @file-change="handleFileChange" />
                             <div>
                                 <label for="autor" class="block text-sm font-medium text-gray-700">Autor</label>
-                                <input type="text" id="autor" v-model="formData.autor"
+                                <input
+id="autor" v-model="formData.autor" type="text"
                                     class="mt-1 block w-full input-class">
                             </div>
                             <div>
                                 <label for="fecha_publicacion" class="block text-sm font-medium text-gray-700">Fecha de Publicación</label>
-                                <input type="datetime-local" id="fecha_publicacion" v-model="formData.fecha_publicacion"
+                                <input
+id="fecha_publicacion" v-model="formData.fecha_publicacion" type="datetime-local"
                                     class="mt-1 block w-full input-class">
                                 <p class="text-xs text-gray-500 mt-1">Dejar en blanco para no publicar aún.</p>
                             </div>
@@ -41,7 +47,8 @@
                                 <label class="block text-sm font-medium text-gray-700">Categorías</label>
                                 <div class="mt-2 p-3 border border-gray-300 rounded-md max-h-40 overflow-y-auto">
                                     <div v-for="category in allCategories" :key="category.id" class="flex items-center">
-                                        <input type="checkbox" :id="`cat-${category.id}`" :value="category.id" v-model="selectedCategories"
+                                        <input
+:id="`cat-${category.id}`" v-model="selectedCategories" type="checkbox" :value="category.id"
                                             class="h-4 w-4 rounded border-gray-300 text-brand-camel focus:ring-brand-camel">
                                         <label :for="`cat-${category.id}`" class="ml-2 block text-sm text-gray-900">{{ category.name }}</label>
                                     </div>
@@ -55,7 +62,7 @@
 
                     <!-- Botones -->
                     <div class="mt-8 flex justify-end space-x-4">
-                        <button type="button" @click="close" class="btn-secondary">Cancelar</button>
+                        <button type="button" class="btn-secondary" @click="close">Cancelar</button>
                         <button type="submit" :disabled="isLoading" class="btn-primary">
                             {{ isLoading ? 'Guardando...' : 'Guardar' }}
                         </button>
@@ -113,9 +120,10 @@ watch(() => props.show, async (newVal) => {
 
         if (props.post) {
             // Editando
+            const { categories, ...postData } = props.post;
             formData.value = {
                 ...defaultFormData(),
-                ...props.post,
+                ...postData,
                 fecha_publicacion: props.post.fecha_publicacion ? props.post.fecha_publicacion.slice(0, 16) : null,
             };
             selectedCategories.value = props.post.categories?.map(cat => cat.id) || [];

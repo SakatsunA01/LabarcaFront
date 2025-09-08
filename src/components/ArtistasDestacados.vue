@@ -5,7 +5,8 @@
         <h2 class="text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">
           Nuestros Artistas
         </h2>
-        <router-link to="/artistas"
+        <router-link
+to="/artistas"
           class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80 transition-colors text-md font-medium">
           Ver Todos
         </router-link>
@@ -15,9 +16,11 @@
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-camel mb-4"></div>
         <p class="text-xl">Cargando artistas...</p>
       </div>
-      <div v-else-if="artistas.length > 0"
+      <div
+v-else-if="artistas.length > 0"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-        <div v-for="artista in artistas" :key="artista.id"
+        <div
+v-for="artista in artistas" :key="artista.id"
           class="relative group aspect-square bg-brand-gris-claro rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
           <img
             :src="artista.imageUrl
@@ -32,7 +35,8 @@
               {{ artista.name }}
             </h3>
           </div>
-          <router-link :to="`/artistas/${artista.id}`" class="absolute inset-0"
+          <router-link
+:to="`/artistas/${artista.id}`" class="absolute inset-0"
             :aria-label="`Ver más de ${artista.name}`"></router-link>
         </div>
       </div>
@@ -61,7 +65,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 onMounted(async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get('http://localhost:8000/api/artistas');
+    const response = await axios.get('https://api.labarcaministerio.com/api/artistas');
     // Ordenar por nombre y tomar los primeros 6
     const artistasOrdenados = response.data.sort((a: Artista, b: Artista) => a.name.localeCompare(b.name));
     artistas.value = artistasOrdenados.slice(0, 6);

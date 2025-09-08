@@ -7,7 +7,8 @@
     <div v-else-if="error" class="text-center py-16 md:py-24 px-6">
       <h2 class="text-3xl text-brand-negro mb-4 font-semibold">Error al cargar el evento</h2>
       <p class="text-gray-700 leading-relaxed max-w-md mx-auto">{{ error }}</p>
-      <router-link to="/eventos"
+      <router-link
+to="/eventos"
         class="mt-6 inline-block bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80">
         Volver a Eventos
       </router-link>
@@ -16,7 +17,8 @@
     <div v-else-if="evento" class="evento-content">
       <!-- Hero Section -->
       <section class="relative h-[45vh] md:h-[60vh] bg-brand-negro group">
-        <img :src="evento.imagenUrl
+        <img
+:src="evento.imagenUrl
           ? `${API_BASE_URL}${evento.imagenUrl}`
           : `https://placehold.co/1920x800/171C1E/E2E2E2?text=${encodeURIComponent(evento.nombre)}`"
           :alt="`Imagen de ${evento.nombre}`"
@@ -39,10 +41,12 @@
             </p>
           </div>
           <h2 class="text-2xl font-semibold text-brand-negro mb-4">Descripción del Evento</h2>
-          <div v-if="evento.descripcion" class="prose max-w-none text-gray-700 leading-loose"
+          <div
+v-if="evento.descripcion" class="prose max-w-none text-gray-700 leading-loose"
             v-html="evento.descripcion"></div>
           <p v-else class="text-gray-500 italic">No hay descripción disponible para este evento.</p>
-          <a v-if="evento.link_compra" :href="evento.link_compra" target="_blank" rel="noopener noreferrer"
+          <a
+v-if="evento.link_compra" :href="evento.link_compra" target="_blank" rel="noopener noreferrer"
             class="mt-8 inline-block bg-brand-camel text-white py-3 px-8 rounded-lg hover:bg-brand-negro hover:-translate-y-1 transition-all duration-300 text-lg font-medium shadow-sm hover:shadow-md">
             Comprar Entradas
           </a>
@@ -52,7 +56,8 @@
         <section class="mb-10 md:mb-16">
           <h2 class="text-3xl font-bold text-brand-negro mb-8 text-center">Testimonios</h2>
           <div v-if="evento.testimonios && evento.testimonios.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div v-for="testimonio in evento.testimonios" :key="testimonio.id"
+            <div
+v-for="testimonio in evento.testimonios" :key="testimonio.id"
               class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <p class="text-gray-800 italic mb-3 leading-relaxed">"{{ testimonio.comentario }}"</p>
               <p class="text-sm text-brand-camel text-right font-medium">- {{ testimonio.nombre_usuario || 'Anónimo' }}
@@ -66,10 +71,12 @@
           <div class="mt-10 p-6 md:p-8 bg-gray-50 rounded-xl border border-gray-200">
             <h3 class="text-xl font-semibold text-brand-negro mb-4">Deja tu Testimonio</h3>
             <form @submit.prevent>
-              <textarea rows="4" placeholder="Escribe tu comentario aquí..."
+              <textarea
+rows="4" placeholder="Escribe tu comentario aquí..."
                 class="w-full p-3 border border-gray-300 rounded-md focus:ring-brand-camel focus:border-brand-camel transition-colors"
                 disabled></textarea>
-              <button type="submit"
+              <button
+type="submit"
                 class="mt-4 bg-brand-camel text-white py-2 px-6 rounded-md opacity-50 cursor-not-allowed" disabled>
                 Enviar Testimonio (Próximamente)
               </button>
@@ -81,14 +88,17 @@
         <section>
           <h2 class="text-3xl font-bold text-brand-negro mb-10 text-center">Galería del Evento</h2>
           <div v-if="evento.galeria && evento.galeria.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-4 [grid-auto-flow:dense]">
-            <div v-for="(imagen, index) in evento.galeria" :key="imagen.id"
+            <div
+v-for="(imagen, index) in evento.galeria" :key="imagen.id"
               :class="[
                 'bg-gray-300 rounded-lg overflow-hidden group relative shadow-sm border border-brand-gris-claro/30',
                 index % 4 === 0 ? 'md:row-span-2' : ''
               ]">
-              <img :src="`${API_BASE_URL}${imagen.url_imagen}`" :alt="imagen.descripcion || 'Imagen de la galería'"
+              <img
+:src="`${API_BASE_URL}${imagen.url_imagen}`" :alt="imagen.descripcion || 'Imagen de la galería'"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-              <div v-if="imagen.descripcion"
+              <div
+v-if="imagen.descripcion"
                 class="absolute bottom-0 left-0 right-0 bg-brand-negro bg-opacity-0 group-hover:bg-opacity-70 p-2 transition-all duration-300 opacity-0 group-hover:opacity-100">
                 <p class="text-brand-gris-claro text-xs truncate">{{ imagen.descripcion }}</p>
               </div>
@@ -154,7 +164,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await axios.get(`http://localhost:8000/api/eventos/${eventoId}`);
+    const response = await axios.get(`https://api.labarcaministerio.com/api/eventos/${eventoId}`);
     const datosEvento = response.data;
     const fechaEvento = new Date(datosEvento.fecha.replace(/-/g, '/'));
     evento.value = {

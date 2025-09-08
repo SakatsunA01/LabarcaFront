@@ -1,7 +1,8 @@
 <template>
   <section ref="sectionRef" class="bg-gray-50 py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16 transition-all duration-1000 ease-out"
+      <div
+class="text-center mb-16 transition-all duration-1000 ease-out"
         :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'">
         <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">
           Viste la Misión
@@ -13,15 +14,18 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <router-link v-for="(product, index) in products" :key="product.id"
+        <router-link
+v-for="(product, index) in products" :key="product.id"
           :to="{ name: 'producto-detalle', params: { id: product.id } }"
           class="group text-center transition-all duration-700 ease-out"
           :style="{ transitionDelay: `${index * 150}ms` }"
           :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'">
           <div class="relative bg-brand-gris-claro rounded-lg overflow-hidden aspect-w-1 aspect-h-1">
-            <img :src="product.image1" :alt="product.name"
+            <img
+:src="product.image1" :alt="product.name"
               class="w-full h-full object-cover object-center transition-opacity duration-500 ease-in-out group-hover:opacity-0">
-            <img :src="product.image2" :alt="product.name"
+            <img
+:src="product.image2" :alt="product.name"
               class="w-full h-full object-cover object-center absolute inset-0 opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100">
           </div>
           <h3 class="font-inter font-semibold text-brand-negro mt-4">{{ product.name }}</h3>

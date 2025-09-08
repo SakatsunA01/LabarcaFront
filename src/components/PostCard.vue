@@ -8,7 +8,8 @@
         </router-link>
         <div class="p-6 flex-grow flex flex-col">
             <div class="mb-2">
-                <span v-for="category in post.categories" :key="category.id" 
+                <span
+v-for="category in post.categories" :key="category.id" 
                       class="inline-block bg-brand-borgona text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
                     {{ category.name }}
                 </span>
@@ -21,7 +22,8 @@
             </p>
             <div class="text-gray-700 flex-grow" v-html="truncatedContent"></div>
             <div class="mt-6 flex justify-between items-center">
-                <router-link :to="{ name: 'comunidad-detalle', params: { id: post.id } }"
+                <router-link
+:to="{ name: 'comunidad-detalle', params: { id: post.id } }"
                     class="font-semibold text-brand-camel hover:text-brand-negro transition-colors duration-300">
                     Leer más &rarr;
                 </router-link>
@@ -51,7 +53,7 @@ const fullImageUrl = computed(() => {
         // Si no, le añadimos la base de la API
         return `${API_BASE_URL}${props.post.url_imagen}`;
     }
-    return null;
+    return undefined;
 });
 
 const truncatedContent = computed(() => {

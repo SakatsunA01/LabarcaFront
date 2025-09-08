@@ -14,12 +14,14 @@
       <form @submit.prevent="submitPrayerRequest">
         <div class="mb-4">
           <label for="request_text" class="block text-sm font-medium text-gray-700 mb-1">Tu Petición</label>
-          <textarea id="request_text" v-model="newRequest.request_text" rows="5"
+          <textarea
+id="request_text" v-model="newRequest.request_text" rows="5"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-brand-camel focus:border-brand-camel"
             required></textarea>
         </div>
         <div class="mb-4 flex items-center">
-          <input type="checkbox" id="is_public" v-model="newRequest.is_public"
+          <input
+id="is_public" v-model="newRequest.is_public" type="checkbox"
             class="h-4 w-4 text-brand-camel focus:ring-brand-camel border-gray-300 rounded">
           <label for="is_public" class="ml-2 block text-sm text-gray-900">Hacer pública mi petición (será visible para otros)</label>
         </div>
@@ -32,7 +34,7 @@
       </form>
     </div>
     <div v-else class="bg-white p-6 rounded-lg shadow-md mb-8 text-center">
-      <p class="text-lg text-gray-700">Por favor, <button @click="uiStore.setShowLoginModal(true)" class="text-brand-camel hover:underline">inicia sesión</button> para dejar tu petición de oración.</p>
+      <p class="text-lg text-gray-700">Por favor, <button class="text-brand-camel hover:underline" @click="uiStore.setShowLoginModal(true)">inicia sesión</button> para dejar tu petición de oración.</p>
     </div>
 
     <h2 class="text-2xl font-bold text-brand-negro mb-4">Peticiones Públicas</h2>
@@ -79,7 +81,7 @@ const successMessage = ref('');
 const errorMessage = ref('');
 const publicRequests = ref<PrayerRequest[]>([]);
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 const fetchPublicRequests = async () => {
   try {

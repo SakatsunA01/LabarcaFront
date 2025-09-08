@@ -9,7 +9,7 @@ import { useAuthStore } from './stores/authStore';
 import './assets/main.css';
 
 // Configuración global de Axios
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = 'https://api.labarcaministerio.com';
 axios.defaults.withCredentials = true;
 
 // Interceptor para añadir el token de autenticación a cada petición

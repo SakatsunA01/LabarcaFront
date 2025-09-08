@@ -6,7 +6,7 @@
     <ArtistasDestacados />
     <NoticiasSection />
     <MisionSection />
-    <TiendaSection />
+    <!-- <TiendaSection /> -->
     <PalabraDeAnimo v-if="authStore.isAuthenticated" id="palabra-animo" />
   </main>
 </template>
@@ -18,7 +18,7 @@ import EventosDestacados from '@/components/EventosDestacados.vue';
 import ArtistasDestacados from '@/components/ArtistasDestacados.vue';
 import NoticiasSection from '@/components/NoticiasSection.vue';
 import MisionSection from '@/components/MisionSection.vue';
-import TiendaSection from '@/components/TiendaSection.vue';
+// import TiendaSection from '@/components/TiendaSection.vue';
 import PalabraDeAnimo from '@/components/PalabraDeAnimo.vue';
 
 import { useAuthStore } from '@/stores/authStore';

@@ -3,7 +3,8 @@
     <div class="container mx-auto max-w-7xl">
       <div class="flex justify-between items-center mb-6 md:mb-8">
         <h2 class="text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">Nuestra Música Más Reciente</h2>
-        <router-link to="/lanzamientos"
+        <router-link
+to="/lanzamientos"
           class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80 transition-colors text-md font-medium">
           Ver Todos
         </router-link>
@@ -13,12 +14,15 @@
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-camel mb-4"></div>
         <p class="text-xl">Cargando lanzamientos...</p>
       </div>
-      <div v-else-if="lanzamientos.length > 0"
+      <div
+v-else-if="lanzamientos.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        <div v-for="lanzamiento in lanzamientos" :key="lanzamiento.id"
+        <div
+v-for="lanzamiento in lanzamientos" :key="lanzamiento.id"
           class="bg-brand-gris-claro rounded-xl shadow-lg overflow-hidden flex flex-col">
           <router-link :to="`/lanzamientos/${lanzamiento.id}`" class="block relative">
-            <img :src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : `https://placehold.co/400x400/E2E2E2/171C1E?text=${encodeURIComponent(lanzamiento.titulo.substring(0, 2))}`"
+            <img
+:src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : `https://placehold.co/400x400/E2E2E2/171C1E?text=${encodeURIComponent(lanzamiento.titulo.substring(0, 2))}`"
               :alt="`Portada de ${lanzamiento.titulo}`" class="w-full h-64 object-cover" />
             <div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
               <PlayIcon class="h-16 w-16 text-white" />

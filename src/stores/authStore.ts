@@ -12,14 +12,14 @@ interface User {
   pastor_name?: string | null;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null
   token: string | null
   error: string | null
   isLoading: boolean
 }
 
-const API_URL = 'http://localhost:8000/api'
+const API_URL = 'https://api.labarcaministerio.com/api'
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true
       this.error = null
       try {
-        await axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true })
+        await axios.get('https://api.labarcaministerio.com/sanctum/csrf-cookie', { withCredentials: true })
 
         const response = await axios.post(`${API_URL}/login`, credentials, {
           withCredentials: true,
@@ -76,7 +76,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true;
       this.error = null;
       try {
-        await axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true });
+        await axios.get('https://api.labarcaministerio.com/sanctum/csrf-cookie', { withCredentials: true });
         const response = await axios.post(`${API_URL}/register`, userInfo, { withCredentials: true });
         
         // Después de un registro exitoso, intentar loguear al usuario

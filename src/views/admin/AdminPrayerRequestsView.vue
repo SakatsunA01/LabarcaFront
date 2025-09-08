@@ -5,7 +5,8 @@
     <!-- Controles Superiores: Búsqueda -->
     <div class="flex justify-between items-center mb-6">
       <div class="w-1/3">
-        <input type="text" v-model="searchTerm" placeholder="Buscar por usuario o texto..."
+        <input
+v-model="searchTerm" type="text" placeholder="Buscar por usuario o texto..."
           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
       </div>
     </div>
@@ -32,15 +33,16 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-md truncate">{{ request.request_text }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ request.is_public ? 'Sí' : 'No' }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-               <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+               <span
+class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                   :class="request.is_approved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
                 {{ request.is_approved ? 'Sí' : 'No' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button @click="openDetailModal(request)" class="text-blue-600 hover:text-blue-900 mr-4">Ver</button>
-              <button @click="toggleApproval(request)" class="text-brand-camel hover:text-brand-borgona mr-4">{{ request.is_approved ? 'Desaprobar' : 'Aprobar' }}</button>
-              <button @click="deleteRequest(request.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
+              <button class="text-blue-600 hover:text-blue-900 mr-4" @click="openDetailModal(request)">Ver</button>
+              <button class="text-brand-camel hover:text-brand-borgona mr-4" @click="toggleApproval(request)">{{ request.is_approved ? 'Desaprobar' : 'Aprobar' }}</button>
+              <button class="text-red-600 hover:text-red-900" @click="deleteRequest(request.id)">Eliminar</button>
             </td>
           </tr>
         </tbody>

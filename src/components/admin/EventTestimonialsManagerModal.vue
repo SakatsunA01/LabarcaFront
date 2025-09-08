@@ -1,6 +1,7 @@
 <template>
     <transition name="modal-fade">
-        <div v-if="show" tabindex="-1"
+        <div
+v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
             @click.self="close">
             <div
@@ -12,7 +13,8 @@
                     <div v-if="isLoading" class="p-8 text-center text-gray-500">Cargando testimonios...</div>
                     <div v-else-if="error" class="p-8 text-center text-red-500">{{ error }}</div>
                     <div v-else-if="testimonials.length > 0" class="space-y-4">
-                        <div v-for="testimonio in testimonials" :key="testimonio.id"
+                        <div
+v-for="testimonio in testimonials" :key="testimonio.id"
                             class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex items-start justify-between">
                             <div class="flex-1">
                                 <p class="text-gray-800 italic">"{{ testimonio.comentario }}"</p>
@@ -22,8 +24,9 @@
                                         }})</span>
                                 </p>
                             </div>
-                            <button @click="deleteTestimonial(testimonio.id)"
-                                class="ml-4 text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors">
+                            <button
+class="ml-4 text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors"
+                                @click="deleteTestimonial(testimonio.id)">
                                 <TrashIcon class="h-5 w-5" />
                             </button>
                         </div>
@@ -32,8 +35,9 @@
                 </div>
 
                 <div class="mt-8 flex justify-end flex-shrink-0">
-                    <button type="button" @click="close"
-                        class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+                    <button
+type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+                        @click="close">
                         Cerrar
                     </button>
                 </div>
@@ -75,7 +79,7 @@ const isLoading = ref(false);
 const error = ref<string | null>(null);
 const authStore = useAuthStore();
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 const fetchTestimonials = async () => {
     if (!props.eventoId) {

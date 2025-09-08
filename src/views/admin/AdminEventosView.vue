@@ -5,11 +5,13 @@
         <!-- Controles Superiores: Búsqueda y Botón de Crear -->
         <div class="flex justify-between items-center mb-6">
             <div class="w-1/3">
-                <input type="text" v-model="searchTerm" placeholder="Buscar por nombre..."
+                <input
+v-model="searchTerm" type="text" placeholder="Buscar por nombre..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
             </div>
-            <button @click="openCreateModal"
-                class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center">
+            <button
+class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center"
+                @click="openCreateModal">
                 <PlusIcon class="h-5 w-5 mr-2" />
                 Crear Evento
             </button>
@@ -22,19 +24,23 @@
             <table v-else-if="filteredEventos.length" class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col"
+                        <th
+scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Imagen
                         </th>
-                        <th scope="col"
+                        <th
+scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Nombre
                         </th>
-                        <th scope="col"
+                        <th
+scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Fecha
                         </th>
-                        <th scope="col"
+                        <th
+scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Lugar
                         </th>
@@ -46,7 +52,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="evento in filteredEventos" :key="evento.id" class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <img :src="evento.imagenUrl ? `${API_BASE_URL}${evento.imagenUrl}` : 'https://placehold.co/40x40'"
+                            <img
+:src="evento.imagenUrl ? `${API_BASE_URL}${evento.imagenUrl}` : 'https://placehold.co/40x40'"
                                 alt="Imagen Evento" class="h-10 w-10 rounded-full object-cover">
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -59,10 +66,12 @@
                             <div class="text-sm text-gray-900">{{ evento.lugar || 'N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button @click="openEditModal(evento)"
-                                class="text-brand-camel hover:text-brand-borgona mr-4">Editar</button>
-                            <button @click="deleteEvento(evento.id)"
-                                class="text-red-600 hover:text-red-900">Eliminar</button>
+                            <button
+class="text-brand-camel hover:text-brand-borgona mr-4"
+                                @click="openEditModal(evento)">Editar</button>
+                            <button
+class="text-red-600 hover:text-red-900"
+                                @click="deleteEvento(evento.id)">Eliminar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -98,7 +107,7 @@ const searchTerm = ref('');
 const isModalOpen = ref(false);
 const eventoSeleccionado = ref<Evento | null>(null);
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchEventos = async () => {

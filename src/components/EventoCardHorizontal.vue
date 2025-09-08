@@ -2,7 +2,8 @@
   <div
     class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:shadow-2xl">
     <div class="md:w-1/3 lg:w-2/5 xl:w-1/3 h-48 md:h-auto relative">
-      <img :src="evento.imagenUrl
+      <img
+:src="evento.imagenUrl
         ? `${API_BASE_URL}${evento.imagenUrl}`
         : `https://placehold.co/600x400/E2E2E2/171C1E?text=${encodeURIComponent(evento.nombre.substring(0, 10))}`"
         :alt="`Imagen de ${evento.nombre}`" class="w-full h-full object-cover" />
@@ -23,12 +24,14 @@
       <div v-else class="flex-grow"></div> <!-- Espaciador si no hay descripción -->
 
       <div class="mt-auto flex flex-col sm:flex-row gap-3 pt-3 border-t border-gray-200">
-        <router-link :to="`/eventos/${evento.id}`"
+        <router-link
+:to="`/eventos/${evento.id}`"
           class="flex-1 text-center bg-brand-verde-oscuro text-white py-2.5 px-5 rounded-md hover:bg-opacity-80 transition-colors text-sm font-medium"
           @click="prepararNavegacionDetalle">
           Más Información
         </router-link>
-        <a v-if="evento.link_compra" :href="evento.link_compra" target="_blank" rel="noopener noreferrer"
+        <a
+v-if="evento.link_compra" :href="evento.link_compra" target="_blank" rel="noopener noreferrer"
           class="flex-1 text-center bg-brand-borgona text-white py-2.5 px-5 rounded-md hover:bg-opacity-80 transition-colors text-sm font-medium">
           Comprar Entradas
         </a>

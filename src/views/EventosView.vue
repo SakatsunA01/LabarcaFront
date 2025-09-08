@@ -9,16 +9,19 @@
       <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4">
           <div class="flex space-x-2 sm:space-x-3">
-            <button @click="setFiltroActivo('todos')"
-              :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'todos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']">
+            <button
+:class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'todos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
+              @click="setFiltroActivo('todos')">
               Todos
             </button>
-            <button @click="setFiltroActivo('proximos')"
-              :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'proximos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']">
+            <button
+:class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'proximos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
+              @click="setFiltroActivo('proximos')">
               Próximos
             </button>
-            <button @click="setFiltroActivo('pasados')"
-              :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'pasados' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']">
+            <button
+:class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'pasados' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
+              @click="setFiltroActivo('pasados')">
               Pasados
             </button>
           </div>
@@ -104,8 +107,8 @@ onMounted(async () => {
   isLoading.value = true;
   try {
     // Asegúrate de que la URL base de tu API sea correcta.
-    // Si tu backend corre en http://localhost:8000, la URL sería:
-    const response = await axios.get('http://localhost:8000/api/eventos');
+    // Si tu backend corre en https://api.labarcaministerio.com, la URL sería:
+    const response = await axios.get('https://api.labarcaministerio.com/api/eventos');
     todosLosEventos.value = response.data;
   } catch (error) {
     console.error("Error al cargar eventos:", error);

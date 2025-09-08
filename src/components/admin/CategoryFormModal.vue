@@ -1,6 +1,7 @@
 <template>
     <transition name="modal-fade">
-        <div v-if="show" tabindex="-1"
+        <div
+v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
             @click.self="close">
             <div
@@ -10,7 +11,8 @@
                     <div class="space-y-6">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Nombre de la Categoría</label>
-                            <input type="text" id="name" v-model="formData.name"
+                            <input
+id="name" v-model="formData.name" type="text"
                                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel" required>
                         </div>
                     </div>
@@ -21,11 +23,13 @@
 
                     <!-- Botones de Acción -->
                     <div class="mt-8 flex justify-end space-x-4">
-                        <button type="button" @click="close"
-                            class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+                        <button
+type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+                            @click="close">
                             Cancelar
                         </button>
-                        <button type="submit" :disabled="isLoading"
+                        <button
+type="submit" :disabled="isLoading"
                             class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
                             <span v-if="isLoading">Guardando...</span>
                             <span v-else>Guardar</span>

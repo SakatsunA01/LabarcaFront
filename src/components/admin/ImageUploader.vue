@@ -1,14 +1,17 @@
 <template>
   <div>
     <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
-    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-      @dragover.prevent="onDragOver" @dragleave.prevent="onDragLeave" @drop.prevent="onDrop"
-      :class="{ 'border-brand-camel bg-camel-50': isDragging }">
+    <div
+class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+      :class="{ 'border-brand-camel bg-camel-50': isDragging }" @dragover.prevent="onDragOver" @dragleave.prevent="onDragLeave"
+      @drop.prevent="onDrop">
       <div class="space-y-1 text-center">
         <div v-if="previewUrl" class="mx-auto mb-2">
-          <img v-if="fileType === 'image'" :src="previewUrl" alt="Preview"
+          <img
+v-if="fileType === 'image'" :src="previewUrl" alt="Preview"
             class="h-24 w-auto rounded-md object-contain" />
-          <video v-else-if="fileType === 'video'" :src="previewUrl" controls
+          <video
+v-else-if="fileType === 'video'" :src="previewUrl" controls
             class="h-24 w-auto rounded-md object-contain"></video>
         </div>
         <div v-else>
@@ -18,11 +21,13 @@
         </div>
 
         <div class="flex text-sm text-gray-600">
-          <label :for="inputId"
+          <label
+:for="inputId"
             class="relative cursor-pointer bg-white rounded-md font-medium text-brand-camel hover:text-brand-borgona focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand-camel">
             <span>Sube un archivo</span>
-            <input :id="inputId" :name="inputId" type="file" class="sr-only" @change="onFileSelect"
-              :accept="acceptTypes">
+            <input
+:id="inputId" :name="inputId" type="file" class="sr-only" :accept="acceptTypes"
+              @change="onFileSelect">
           </label>
           <p class="pl-1">o arrástralo aquí</p>
         </div>
@@ -65,7 +70,7 @@ watch(() => props.initialPreview, (newVal) => {
   if (newVal && !newVal.startsWith('blob:')) {
     previewUrl.value = `${API_BASE_URL}${newVal}`;
   } else {
-    previewUrl.value = newVal;
+    previewUrl.value = newVal || null;
   }
 });
 

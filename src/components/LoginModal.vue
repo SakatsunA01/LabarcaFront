@@ -1,11 +1,13 @@
 <template>
     <transition name="modal-fade">
-        <div v-if="show"
+        <div
+v-if="show"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
             @click.self="closeModal">
             <div class="bg-brand-gris-claro p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all">
-                <button @click="closeModal"
-                    class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors">
+                <button
+class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors"
+                    @click="closeModal">
                     <XMarkIcon class="h-6 w-6" />
                 </button>
                 <h2 class="text-2xl font-bold text-brand-negro text-center mb-6">Iniciar Sesión</h2>
@@ -13,20 +15,23 @@
                     <div class="mb-4">
                         <label for="email" class="block text-sm font-medium text-brand-negro mb-1">Correo
                             Electrónico</label>
-                        <input type="email" id="email" v-model="email"
+                        <input
+id="email" v-model="email" type="email"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
                     <div class="mb-6">
                         <label for="password" class="block text-sm font-medium text-brand-negro mb-1">Contraseña</label>
-                        <input type="password" id="password" v-model="password"
+                        <input
+id="password" v-model="password" type="password"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
                     <div v-if="errorMessage" class="mb-4 text-red-600 text-sm text-center p-2 bg-red-100 rounded-md">
                         {{ errorMessage }}
                     </div>
-                    <button type="submit" :disabled="isLoading"
+                    <button
+type="submit" :disabled="isLoading"
                         class="w-full bg-brand-camel text-white py-3 px-4 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-camel focus:ring-offset-2">
                         <span v-if="isLoading" class="animate-pulse">Procesando...</span>
                         <span v-else>Iniciar Sesión</span>
@@ -37,7 +42,7 @@
                 </div>
                 <div class="mt-2 text-center text-sm">
                     <span class="text-gray-600">¿No tienes cuenta? </span>
-                    <button @click="switchToRegister" class="text-brand-borgona hover:underline">Regístrate</button>
+                    <button class="text-brand-borgona hover:underline" @click="switchToRegister">Regístrate</button>
                 </div>
             </div>
         </div>

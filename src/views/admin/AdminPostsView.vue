@@ -3,7 +3,7 @@
         <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestión de Historias</h1>
 
         <div class="flex justify-end mb-6">
-            <button @click="openModal(null)" class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors">
+            <button class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors" @click="openModal(null)">
                 Crear Nueva Historia
             </button>
         </div>
@@ -25,8 +25,8 @@
                         <td class="p-4">{{ post.autor || 'N/A' }}</td>
                         <td class="p-4">{{ post.fecha_publicacion ? formatDate(post.fecha_publicacion) : 'No publicada' }}</td>
                         <td class="p-4 flex items-center space-x-2">
-                            <button @click="openModal(post)" class="text-blue-600 hover:text-blue-800">Editar</button>
-                            <button @click="confirmDelete(post)" class="text-red-600 hover:text-red-800">Eliminar</button>
+                            <button class="text-blue-600 hover:text-blue-800" @click="openModal(post)">Editar</button>
+                            <button class="text-red-600 hover:text-red-800" @click="confirmDelete(post)">Eliminar</button>
                         </td>
                     </tr>
                     <tr v-if="posts.length === 0">

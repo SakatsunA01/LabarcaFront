@@ -6,7 +6,7 @@
         </div>
         <p class="text-gray-700 mb-3">{{ comment.body }}</p>
         <div v-if="authStore.isAuthenticated && authStore.user?.id === comment.user_id" class="text-right">
-            <button @click="emit('delete', comment.id)" class="text-red-600 hover:text-red-800 text-sm">Eliminar</button>
+            <button class="text-red-600 hover:text-red-800 text-sm" @click="emit('delete', comment.id)">Eliminar</button>
         </div>
     </div>
 </template>

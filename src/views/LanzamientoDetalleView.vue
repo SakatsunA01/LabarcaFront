@@ -88,7 +88,7 @@ const lanzamiento = ref<Lanzamiento | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
-const API_BASE_URL = 'http://localhost:8000'; // Adjust if your API base URL is different
+const API_BASE_URL = 'https://api.labarcaministerio.com'; // Adjust if your API base URL is different
 const API_URL = `${API_BASE_URL}/api`;
 
 onMounted(async () => {

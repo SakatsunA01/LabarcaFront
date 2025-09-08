@@ -1,6 +1,7 @@
 <template>
   <transition name="modal-fade">
-    <div v-if="show" tabindex="-1"
+    <div
+v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
       @click.self="close">
       <div
@@ -16,20 +17,23 @@
                   <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">Nombre <span
                         class="text-red-500">*</span></label>
-                    <input type="text" id="name" v-model="formData.name" required
+                    <input
+id="name" v-model="formData.name" type="text" required
                       placeholder="Nombre completo del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
-                    <textarea id="description" v-model="formData.description" rows="4"
+                    <textarea
+id="description" v-model="formData.description" rows="4"
                       placeholder="Una breve biografía o descripción del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"></textarea>
                   </div>
                   <div>
                     <label for="color" class="block text-sm font-medium text-gray-700">Color
                       Principal</label>
-                    <input type="color" id="color" v-model="formData.color"
+                    <input
+id="color" v-model="formData.color" type="color"
                       title="Selecciona un color representativo para el artista"
                       class="mt-1 block w-full h-10 border border-gray-300 rounded-md shadow-sm">
                   </div>
@@ -44,28 +48,32 @@
                   <div>
                     <label for="spotifyEmbedUrl" class="block text-sm font-medium text-gray-700">URL
                       Spotify Embed</label>
-                    <input type="url" id="spotifyEmbedUrl" v-model="formData.spotifyEmbedUrl"
+                    <input
+id="spotifyEmbedUrl" v-model="formData.spotifyEmbedUrl" type="url"
                       placeholder="URL de un álbum o canción de Spotify para incrustar"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="youtubeVideoId" class="block text-sm font-medium text-gray-700">ID
                       Video YouTube</label>
-                    <input type="text" id="youtubeVideoId" v-model="formData.youtubeVideoId"
+                    <input
+id="youtubeVideoId" v-model="formData.youtubeVideoId" type="text"
                       placeholder="Ej: dQw4w9WgXcQ (solo el ID del video)"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="social_instagram" class="block text-sm font-medium text-gray-700">URL
                       Instagram</label>
-                    <input type="url" id="social_instagram" v-model="formData.social_instagram"
+                    <input
+id="social_instagram" v-model="formData.social_instagram" type="url"
                       placeholder="Perfil de Instagram del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="social_facebook" class="block text-sm font-medium text-gray-700">URL
                       Facebook</label>
-                    <input type="url" id="social_facebook" v-model="formData.social_facebook"
+                    <input
+id="social_facebook" v-model="formData.social_facebook" type="url"
                       placeholder="Página de Facebook del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -76,11 +84,14 @@
 
             <!-- Columna 2: Carga de Imágenes -->
             <div class="space-y-6">
-              <ImageUploader label="Imagen Principal (Card)" :initial-preview="formData.imageUrl"
+              <ImageUploader
+label="Imagen Principal (Card)" :initial-preview="formData.imageUrl"
                 @file-change="file => handleFileChange(file, 'imageUrl')" />
-              <ImageUploader label="Imagen Hero (Detalle)" :initial-preview="formData.heroImageUrl"
+              <ImageUploader
+label="Imagen Hero (Detalle)" :initial-preview="formData.heroImageUrl"
                 @file-change="file => handleFileChange(file, 'heroImageUrl')" />
-              <ImageUploader label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl"
+              <ImageUploader
+label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl"
                 @file-change="file => handleFileChange(file, 'secondaryImageUrl')" />
             </div>
           </div>
@@ -91,11 +102,13 @@
 
           <!-- Botones de Acción -->
           <div class="mt-8 flex justify-end space-x-4">
-            <button type="button" @click="close"
-              class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+            <button
+type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+              @click="close">
               Cancelar
             </button>
-            <button type="submit" :disabled="isLoading"
+            <button
+type="submit" :disabled="isLoading"
               class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
               <span v-if="isLoading">Guardando...</span>
               <span v-else>Guardar</span>
@@ -153,7 +166,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.artista);
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 watch(() => props.show, (newVal) => {
   if (newVal) {

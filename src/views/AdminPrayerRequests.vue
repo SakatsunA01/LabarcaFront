@@ -26,14 +26,14 @@
             </td>
             <td class="py-2 px-4 border-b">
               <button
-                @click="toggleApproval(request)"
                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2"
+                @click="toggleApproval(request)"
               >
                 {{ request.is_approved ? 'Unapprove' : 'Approve' }}
               </button>
               <button
-                @click="deleteRequest(request.id)"
                 class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                @click="deleteRequest(request.id)"
               >
                 Delete
               </button>

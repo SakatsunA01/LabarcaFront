@@ -1,6 +1,7 @@
 <template>
   <transition name="loading-overlay-fade">
-    <div v-if="isLoading"
+    <div
+v-if="isLoading"
       class="fixed inset-0 bg-brand-gris-claro flex items-center justify-center z-[9999] overflow-hidden">
       <!-- Opcional: Una barra de progreso muy sutil en la parte superior -->
       <!-- <div class="absolute top-0 left-0 h-1 bg-brand-camel animate-pulse-fast w-full"></div> -->

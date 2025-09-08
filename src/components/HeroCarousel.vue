@@ -89,10 +89,12 @@ onUnmounted(() => {
     </div>
     <div v-else-if="slides.length > 0" class="w-full h-full">
       <transition-group name="fade" tag="div" class="relative w-full h-full">
-        <div v-for="(slide, index) in slides" :key="slide.id" v-show="currentSlide === index"
+        <div
+v-for="(slide, index) in slides" v-show="currentSlide === index" :key="slide.id"
           class="absolute w-full h-full">
           <!-- Background Video -->
-          <video :src="`${API_BASE_URL}${slide.video_path}`" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
+          <video
+:src="`${API_BASE_URL}${slide.video_path}`" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
             playsinline></video>
           <!-- Overlay -->
           <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40"></div>
@@ -102,7 +104,8 @@ onUnmounted(() => {
             <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-lg">
               {{ slide.title }}
             </h1>
-            <a :href="slide.button_url"
+            <a
+:href="slide.button_url"
               class="border-2 border-white text-white font-bold py-3 px-8 rounded-full uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300">
               {{ slide.button_text }}
             </a>
@@ -115,21 +118,24 @@ onUnmounted(() => {
     </div>
 
     <!-- Navigation Arrows -->
-    <button v-if="slides.length > 1" @click="prevSlide"
-      class="absolute top-1/2 left-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300">
+    <button
+v-if="slides.length > 1" class="absolute top-1/2 left-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300"
+      @click="prevSlide">
       &#10094;
     </button>
-    <button v-if="slides.length > 1" @click="nextSlide"
-      class="absolute top-1/2 right-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300">
+    <button
+v-if="slides.length > 1" class="absolute top-1/2 right-4 transform -translate-y-1/2 z-20 text-white text-4xl opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-300"
+      @click="nextSlide">
       &#10095;
     </button>
 
     <!-- Navigation Dots -->
     <div v-if="slides.length > 1" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
-      <button v-for="(_, index) in slides" :key="`dot-${index}`" @click="goToSlide(index)" :class="[
+      <button
+v-for="(_, index) in slides" :key="`dot-${index}`" :class="[
         'w-3 h-3 rounded-full transition-all duration-300',
         currentSlide === index ? 'bg-white' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-      ]"></button>
+      ]" @click="goToSlide(index)"></button>
     </div>
   </div>
 </template>

@@ -5,11 +5,13 @@
     <!-- Controles Superiores: Búsqueda y Botón de Crear -->
     <div class="flex justify-between items-center mb-6">
       <div class="w-1/3">
-        <input type="text" v-model="searchTerm" placeholder="Buscar por nombre..."
+        <input
+v-model="searchTerm" type="text" placeholder="Buscar por nombre..."
           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
       </div>
-      <button @click="openCreateModal"
-        class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center">
+      <button
+class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center"
+        @click="openCreateModal">
         <PlusIcon class="h-5 w-5 mr-2" />
         Crear Artista
       </button>
@@ -36,16 +38,18 @@
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="artista in filteredArtistas" :key="artista.id" class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
-              <img :src="artista.imageUrl ? `${API_BASE_URL}${artista.imageUrl}` : 'https://placehold.co/40x40'"
+              <img
+:src="artista.imageUrl ? `${API_BASE_URL}${artista.imageUrl}` : 'https://placehold.co/40x40'"
                 alt="Avatar" class="h-10 w-10 rounded-full object-cover">
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900">{{ artista.name }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button @click="openEditModal(artista)"
-                class="text-brand-camel hover:text-brand-borgona mr-4">Editar</button>
-              <button @click="deleteArtista(artista.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
+              <button
+class="text-brand-camel hover:text-brand-borgona mr-4"
+                @click="openEditModal(artista)">Editar</button>
+              <button class="text-red-600 hover:text-red-900" @click="deleteArtista(artista.id)">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -79,7 +83,7 @@ const searchTerm = ref('');
 const isModalOpen = ref(false);
 const artistaSeleccionado = ref<Artista | null>(null);
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchArtistas = async () => {

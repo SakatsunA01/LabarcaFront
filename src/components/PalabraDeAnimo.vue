@@ -21,15 +21,16 @@
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            <button v-for="mood in moodOptions" :key="mood.key" type="button"
+            <button
+v-for="mood in moodOptions" :key="mood.key" type="button"
               class="w-full text-center px-6 py-4 rounded-lg transition-all duration-300 ease-in-out flex flex-col items-center justify-center text-base md:text-lg border-2 cursor-pointer transform hover:scale-105"
               :class="[
                 activeMoodKey === mood.key
                   ? 'bg-brand-camel text-white shadow-lg border-brand-camel'
                   : 'bg-white hover:bg-brand-gris-claro border-gray-300 text-brand-negro',
                 isLoadingVerse ? 'opacity-50 cursor-not-allowed' : ''
-              ]" @click="handleMoodButtonClick(mood.key, mood.text)" :aria-pressed="activeMoodKey === mood.key"
-              :disabled="isLoadingVerse">
+              ]" :aria-pressed="activeMoodKey === mood.key" :disabled="isLoadingVerse"
+              @click="handleMoodButtonClick(mood.key, mood.text)">
               <component :is="mood.iconComponent" class="w-7 h-7 mb-2" />
               <span>{{ mood.text }}</span>
             </button>
@@ -69,12 +70,14 @@
             <h4 class="text-md font-semibold text-brand-negro mb-2">
               Reflexión Inicial:
             </h4>
-            <p class="text-gray-700 leading-relaxed text-base text-justify"
+            <p
+class="text-gray-700 leading-relaxed text-base text-justify"
               v-html="formatText(verseData.initialReflection)"></p>
           </div>
 
           <!-- Error State for Verse -->
-          <div v-if="currentState === 'errorVerse'"
+          <div
+v-if="currentState === 'errorVerse'"
             class="w-full fade-in bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative"
             role="alert">
             <strong class="font-bold">Error: </strong>
@@ -89,24 +92,29 @@
         <div v-if="currentState === 'verseContentLoaded' && verseData" class="mt-8 space-y-6 text-center">
           <!-- Generate Reflection -->
           <div>
-            <button type="button"
+            <button
+type="button"
               class="bg-brand-borgona text-white py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors text-base font-medium shadow-md disabled:opacity-50"
-              @click="generateAdditionalReflection" :disabled="isLoadingReflection">
+              :disabled="isLoadingReflection" @click="generateAdditionalReflection">
               <SparklesIcon class="w-5 h-5 mr-2 inline-block" />
               Generar Reflexión Adicional
-              <span v-if="isLoadingReflection"
+              <span
+v-if="isLoadingReflection"
                 class="ml-2 inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
             </button>
-            <div v-if="additionalReflection"
+            <div
+v-if="additionalReflection"
               class="mt-4 p-5 rounded-xl text-sm text-brand-negro leading-relaxed text-left fade-in bg-brand-borgona bg-opacity-10 border border-brand-borgona border-opacity-30 min-h-[100px]">
               <p v-html="formatText(additionalReflection)"></p>
             </div>
-            <div v-if="errorReflectionMessage"
+            <div
+v-if="errorReflectionMessage"
               class="mt-3 bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md text-sm relative fade-in"
               role="alert">
               {{ errorReflectionMessage }}
-              <button @click="clearError('reflection')"
-                class="absolute top-1 right-1 text-red-500 hover:text-red-700">
+              <button
+class="absolute top-1 right-1 text-red-500 hover:text-red-700"
+                @click="clearError('reflection')">
                 <XMarkIcon class="h-4 w-4" />
               </button>
             </div>
@@ -116,15 +124,18 @@
 
           <!-- Explore Verse -->
           <div>
-            <button type="button"
+            <button
+type="button"
               class="bg-brand-verde-oscuro text-white py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors text-base font-medium shadow-md disabled:opacity-50"
-              @click="exploreFurther" :disabled="isLoadingExploration">
+              :disabled="isLoadingExploration" @click="exploreFurther">
               <MagnifyingGlassIcon class="w-5 h-5 mr-2 inline-block" />
               Profundizar en el Versículo
-              <span v-if="isLoadingExploration"
+              <span
+v-if="isLoadingExploration"
                 class="ml-2 inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
             </button>
-            <div v-if="verseExploration"
+            <div
+v-if="verseExploration"
               class="mt-4 p-5 rounded-xl text-sm text-brand-negro leading-relaxed text-left fade-in bg-brand-verde-oscuro bg-opacity-10 border border-brand-verde-oscuro border-opacity-30 min-h-[100px]">
               <h4 class="font-semibold text-brand-negro mb-1">
                 Contexto Histórico/Literario:
@@ -139,7 +150,8 @@
               </h4>
               <div>
                 <template v-if="verseExploration.crossReferences && verseExploration.crossReferences.length > 0">
-                  <span v-for="(ref, i) in verseExploration.crossReferences" :key="i"
+                  <span
+v-for="(ref, i) in verseExploration.crossReferences" :key="i"
                     class="inline-block bg-brand-camel bg-opacity-20 text-brand-camel text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full">
                     {{ ref }}
                   </span>
@@ -149,12 +161,14 @@
                 </p>
               </div>
             </div>
-            <div v-if="errorExplorationMessage"
+            <div
+v-if="errorExplorationMessage"
               class="mt-3 bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md text-sm relative fade-in"
               role="alert">
               {{ errorExplorationMessage }}
-              <button @click="clearError('exploration')"
-                class="absolute top-1 right-1 text-red-500 hover:text-red-700">
+              <button
+class="absolute top-1 right-1 text-red-500 hover:text-red-700"
+                @click="clearError('exploration')">
                 <XMarkIcon class="h-4 w-4" />
               </button>
             </div>

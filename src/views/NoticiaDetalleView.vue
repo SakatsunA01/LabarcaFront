@@ -3,9 +3,11 @@
     <div v-if="article" class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 
       <!-- Botón para volver -->
-      <router-link to="/"
+      <router-link
+to="/"
         class="inline-flex items-center text-brand-camel hover:text-brand-borgona mb-8 font-inter font-semibold group">
-        <svg class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" fill="none"
+        <svg
+class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" fill="none"
           stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>

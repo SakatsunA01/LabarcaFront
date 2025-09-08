@@ -7,7 +7,8 @@
 
       <!-- Filtro de Búsqueda -->
       <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
-        <input type="text" v-model="terminoBusqueda" placeholder="Buscar artista por nombre..."
+        <input
+v-model="terminoBusqueda" type="text" placeholder="Buscar artista por nombre..."
           class="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-brand-camel focus:border-brand-camel transition-colors" />
       </section>
 
@@ -31,7 +32,7 @@
         </div>
         <div v-else class="text-center py-10 bg-white rounded-xl shadow-md">
           <p class="text-xl text-brand-negro">No se encontraron artistas.</p>
-          <p class="text-gray-600 mt-2" v-if="terminoBusqueda">Intenta con otro término de búsqueda.</p>
+          <p v-if="terminoBusqueda" class="text-gray-600 mt-2">Intenta con otro término de búsqueda.</p>
         </div>
       </transition>
     </div>
@@ -69,7 +70,7 @@ const uiStore = useUiStore();
 onMounted(async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get('http://localhost:8000/api/artistas');
+    const response = await axios.get('https://api.labarcaministerio.com/api/artistas');
     todosLosArtistas.value = response.data;
   } catch (error) {
     console.error("Error al cargar artistas:", error);

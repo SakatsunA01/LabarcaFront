@@ -17,9 +17,9 @@
             <div 
               v-for="(image, index) in product.images" 
               :key="index" 
-              @click="activeImage = image"
               class="aspect-w-1 aspect-h-1 bg-brand-gris-claro rounded-md overflow-hidden cursor-pointer border-2 transition-colors"
               :class="activeImage === image ? 'border-brand-camel' : 'border-transparent'"
+              @click="activeImage = image"
             >
               <img :src="image" :alt="`${product.name} - vista ${index + 1}`" class="w-full h-full object-cover object-center">
             </div>

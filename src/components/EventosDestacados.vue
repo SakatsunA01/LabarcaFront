@@ -27,7 +27,8 @@
               {{ proximosEventos[0].descripcion?.substring(0, 150) + (proximosEventos[0].descripcion &&
                 proximosEventos[0].descripcion.length > 150 ? '...' : '') }}
             </p>
-            <router-link :to="`/eventos/${proximosEventos[0].id}`"
+            <router-link
+:to="`/eventos/${proximosEventos[0].id}`"
               class="mt-auto self-start bg-brand-borgona text-white py-2.5 px-7 rounded-md hover:bg-opacity-80 transition-colors text-base md:text-lg font-medium">
               Más Información
             </router-link>
@@ -36,7 +37,8 @@
 
         <!-- Evento Secundario y Botón Todos los Eventos -->
         <div class="lg:w-5/12 flex flex-col gap-8">
-          <div v-if="proximosEventos.length > 1"
+          <div
+v-if="proximosEventos.length > 1"
             class="bg-white shadow-xl rounded-lg overflow-hidden flex flex-col flex-grow transition-all duration-300 hover:shadow-2xl">
             <img
               :src="proximosEventos[1].imagenUrl ? `${API_BASE_URL}${proximosEventos[1].imagenUrl}` : 'https://placehold.co/800x450/E91E63/FFFFFF?text=Evento'"
@@ -50,13 +52,15 @@
                 {{ proximosEventos[1].descripcion?.substring(0, 80) + (proximosEventos[1].descripcion &&
                   proximosEventos[1].descripcion.length > 80 ? '...' : '') }}
               </p>
-              <router-link :to="`/eventos/${proximosEventos[1].id}`"
+              <router-link
+:to="`/eventos/${proximosEventos[1].id}`"
                 class="mt-auto self-start text-brand-verde-oscuro hover:text-brand-borgona font-medium transition-colors">
                 Ver Detalles
               </router-link>
             </div>
           </div>
-          <router-link to="/eventos"
+          <router-link
+to="/eventos"
             class="w-full bg-brand-camel text-center text-white py-3 px-6 rounded-md hover:bg-opacity-80 transition-colors text-lg font-medium shadow-lg hover:shadow-xl mt-auto block">
             Ver Todos los Eventos
           </router-link>
@@ -95,7 +99,7 @@ export default defineComponent({
     const todosLosEventos = ref<Evento[]>([]);
     const isLoading = ref(true);
     const error = ref<string | null>(null);
-    const API_URL = 'http://localhost:8000/api';
+    const API_URL = 'https://api.labarcaministerio.com/api';
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     onMounted(async () => {

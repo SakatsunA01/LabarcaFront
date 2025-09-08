@@ -3,8 +3,9 @@
     <h1 class="text-2xl font-bold mb-4">Gestión de Hero Carousel</h1>
 
     <div class="mb-4 flex justify-end">
-      <button @click="openCreateModal"
-        class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors">
+      <button
+class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
+        @click="openCreateModal">
         Crear Nuevo Slide
       </button>
     </div>
@@ -18,13 +19,17 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orden</th>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Video</th>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
             <th scope="col" class="relative px-6 py-3">
               <span class="sr-only">Acciones</span>
@@ -39,14 +44,15 @@
               <video :src="`${API_BASE_URL}${slide.video_path}`" class="h-10 w-20 object-cover rounded-md" controls></video>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <span :class="slide.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+              <span
+:class="slide.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
                 {{ slide.is_active ? 'Activo' : 'Inactivo' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button @click="openEditModal(slide)" class="text-brand-camel hover:text-brand-borgona mr-3">Editar</button>
-              <button @click="deleteSlide(slide.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
+              <button class="text-brand-camel hover:text-brand-borgona mr-3" @click="openEditModal(slide)">Editar</button>
+              <button class="text-red-600 hover:text-red-900" @click="deleteSlide(slide.id)">Eliminar</button>
             </td>
           </tr>
         </tbody>

@@ -1,8 +1,10 @@
 <template>
-  <router-link :to="`/artistas/${artista.id}`" @click="prepararNavegacionDetalle"
-    class="block bg-white rounded-xl shadow-md overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:shadow-lg border border-gray-200">
+  <router-link
+:to="`/artistas/${artista.id}`" class="block bg-white rounded-xl shadow-md overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:shadow-lg border border-gray-200"
+    @click="prepararNavegacionDetalle">
     <div class="md:w-1/4 lg:w-1/5 h-48 md:h-auto relative">
-      <img :src="artista.imageUrl ? `${API_BASE_URL}${artista.imageUrl}`
+      <img
+:src="artista.imageUrl ? `${API_BASE_URL}${artista.imageUrl}`
         : `https://placehold.co/300x300/E2E2E2/171C1E?text=${encodeURIComponent(artista.name.substring(0, 2))}`"
         :alt="`Foto de ${artista.name}`" class="w-full h-full object-cover" />
     </div>
@@ -18,24 +20,29 @@
       <div class="mt-auto pt-3 border-t border-gray-200">
         <p class="text-xs text-gray-500 mb-2">Redes Sociales:</p>
         <div class="flex flex-wrap gap-3">
-          <a v-if="artista.social_instagram" :href="artista.social_instagram" target="_blank" rel="noopener noreferrer"
+          <a
+v-if="artista.social_instagram" :href="artista.social_instagram" target="_blank" rel="noopener noreferrer"
             class="text-brand-camel hover:text-brand-borgona transition-colors" aria-label="Instagram" @click.stop>
             <LinkIcon class="h-6 w-6" /> <!-- Heroicons no tiene Instagram -->
           </a>
-          <a v-if="artista.social_facebook" :href="artista.social_facebook" target="_blank" rel="noopener noreferrer"
+          <a
+v-if="artista.social_facebook" :href="artista.social_facebook" target="_blank" rel="noopener noreferrer"
             class="text-brand-camel hover:text-brand-borgona transition-colors" aria-label="Facebook" @click.stop>
             <LinkIcon class="h-6 w-6" /> <!-- Heroicons no tiene Facebook -->
           </a>
-          <a v-if="artista.social_youtubeChannel" :href="artista.social_youtubeChannel" target="_blank"
+          <a
+v-if="artista.social_youtubeChannel" :href="artista.social_youtubeChannel" target="_blank"
             rel="noopener noreferrer" class="text-brand-camel hover:text-brand-borgona transition-colors"
             aria-label="YouTube" @click.stop>
             <LinkIcon class="h-6 w-6" /> <!-- Heroicons no tiene YouTube -->
           </a>
-          <a v-if="artista.social_tiktok" :href="artista.social_tiktok" target="_blank" rel="noopener noreferrer"
+          <a
+v-if="artista.social_tiktok" :href="artista.social_tiktok" target="_blank" rel="noopener noreferrer"
             class="text-brand-camel hover:text-brand-borgona transition-colors" aria-label="TikTok" @click.stop>
             <MusicalNoteIcon class="h-6 w-6" />
           </a>
-          <a v-if="artista.social_spotifyProfile" :href="artista.social_spotifyProfile" target="_blank"
+          <a
+v-if="artista.social_spotifyProfile" :href="artista.social_spotifyProfile" target="_blank"
             rel="noopener noreferrer" class="text-brand-camel hover:text-brand-borgona transition-colors"
             aria-label="Spotify" @click.stop>
             <LinkIcon class="h-6 w-6" /> <!-- Heroicons no tiene Spotify -->

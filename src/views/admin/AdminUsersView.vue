@@ -5,7 +5,8 @@
     <!-- Controles Superiores: Búsqueda -->
     <div class="flex justify-between items-center mb-6">
       <div class="w-1/3">
-        <input type="text" v-model="searchTerm" placeholder="Buscar por nombre o email..."
+        <input
+v-model="searchTerm" type="text" placeholder="Buscar por nombre o email..."
           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
       </div>
     </div>
@@ -30,22 +31,25 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-               <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+               <span
+class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                   :class="user.admin_sn ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'">
                 {{ user.admin_sn ? 'Admin' : 'Usuario' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button @click="toggleAdmin(user)" 
-                      class="text-brand-camel hover:text-brand-borgona mr-4"
+              <button
+class="text-brand-camel hover:text-brand-borgona mr-4" 
                       :disabled="isCurrentUser(user.id)"
-                      :class="{'opacity-50 cursor-not-allowed': isCurrentUser(user.id)}">
+                      :class="{'opacity-50 cursor-not-allowed': isCurrentUser(user.id)}"
+                      @click="toggleAdmin(user)">
                 {{ user.admin_sn ? 'Quitar Admin' : 'Hacer Admin' }}
               </button>
-              <button @click="deleteUser(user.id)" 
-                      class="text-red-600 hover:text-red-900"
+              <button
+class="text-red-600 hover:text-red-900" 
                       :disabled="isCurrentUser(user.id)"
-                      :class="{'opacity-50 cursor-not-allowed': isCurrentUser(user.id)}">
+                      :class="{'opacity-50 cursor-not-allowed': isCurrentUser(user.id)}"
+                      @click="deleteUser(user.id)">
                 Eliminar
               </button>
             </td>

@@ -1,12 +1,14 @@
 <template>
   <transition name="modal-fade">
-    <div v-if="show" tabindex="-1"
+    <div
+v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
       @click.self="close">
       <div
         class="bg-brand-gris-claro p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all max-h-[90vh] overflow-y-auto text-brand-negro text-center">
-        <button @click="close"
-          class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors">
+        <button
+class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors"
+          @click="close">
           <XMarkIcon class="h-6 w-6" />
         </button>
         <h2 class="text-2xl font-bold mb-4 font-display">¡Bienvenido a la Familia!</h2>
@@ -24,8 +26,9 @@
           </p>
         </div>
 
-        <button @click="close"
-          class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-colors font-medium shadow-md">
+        <button
+class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-colors font-medium shadow-md"
+          @click="close">
           Amén
         </button>
       </div>

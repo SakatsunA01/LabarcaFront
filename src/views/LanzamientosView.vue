@@ -7,7 +7,8 @@
 
       <!-- Filtro de Búsqueda -->
       <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
-        <input type="text" v-model="terminoBusqueda" placeholder="Buscar lanzamiento por título o artista..."
+        <input
+v-model="terminoBusqueda" type="text" placeholder="Buscar lanzamiento por título o artista..."
           class="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-brand-camel focus:border-brand-camel transition-colors" />
       </section>
 
@@ -19,10 +20,12 @@
           <p class="mt-4 text-brand-negro">Cargando lanzamientos...</p>
         </div>
         <div v-else-if="lanzamientosFiltrados.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          <div v-for="lanzamiento in lanzamientosFiltrados" :key="lanzamiento.id"
+          <div
+v-for="lanzamiento in lanzamientosFiltrados" :key="lanzamiento.id"
             class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
             <router-link :to="`/lanzamientos/${lanzamiento.id}`" class="block relative">
-              <img :src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : `https://placehold.co/400x400/E2E2E2/171C1E?text=${encodeURIComponent(lanzamiento.titulo.substring(0, 2))}`"
+              <img
+:src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : `https://placehold.co/400x400/E2E2E2/171C1E?text=${encodeURIComponent(lanzamiento.titulo.substring(0, 2))}`"
                 :alt="`Portada de ${lanzamiento.titulo}`" class="w-full h-64 object-cover" />
               <div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                 <PlayIcon class="h-16 w-16 text-white" />
@@ -37,7 +40,7 @@
         </div>
         <div v-else class="text-center py-10 bg-white rounded-xl shadow-md">
           <p class="text-xl text-brand-negro">No se encontraron lanzamientos.</p>
-          <p class="text-gray-600 mt-2" v-if="terminoBusqueda">Intenta con otro término de búsqueda.</p>
+          <p v-if="terminoBusqueda" class="text-gray-600 mt-2">Intenta con otro término de búsqueda.</p>
         </div>
       </transition>
     </div>

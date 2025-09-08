@@ -10,14 +10,16 @@
 
       <!-- Filtros de Categoría -->
       <div v-if="categories.length > 0" class="flex justify-center flex-wrap gap-2 md:gap-4 mb-12">
-        <button @click="selectCategory(null)"
-          :class="[selectedCategory === null ? 'bg-brand-camel text-white' : 'bg-white text-brand-negro hover:bg-brand-camel/20']"
-          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm">
+        <button
+:class="[selectedCategory === null ? 'bg-brand-camel text-white' : 'bg-white text-brand-negro hover:bg-brand-camel/20']"
+          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm"
+          @click="selectCategory(null)">
           Todas
         </button>
-        <button v-for="category in categories" :key="category.id" @click="selectCategory(category.id)"
-          :class="[selectedCategory === category.id ? 'bg-brand-camel text-white' : 'bg-white text-brand-negro hover:bg-brand-camel/20']"
-          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm">
+        <button
+v-for="category in categories" :key="category.id" :class="[selectedCategory === category.id ? 'bg-brand-camel text-white' : 'bg-white text-brand-negro hover:bg-brand-camel/20']"
+          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm"
+          @click="selectCategory(category.id)">
           {{ category.name }}
         </button>
       </div>

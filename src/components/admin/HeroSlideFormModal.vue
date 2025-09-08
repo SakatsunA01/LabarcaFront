@@ -1,6 +1,7 @@
 <template>
   <transition name="modal-fade">
-    <div v-if="show" tabindex="-1"
+    <div
+v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
       @click.self="close">
       <div
@@ -11,39 +12,45 @@
             <div>
               <label for="title" class="block text-sm font-medium text-gray-700">Título <span
                   class="text-red-500">*</span></label>
-              <input type="text" id="title" v-model="formData.title" required
+              <input
+id="title" v-model="formData.title" type="text" required
                 placeholder="Título del slide"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
             <div>
               <label for="button_text" class="block text-sm font-medium text-gray-700">Texto del Botón <span
                   class="text-red-500">*</span></label>
-              <input type="text" id="button_text" v-model="formData.button_text" required
+              <input
+id="button_text" v-model="formData.button_text" type="text" required
                 placeholder="Ej: Ver Más"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
             <div>
               <label for="button_url" class="block text-sm font-medium text-gray-700">URL del Botón <span
                   class="text-red-500">*</span></label>
-              <input type="url" id="button_url" v-model="formData.button_url" required
+              <input
+id="button_url" v-model="formData.button_url" type="url" required
                 placeholder="Ej: https://tuweb.com/pagina"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
             <div>
               <label for="order" class="block text-sm font-medium text-gray-700">Orden <span
                   class="text-red-500">*</span></label>
-              <input type="number" id="order" v-model="formData.order" required
+              <input
+id="order" v-model="formData.order" type="number" required
                 placeholder="Orden de aparición"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
             <div class="flex items-center">
-              <input type="checkbox" id="is_active" v-model="formData.is_active"
+              <input
+id="is_active" v-model="formData.is_active" type="checkbox"
                 class="h-4 w-4 text-brand-camel focus:ring-brand-camel border-gray-300 rounded">
               <label for="is_active" class="ml-2 block text-sm text-gray-900">Activo</label>
             </div>
 
-            <ImageUploader label="Video (MP4/MOV, max 50MB)" :initial-preview="formData.video_path"
-              @file-change="file => handleFileChange(file, 'video_path')" file-type="video" />
+            <ImageUploader
+label="Video (MP4/MOV, max 50MB)" :initial-preview="formData.video_path"
+              file-type="video" @file-change="file => handleFileChange(file)" />
 
             <div v-if="uploadProgress > 0 && uploadProgress < 100" class="mt-4">
               <div class="text-sm font-medium text-gray-700 mb-1">Subiendo video: {{ uploadProgress.toFixed(0) }}%</div>
@@ -59,11 +66,13 @@
 
           <!-- Botones de Acción -->
           <div class="mt-8 flex justify-end space-x-4">
-            <button type="button" @click="close"
-              class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+            <button
+type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+              @click="close">
               Cancelar
             </button>
-            <button type="submit" :disabled="isLoading"
+            <button
+type="submit" :disabled="isLoading"
               class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
               <span v-if="isLoading">Guardando...</span>
               <span v-else>Guardar</span>
@@ -113,10 +122,11 @@ const videoFile = ref<File | null>(null);
 
 const isLoading = ref(false);
 const errorMessage = ref('');
+const uploadProgress = ref(0);
 const authStore = useAuthStore();
 
 const isEditing = computed(() => !!props.slide);
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 watch(() => props.show, (newVal) => {
   if (newVal) {
@@ -127,6 +137,7 @@ watch(() => props.show, (newVal) => {
       formData.value = { ...defaultFormData };
     }
     videoFile.value = null; // Clear selected file on modal open
+    uploadProgress.value = 0;
   }
 });
 
@@ -157,10 +168,22 @@ const handleSubmit = async () => {
       submissionData.append('_method', 'PUT');
       await axios.post(`${API_URL}/hero-slides/${props.slide.id}`, submissionData, {
         headers: { Authorization: `Bearer ${authStore.token}` },
+        onUploadProgress: progressEvent => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            uploadProgress.value = percentCompleted;
+          }
+        },
       });
     } else {
       await axios.post(`${API_URL}/hero-slides`, submissionData, {
         headers: { Authorization: `Bearer ${authStore.token}` },
+        onUploadProgress: progressEvent => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            uploadProgress.value = percentCompleted;
+          }
+        },
       });
     }
     emit('save');
@@ -179,6 +202,9 @@ const handleSubmit = async () => {
     }
   } finally {
     isLoading.value = false;
+    setTimeout(() => {
+      uploadProgress.value = 0;
+    }, 500);
   }
 };
 

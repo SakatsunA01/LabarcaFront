@@ -3,8 +3,9 @@
     <h1 class="text-2xl font-bold mb-4">Gestión de Lanzamientos</h1>
 
     <div class="mb-4 flex justify-end">
-      <button @click="openCreateModal"
-        class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors">
+      <button
+class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
+        @click="openCreateModal">
         Crear Nuevo Lanzamiento
       </button>
     </div>
@@ -18,13 +19,17 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artista</th>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-            <th scope="col"
+            <th
+scope="col"
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Portada</th>
             <th scope="col" class="relative px-6 py-3">
               <span class="sr-only">Acciones</span>
@@ -37,13 +42,14 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ lanzamiento.artista?.name || 'N/A' }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(lanzamiento.fecha_lanzamiento) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <img v-if="lanzamiento.cover_image_url" :src="`${API_BASE_URL}${lanzamiento.cover_image_url}`" alt="Portada"
+              <img
+v-if="lanzamiento.cover_image_url" :src="`${API_BASE_URL}${lanzamiento.cover_image_url}`" alt="Portada"
                 class="h-10 w-10 object-cover rounded-full">
               <span v-else>Sin portada</span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button @click="openEditModal(lanzamiento)" class="text-brand-camel hover:text-brand-borgona mr-3">Editar</button>
-              <button @click="deleteLanzamiento(lanzamiento.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
+              <button class="text-brand-camel hover:text-brand-borgona mr-3" @click="openEditModal(lanzamiento)">Editar</button>
+              <button class="text-red-600 hover:text-red-900" @click="deleteLanzamiento(lanzamiento.id)">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -62,6 +68,11 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import LanzamientoFormModal from '@/components/admin/LanzamientoFormModal.vue';
 
+interface Track {
+  titulo: string;
+  duracion: string;
+}
+
 interface Lanzamiento {
   id: number;
   titulo: string;
@@ -74,6 +85,7 @@ interface Lanzamiento {
     id: number;
     name: string;
   };
+  tracks: Track[];
 }
 
 const lanzamientos = ref<Lanzamiento[]>([]);

@@ -14,7 +14,8 @@
     <!-- 2. Contenido Centrado -->
     <div class="relative z-10 text-center px-4">
       <!-- 3. Copywriting y Tipografía -->
-      <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tight"
+      <h1
+class="text-4xl md:text-6xl font-bold text-white tracking-tight"
         style="font-family: 'Montserrat', sans-serif;">
         Donde la Fe se Hace Canción.
       </h1>
@@ -25,11 +26,13 @@
 
       <!-- 4. Llamadas a la Acción (CTAs) -->
       <div class="mt-8 flex justify-center gap-x-4">
-        <a href="/eventos"
+        <a
+href="/eventos"
           class="px-8 py-3 bg-[#D4AF37] text-black font-semibold rounded-full shadow-lg hover:bg-opacity-90 transition-transform transform hover:scale-105">
           Ver Próximos Eventos
         </a>
-        <a href="/artistas"
+        <a
+href="/artistas"
           class="px-8 py-3 border border-[#D4AF37] text-white font-semibold rounded-full hover:bg-[#D4AF37] hover:text-black transition-colors">
           Conoce a los Artistas
         </a>

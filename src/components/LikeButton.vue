@@ -1,6 +1,7 @@
 <template>
-    <button @click.prevent.stop="toggleLike" 
-            class="flex items-center space-x-2 text-gray-600 hover:text-brand-borgona transition-colors duration-300 disabled:opacity-50">
+    <button
+class="flex items-center space-x-2 text-gray-600 hover:text-brand-borgona transition-colors duration-300 disabled:opacity-50" 
+            @click.prevent.stop="toggleLike">
         <HeartIcon class="h-6 w-6" :class="{ 'fill-current text-brand-borgona': localIsLiked }" />
         <span class="font-semibold">{{ localLikeCount }}</span>
     </button>

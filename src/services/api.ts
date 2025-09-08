@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Se establece la URL base de la API de forma explícita para asegurar la conexión correcta.
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://api.labarcaministerio.com';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

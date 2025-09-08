@@ -1,15 +1,18 @@
 <template>
-  <div class="artista-detalle-view min-h-screen"
+  <div
+class="artista-detalle-view min-h-screen"
     :style="{ backgroundColor: (artista && artista.color) ? artista.color : '#E2E2E2' }">
     <div v-if="isLoading" class="fixed inset-0 bg-brand-negro bg-opacity-75 flex justify-center items-center z-50">
       <div class="w-16 h-16 border-4 border-brand-camel border-t-transparent rounded-full animate-spin"></div>
     </div>
 
-    <div v-else-if="error"
+    <div
+v-else-if="error"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex flex-col justify-center items-center text-center p-4 z-50">
       <p class="text-2xl text-brand-gris-claro mb-4">Error al cargar el artista.</p>
       <p class="text-gray-400">{{ error }}</p>
-      <router-link to="/artistas"
+      <router-link
+to="/artistas"
         class="mt-6 inline-block bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80">
         Volver a Artistas
       </router-link>
@@ -34,12 +37,14 @@
       <div class="h-2 md:h-3" :style="{ backgroundColor: artista.color || '#A18059' }"></div>
 
       <!-- Sección de Descripción con Fondo Fijo (Parallax) -->
-      <section class="relative py-24 md:py-32 bg-fixed bg-cover bg-center"
+      <section
+class="relative py-24 md:py-32 bg-fixed bg-cover bg-center"
         :style="{ backgroundImage: `url(${artista.secondaryImageUrl ? `${API_BASE_URL}${artista.secondaryImageUrl}` : 'https://placehold.co/1920x1080/cccccc/969696?text=Fondo+Artista'})` }">
         <div class="glass-effect-panel absolute inset-0"></div>
         <div class="container mx-auto max-w-3xl px-4 relative z-10 text-center">
           <h2 class="text-3xl md:text-4xl font-semibold text-white mb-8 drop-shadow-md">Sobre {{ artista.name }}</h2>
-          <div v-if="artista.description"
+          <div
+v-if="artista.description"
             class="prose-glass max-w-none text-gray-200 leading-loose text-lg md:text-xl drop-shadow-sm mx-auto"
             v-html="artista.description">
           </div>
@@ -54,12 +59,14 @@
             <div class="lg:w-3/5"> <!-- Ajustado el ancho para Spotify -->
               <h2 class="text-2xl md:text-3xl font-bold mb-6" :class="textColorClass">Escucha en Spotify</h2>
               <div v-if="artista.spotifyEmbedUrl" class="aspect-video rounded-xl overflow-hidden shadow-lg">
-                <iframe data-testid="embed-iframe" style="border-radius:12px" :src="artista.spotifyEmbedUrl"
+                <iframe
+data-testid="embed-iframe" style="border-radius:12px" :src="artista.spotifyEmbedUrl"
                   width="100%" height="352" frameBorder="0"
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   loading="lazy"></iframe>
               </div>
-              <p v-else class="italic"
+              <p
+v-else class="italic"
                 :class="textColorClass === 'text-brand-negro' ? 'text-gray-600' : 'text-gray-300'">
                 Playlist de Spotify no disponible.
               </p>
@@ -67,26 +74,31 @@
             <div class="lg:w-2/5 w-full"> <!-- Ajustado el ancho para Redes -->
               <h2 class="text-2xl md:text-3xl font-bold mb-6" :class="textColorClass">Encuentra a nuestro artista</h2>
               <div class="space-y-3">
-                <a v-if="artista.social_instagram" :href="artista.social_instagram" target="_blank"
+                <a
+v-if="artista.social_instagram" :href="artista.social_instagram" target="_blank"
                   rel="noopener noreferrer"
                   class="flex items-center p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                   <LinkIcon class="h-6 w-6 mr-3 text-pink-600" /> <span :class="textColorClass">Instagram</span>
                 </a>
-                <a v-if="artista.social_facebook" :href="artista.social_facebook" target="_blank"
+                <a
+v-if="artista.social_facebook" :href="artista.social_facebook" target="_blank"
                   rel="noopener noreferrer"
                   class="flex items-center p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                   <LinkIcon class="h-6 w-6 mr-3 text-blue-600" /> <span :class="textColorClass">Facebook</span>
                 </a>
-                <a v-if="artista.social_youtubeChannel" :href="artista.social_youtubeChannel" target="_blank"
+                <a
+v-if="artista.social_youtubeChannel" :href="artista.social_youtubeChannel" target="_blank"
                   rel="noopener noreferrer"
                   class="flex items-center p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                   <LinkIcon class="h-6 w-6 mr-3 text-red-600" /> <span :class="textColorClass">YouTube</span>
                 </a>
-                <a v-if="artista.social_tiktok" :href="artista.social_tiktok" target="_blank" rel="noopener noreferrer"
+                <a
+v-if="artista.social_tiktok" :href="artista.social_tiktok" target="_blank" rel="noopener noreferrer"
                   class="flex items-center p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                   <MusicalNoteIcon class="h-6 w-6 mr-3 text-black" /> <span :class="textColorClass">TikTok</span>
                 </a>
-                <a v-if="artista.social_spotifyProfile" :href="artista.social_spotifyProfile" target="_blank"
+                <a
+v-if="artista.social_spotifyProfile" :href="artista.social_spotifyProfile" target="_blank"
                   rel="noopener noreferrer"
                   class="flex items-center p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                   <LinkIcon class="h-6 w-6 mr-3 text-green-500" /> <span :class="textColorClass">Perfil de
@@ -101,7 +113,8 @@
 
       <!-- Video de YouTube Hero -->
       <section v-if="artista.youtubeVideoId" class="relative h-[50vh] md:h-[70vh] bg-brand-negro">
-        <iframe :src="`https://www.youtube.com/embed/${artista.youtubeVideoId}`" title="YouTube video player"
+        <iframe
+:src="`https://www.youtube.com/embed/${artista.youtubeVideoId}`" title="YouTube video player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
@@ -178,7 +191,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await axios.get(`http://localhost:8000/api/artistas/${artistaId}`);
+    const response = await axios.get(`https://api.labarcaministerio.com/api/artistas/${artistaId}`);
     artista.value = response.data;
   } catch (err: any) {
     console.error("Error al cargar detalle del artista:", err);

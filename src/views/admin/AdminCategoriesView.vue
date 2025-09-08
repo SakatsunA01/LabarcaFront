@@ -3,7 +3,7 @@
         <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestión de Categorías</h1>
 
         <div class="flex justify-end mb-6">
-            <button @click="openModal(null)" class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors">
+            <button class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors" @click="openModal(null)">
                 Crear Nueva Categoría
             </button>
         </div>
@@ -25,8 +25,8 @@
                         <td class="p-4">{{ category.name }}</td>
                         <td class="p-4">{{ category.slug }}</td>
                         <td class="p-4 flex items-center space-x-2">
-                            <button @click="openModal(category)" class="text-blue-600 hover:text-blue-800">Editar</button>
-                            <button @click="handleDelete(category)" class="text-red-600 hover:text-red-800">Eliminar</button>
+                            <button class="text-blue-600 hover:text-blue-800" @click="openModal(category)">Editar</button>
+                            <button class="text-red-600 hover:text-red-800" @click="handleDelete(category)">Eliminar</button>
                         </td>
                     </tr>
                     <tr v-if="categories.length === 0">

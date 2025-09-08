@@ -4,7 +4,8 @@
         <p class="text-lg text-gray-600 mb-8">
             Estamos trabajando en esta sección. ¡Vuelve pronto!
         </p>
-        <router-link to="/"
+        <router-link
+to="/"
             class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80 transition-colors text-md font-medium">
             Volver al Inicio
         </router-link>

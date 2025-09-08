@@ -31,8 +31,8 @@
     <!-- Actions: Login and Social Icons -->
     <div class="flex items-center space-x-4">
       <!-- User/Login Section -->
-      <div v-if="authStore.isAuthenticated && authStore.currentUser" class="relative" ref="userMenuContainer">
-        <button @click="toggleUserMenu" class="flex items-center hover:text-brand-camel text-white">
+      <div v-if="authStore.isAuthenticated && authStore.currentUser" ref="userMenuContainer" class="relative">
+        <button class="flex items-center hover:text-brand-camel text-white" @click="toggleUserMenu">
           <span class="mr-2">{{ authStore.currentUser.name }}</span>
           <ChevronDownIcon class="h-5 w-5 transition-transform duration-200" :class="{ 'rotate-180': userMenuOpen }" />
         </button>
@@ -44,22 +44,22 @@
             <router-link
               v-if="authStore.isAdmin"
               to="/admin"
-              @click="closeUserMenu"
               class="block px-4 py-2 text-sm hover:bg-brand-gris-claro"
+              @click="closeUserMenu"
             >Panel Admin</router-link>
             <router-link
               to="/peticion-oracion"
-              @click="closeUserMenu"
               class="block px-4 py-2 text-sm hover:bg-brand-gris-claro"
+              @click="closeUserMenu"
             >Pedido de Oración</router-link>
             <button
-              @click="handleLogout"
               class="block w-full text-left px-4 py-2 text-sm hover:bg-brand-gris-claro"
+              @click="handleLogout"
             >Cerrar Sesión</button>
           </div>
         </transition>
       </div>
-      <button v-else @click="openLoginModal" class="text-xl hover:text-brand-camel text-white" aria-label="Login">
+      <button v-else class="text-xl hover:text-brand-camel text-white" aria-label="Login" @click="openLoginModal">
         <UserIcon class="h-7 w-7" />
       </button>
 

@@ -5,7 +5,8 @@
         <!-- Controles Superiores: Búsqueda -->
         <div class="flex justify-between items-center mb-6">
             <div class="w-1/3">
-                <input type="text" v-model="searchTerm" placeholder="Buscar evento por nombre..."
+                <input
+v-model="searchTerm" type="text" placeholder="Buscar evento por nombre..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
             </div>
         </div>
@@ -17,11 +18,13 @@
             <table v-else-if="filteredEventos.length" class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col"
+                        <th
+scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Evento
                         </th>
-                        <th scope="col"
+                        <th
+scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Fecha
                         </th>
@@ -39,8 +42,9 @@
                             <div class="text-sm text-gray-900">{{ formatDateTime(evento.fecha) }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button @click="openGalleryModal(evento)"
-                                class="text-brand-camel hover:text-brand-borgona">Gestionar Galería</button>
+                            <button
+class="text-brand-camel hover:text-brand-borgona"
+                                @click="openGalleryModal(evento)">Gestionar Galería</button>
                         </td>
                     </tr>
                 </tbody>
@@ -49,7 +53,8 @@
         </div>
 
         <!-- Modal para Gestionar Galería del Evento -->
-        <EventGalleryManagerModal :show="isGalleryModalOpen" :evento-id="selectedEventoId"
+        <EventGalleryManagerModal
+:show="isGalleryModalOpen" :evento-id="selectedEventoId"
             :evento-nombre="selectedEventoName" @close="closeGalleryModal" />
     </div>
 </template>
@@ -75,7 +80,7 @@ const isGalleryModalOpen = ref(false);
 const selectedEventoId = ref<number | null>(null);
 const selectedEventoName = ref<string | null>(null);
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 const fetchEventos = async () => {
     isLoading.value = true;

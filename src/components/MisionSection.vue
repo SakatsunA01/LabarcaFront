@@ -1,7 +1,8 @@
 <template>
   <section ref="sectionRef" class="bg-white py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center transition-all duration-1000 ease-out"
+      <div
+class="text-center transition-all duration-1000 ease-out"
         :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'">
         <h2 class="text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">
           Somos un Eco de Su Voz
@@ -32,9 +33,11 @@
             luz admirable.
           </p>
         </div>
-        <div class="w-full h-full transition-all duration-1000 ease-out delay-300"
+        <div
+class="w-full h-full transition-all duration-1000 ease-out delay-300"
           :class="isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'">
-          <img src="https://images.unsplash.com/photo-1528716321680-815a8cdb8cbe?q=80&w=1974&auto=format&fit=crop"
+          <img
+src="https://images.unsplash.com/photo-1528716321680-815a8cdb8cbe?q=80&w=1974&auto=format&fit=crop"
             alt="Comunidad en adoración"
             class="object-cover w-full h-full max-h-[500px] rounded-lg shadow-lg filter grayscale-20">
         </div>

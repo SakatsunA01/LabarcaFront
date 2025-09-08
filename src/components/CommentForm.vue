@@ -5,7 +5,8 @@
             <p>Por favor, <router-link :to="{ name: 'home' }" class="text-brand-camel hover:underline">inicia sesión</router-link> para dejar un comentario.</p>
         </div>
         <form v-else @submit.prevent="handleSubmit">
-            <textarea v-model="commentBody" rows="4" placeholder="Escribe tu comentario aquí..."
+            <textarea
+v-model="commentBody" rows="4" placeholder="Escribe tu comentario aquí..."
                 class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-brand-camel focus:border-brand-camel mb-4"
                 required></textarea>
             <div v-if="errorMessage" class="text-red-600 text-sm mb-4">{{ errorMessage }}</div>
