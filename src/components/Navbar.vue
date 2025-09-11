@@ -5,7 +5,7 @@
     <!-- Logo -->
     <div class="navbar-brand">
       <router-link to="/" class="text-2xl font-bold hover:text-brand-camel text-white">
-        LaBarca producciones
+        La Barca Music
       </router-link>
     </div>
 

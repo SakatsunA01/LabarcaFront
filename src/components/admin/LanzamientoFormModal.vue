@@ -182,7 +182,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.lanzamiento);
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 onMounted(async () => {
   try {

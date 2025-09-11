@@ -84,7 +84,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.image);
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 watch(() => props.show, (newVal) => {
     if (newVal) {

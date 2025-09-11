@@ -80,7 +80,7 @@ const isModalOpen = ref(false);
 const selectedEventoId = ref<number | null>(null);
 const selectedEventoName = ref<string | null>(null);
 
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 const fetchEventos = async () => {
     isLoading.value = true;

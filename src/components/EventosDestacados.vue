@@ -99,7 +99,7 @@ export default defineComponent({
     const todosLosEventos = ref<Evento[]>([]);
     const isLoading = ref(true);
     const error = ref<string | null>(null);
-    const API_URL = 'https://api.labarcaministerio.com/api';
+    const API_URL = 'https://api.labarcaministerio.com';
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     onMounted(async () => {

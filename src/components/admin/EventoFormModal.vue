@@ -141,7 +141,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.evento);
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 watch(() => props.show, (newVal) => {
     if (newVal) {

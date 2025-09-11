@@ -81,7 +81,7 @@ const successMessage = ref('');
 const errorMessage = ref('');
 const publicRequests = ref<PrayerRequest[]>([]);
 
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 const fetchPublicRequests = async () => {
   try {

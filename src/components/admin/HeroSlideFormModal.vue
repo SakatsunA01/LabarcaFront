@@ -126,7 +126,7 @@ const uploadProgress = ref(0);
 const authStore = useAuthStore();
 
 const isEditing = computed(() => !!props.slide);
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 watch(() => props.show, (newVal) => {
   if (newVal) {

@@ -79,7 +79,7 @@ const isLoading = ref(false);
 const error = ref<string | null>(null);
 const authStore = useAuthStore();
 
-const API_URL = 'https://api.labarcaministerio.com/api';
+const API_URL = 'https://api.labarcaministerio.com';
 
 const fetchTestimonials = async () => {
     if (!props.eventoId) {
