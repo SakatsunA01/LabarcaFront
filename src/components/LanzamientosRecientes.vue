@@ -22,7 +22,7 @@ v-for="lanzamiento in lanzamientos" :key="lanzamiento.id"
           class="bg-brand-gris-claro rounded-xl shadow-lg overflow-hidden flex flex-col">
           <router-link :to="`/lanzamientos/${lanzamiento.id}`" class="block relative">
             <img
-:src="lanzamiento.cover_image_url ? lanzamiento.cover_image_url : `https://placehold.co/400x400/E2E2E2/171C1E?text=${encodeURIComponent(lanzamiento.titulo.substring(0, 2))}`"
+:src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : `https://placehold.co/400x400/E2E2E2/171C1E?text=${encodeURIComponent(lanzamiento.titulo.substring(0, 2))}`"
               :alt="`Portada de ${lanzamiento.titulo}`" class="w-full h-64 object-cover" />
             <div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
               <PlayIcon class="h-16 w-16 text-white" />
@@ -44,7 +44,7 @@ v-for="lanzamiento in lanzamientos" :key="lanzamiento.id"
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import apiClient from '@/services/api';
+import axios from 'axios';
 import { PlayIcon } from '@heroicons/vue/24/solid';
 
 interface Lanzamiento {
@@ -61,18 +61,21 @@ interface Lanzamiento {
 
 const lanzamientos = ref<Lanzamiento[]>([]);
 const isLoading = ref(true);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${API_BASE_URL}/api`;
 
 onMounted(async () => {
   isLoading.value = true;
   try {
-    const response = await apiClient.get(`/lanzamientos/latest`);
+    const response = await axios.get(`${API_URL}/lanzamientos/latest`);
     lanzamientos.value = response.data;
   } catch (error) {
     console.error('Error al cargar lanzamientos recientes:', error);
     lanzamientos.value = [];
   } finally {
     isLoading.value = false;
-  }});
+  }
+});
 
 const formatDate = (dateString: string) => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
