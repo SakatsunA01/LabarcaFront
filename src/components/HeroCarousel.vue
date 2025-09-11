@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import axios from 'axios';
+import apiClient from '@/services/api'; // Use apiClient
 
 interface HeroSlide {
   id: number;
@@ -18,9 +18,6 @@ let intervalId: number | undefined = undefined;
 const slides = ref<HeroSlide[]>([]);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const API_URL = `${API_BASE_URL}/api`;
 
 // --- Carousel Logic ---
 const nextSlide = () => {
@@ -54,7 +51,7 @@ const stopAutoplay = () => {
 onMounted(async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(`${API_URL}/hero-slides`);
+    const response = await apiClient.get(`/hero-slides`); // Use apiClient
     // Filter for active slides and sort by order
     slides.value = response.data
       .filter((slide: HeroSlide) => slide.is_active)
@@ -94,7 +91,7 @@ v-for="(slide, index) in slides" v-show="currentSlide === index" :key="slide.id"
           class="absolute w-full h-full">
           <!-- Background Video -->
           <video
-:src="`${API_BASE_URL}${slide.video_path}`" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
+:src="slide.video_path" class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
             playsinline></video>
           <!-- Overlay -->
           <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40"></div>

@@ -48,7 +48,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['file-change']);
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const previewUrl = ref<string | null>(props.initialPreview || null);
 const isDragging = ref(false);
@@ -68,7 +68,8 @@ const helpText = computed(() => {
 
 watch(() => props.initialPreview, (newVal) => {
   if (newVal && !newVal.startsWith('blob:')) {
-    previewUrl.value = `${API_BASE_URL}${newVal}`;
+    const backendBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').replace('/api', '');
+    previewUrl.value = `${backendBaseUrl}${newVal}`;
   } else {
     previewUrl.value = newVal || null;
   }
