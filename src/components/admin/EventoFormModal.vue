@@ -1,9 +1,9 @@
 <template>
     <transition name="modal-fade">
         <div
-v-if="show" tabindex="-1"
+            v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-            @click.self="close">
+            >
             <div
                 class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all max-h-[90vh] overflow-y-auto">
                 <h2 class="text-2xl font-bold text-brand-negro mb-6">{{ isEditing ? 'Editar' : 'Crear' }} Evento</h2>
@@ -19,7 +19,7 @@ v-if="show" tabindex="-1"
                                         <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre <span
                                                 class="text-red-500">*</span></label>
                                         <input
-id="nombre" v-model="formData.nombre" type="text" required
+                                            id="nombre" v-model="formData.nombre" type="text" required
                                             placeholder="Nombre del evento"
                                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                                     </div>
@@ -27,22 +27,22 @@ id="nombre" v-model="formData.nombre" type="text" required
                                         <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha y Hora
                                             <span class="text-red-500">*</span></label>
                                         <input
-id="fecha" v-model="formData.fecha" type="datetime-local" required
+                                            id="fecha" v-model="formData.fecha" type="datetime-local" required
                                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                                     </div>
                                     <div>
                                         <label for="lugar" class="block text-sm font-medium text-gray-700">Lugar</label>
                                         <input
-id="lugar" v-model="formData.lugar" type="text"
+                                            id="lugar" v-model="formData.lugar" type="text"
                                             placeholder="Ubicación del evento"
                                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                                     </div>
                                     <div>
                                         <label
-for="descripcion"
+                                            for="descripcion"
                                             class="block text-sm font-medium text-gray-700">Descripción</label>
                                         <textarea
-id="descripcion" v-model="formData.descripcion" rows="4"
+                                            id="descripcion" v-model="formData.descripcion" rows="4"
                                             placeholder="Detalles completos del evento"
                                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"></textarea>
                                     </div>
@@ -50,7 +50,7 @@ id="descripcion" v-model="formData.descripcion" rows="4"
                                         <label for="link_compra" class="block text-sm font-medium text-gray-700">Link de
                                             Compra</label>
                                         <input
-id="link_compra" v-model="formData.link_compra" type="url"
+                                            id="link_compra" v-model="formData.link_compra" type="url"
                                             placeholder="URL para comprar entradas"
                                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                                     </div>
@@ -61,7 +61,7 @@ id="link_compra" v-model="formData.link_compra" type="url"
                         <!-- Columna 2: Carga de Imagen -->
                         <div class="space-y-6">
                             <ImageUploader
-label="Imagen Principal del Evento" :initial-preview="formData.imagenUrl"
+                                label="Imagen Principal del Evento" :initial-preview="formData.imagenUrl"
                                 @file-change="file => handleFileChange(file, 'imagenUrl')" />
                         </div>
                     </div>
@@ -73,12 +73,12 @@ label="Imagen Principal del Evento" :initial-preview="formData.imagenUrl"
                     <!-- Botones de Acción -->
                     <div class="mt-8 flex justify-end space-x-4">
                         <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+                            type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
                             @click="close">
                             Cancelar
                         </button>
                         <button
-type="submit" :disabled="isLoading"
+                            type="submit" :disabled="isLoading"
                             class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
                             <span v-if="isLoading">Guardando...</span>
                             <span v-else>Guardar</span>
@@ -141,7 +141,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.evento);
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 watch(() => props.show, (newVal) => {
     if (newVal) {

@@ -15,8 +15,18 @@ export default {
         'brand-gris-claro': '#E2E2E2',
       },
       fontFamily: {
-        playfair: ['"Playfair Display"', 'serif'],
-        inter: ['"Inter"', 'sans-serif'],
+        sans: ['"Inter"', 'sans-serif'], // Inter como fuente por defecto
+        playfair: ['"Playfair Display"', 'serif'], // Playfair para títulos
+      },
+      spacing: {
+        'section-sm': '5rem',    // 80px
+        'section-md': '6.5rem',  // 104px
+        'section-lg': '8rem',    // 128px
+        'section-xl': '10rem',   // 160px
+      },
+      boxShadow: {
+        'card': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
+        'card-hover': '0 6px 20px 0 rgba(0, 0, 0, 0.07)',
       },
     },
   },

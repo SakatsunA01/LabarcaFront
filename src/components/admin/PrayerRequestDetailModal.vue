@@ -1,14 +1,14 @@
 <template>
   <transition name="modal-fade">
     <div
-v-if="show"
+      v-if="show"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      @click.self="close">
+      >
       <div class="bg-brand-gris-claro p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-lg transform transition-all">
         <div class="flex justify-between items-start">
           <h2 class="text-2xl font-bold text-brand-negro mb-4">Detalle de la Petición</h2>
           <button
-class="text-gray-400 hover:text-brand-negro transition-colors"
+            class="text-gray-400 hover:text-brand-negro transition-colors"
             @click="close">
             <XMarkIcon class="h-6 w-6" />
           </button>
@@ -23,7 +23,7 @@ class="text-gray-400 hover:text-brand-negro transition-colors"
 
         <div class="mt-6 text-right">
            <button
-class="bg-brand-camel text-white py-2 px-5 rounded-md hover:bg-opacity-90 transition-colors font-medium"
+            class="bg-brand-camel text-white py-2 px-5 rounded-md hover:bg-opacity-90 transition-colors font-medium"
             @click="close">
             Cerrar
           </button>

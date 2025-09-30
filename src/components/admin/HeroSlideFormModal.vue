@@ -1,9 +1,9 @@
 <template>
   <transition name="modal-fade">
     <div
-v-if="show" tabindex="-1"
+      v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      @click.self="close">
+      >
       <div
         class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold text-brand-negro mb-6">{{ isEditing ? 'Editar' : 'Crear' }} Slide</h2>
@@ -13,7 +13,7 @@ v-if="show" tabindex="-1"
               <label for="title" class="block text-sm font-medium text-gray-700">Título <span
                   class="text-red-500">*</span></label>
               <input
-id="title" v-model="formData.title" type="text" required
+                id="title" v-model="formData.title" type="text" required
                 placeholder="Título del slide"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
@@ -21,7 +21,7 @@ id="title" v-model="formData.title" type="text" required
               <label for="button_text" class="block text-sm font-medium text-gray-700">Texto del Botón <span
                   class="text-red-500">*</span></label>
               <input
-id="button_text" v-model="formData.button_text" type="text" required
+                id="button_text" v-model="formData.button_text" type="text" required
                 placeholder="Ej: Ver Más"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
@@ -29,7 +29,7 @@ id="button_text" v-model="formData.button_text" type="text" required
               <label for="button_url" class="block text-sm font-medium text-gray-700">URL del Botón <span
                   class="text-red-500">*</span></label>
               <input
-id="button_url" v-model="formData.button_url" type="url" required
+                id="button_url" v-model="formData.button_url" type="url" required
                 placeholder="Ej: https://tuweb.com/pagina"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
@@ -37,19 +37,19 @@ id="button_url" v-model="formData.button_url" type="url" required
               <label for="order" class="block text-sm font-medium text-gray-700">Orden <span
                   class="text-red-500">*</span></label>
               <input
-id="order" v-model="formData.order" type="number" required
+                id="order" v-model="formData.order" type="number" required
                 placeholder="Orden de aparición"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
             </div>
             <div class="flex items-center">
               <input
-id="is_active" v-model="formData.is_active" type="checkbox"
+                id="is_active" v-model="formData.is_active" type="checkbox"
                 class="h-4 w-4 text-brand-camel focus:ring-brand-camel border-gray-300 rounded">
               <label for="is_active" class="ml-2 block text-sm text-gray-900">Activo</label>
             </div>
 
             <ImageUploader
-label="Video (MP4/MOV, max 50MB)" :initial-preview="formData.video_path"
+              label="Video (MP4/MOV, max 50MB)" :initial-preview="formData.video_path"
               file-type="video" @file-change="file => handleFileChange(file)" />
 
             <div v-if="uploadProgress > 0 && uploadProgress < 100" class="mt-4">
@@ -67,12 +67,12 @@ label="Video (MP4/MOV, max 50MB)" :initial-preview="formData.video_path"
           <!-- Botones de Acción -->
           <div class="mt-8 flex justify-end space-x-4">
             <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+              type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
               @click="close">
               Cancelar
             </button>
             <button
-type="submit" :disabled="isLoading"
+              type="submit" :disabled="isLoading"
               class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
               <span v-if="isLoading">Guardando...</span>
               <span v-else>Guardar</span>
@@ -126,7 +126,7 @@ const uploadProgress = ref(0);
 const authStore = useAuthStore();
 
 const isEditing = computed(() => !!props.slide);
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 watch(() => props.show, (newVal) => {
   if (newVal) {

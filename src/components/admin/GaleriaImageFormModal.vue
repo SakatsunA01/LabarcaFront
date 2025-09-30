@@ -1,9 +1,9 @@
 <template>
     <transition name="modal-fade">
         <div
-v-if="show" tabindex="-1"
+            v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-            @click.self="close">
+            >
             <div
                 class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all max-h-[90vh] overflow-y-auto">
                 <h2 class="text-2xl font-bold text-brand-negro mb-6">{{ isEditing ? 'Editar' : 'Añadir' }} Imagen de
@@ -13,12 +13,12 @@ v-if="show" tabindex="-1"
                         <div>
                             <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
                             <input
-id="descripcion" v-model="formData.descripcion" type="text"
+                                id="descripcion" v-model="formData.descripcion" type="text"
                                 placeholder="Breve descripción de la imagen"
                                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                         </div>
                         <ImageUploader
-label="Archivo de Imagen" :initial-preview="formData.url_imagen"
+                            label="Archivo de Imagen" :initial-preview="formData.url_imagen"
                             @file-change="file => handleFileChange(file)" />
                     </div>
 
@@ -29,12 +29,12 @@ label="Archivo de Imagen" :initial-preview="formData.url_imagen"
                     <!-- Botones de Acción -->
                     <div class="mt-8 flex justify-end space-x-4">
                         <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+                            type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
                             @click="close">
                             Cancelar
                         </button>
                         <button
-type="submit" :disabled="isLoading"
+                            type="submit" :disabled="isLoading"
                             class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
                             <span v-if="isLoading">Guardando...</span>
                             <span v-else>Guardar</span>
@@ -84,7 +84,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.image);
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 watch(() => props.show, (newVal) => {
     if (newVal) {

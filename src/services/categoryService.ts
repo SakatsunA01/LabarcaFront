@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 export interface Category {
     id: number;

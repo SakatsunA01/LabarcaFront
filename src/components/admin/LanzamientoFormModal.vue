@@ -1,9 +1,9 @@
 <template>
   <transition name="modal-fade">
     <div
-v-if="show" tabindex="-1"
+      v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      @click.self="close">
+      >
       <div
         class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold text-brand-negro mb-6">{{ isEditing ? 'Editar' : 'Crear' }} Lanzamiento</h2>
@@ -18,7 +18,7 @@ v-if="show" tabindex="-1"
                     <label for="titulo" class="block text-sm font-medium text-gray-700">Título <span
                         class="text-red-500">*</span></label>
                     <input
-id="titulo" v-model="formData.titulo" type="text" required
+                      id="titulo" v-model="formData.titulo" type="text" required
                       placeholder="Título del lanzamiento"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -26,7 +26,7 @@ id="titulo" v-model="formData.titulo" type="text" required
                     <label for="artista" class="block text-sm font-medium text-gray-700">Artista <span
                         class="text-red-500">*</span></label>
                     <select
-id="artista" v-model="formData.artista_id" required
+                      id="artista" v-model="formData.artista_id" required
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                       <option value="" disabled>Selecciona un artista</option>
                       <option v-for="artista in artistas" :key="artista.id" :value="artista.id">{{ artista.name }}
@@ -37,20 +37,20 @@ id="artista" v-model="formData.artista_id" required
                     <label for="fecha_lanzamiento" class="block text-sm font-medium text-gray-700">Fecha de
                       Lanzamiento <span class="text-red-500">*</span></label>
                     <input
-id="fecha_lanzamiento" v-model="formData.fecha_lanzamiento" type="date" required
+                      id="fecha_lanzamiento" v-model="formData.fecha_lanzamiento" type="date" required
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="youtube_link" class="block text-sm font-medium text-gray-700">Enlace de YouTube</label>
                     <input
-id="youtube_link" v-model="formData.youtube_link" type="url"
+                      id="youtube_link" v-model="formData.youtube_link" type="url"
                       placeholder="URL de YouTube"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="spotify_link" class="block text-sm font-medium text-gray-700">Enlace de Spotify</label>
                     <input
-id="spotify_link" v-model="formData.spotify_link" type="url"
+                      id="spotify_link" v-model="formData.spotify_link" type="url"
                       placeholder="URL de Spotify"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -61,22 +61,22 @@ id="spotify_link" v-model="formData.spotify_link" type="url"
                 <legend class="text-lg font-semibold text-brand-negro px-2">Pistas</legend>
                 <div class="space-y-4 mt-2">
                   <div
-v-for="(track, index) in formData.tracks" :key="index"
+                    v-for="(track, index) in formData.tracks" :key="index"
                     class="flex items-center space-x-2 bg-gray-50 p-2 rounded-md">
                     <input
-v-model="track.titulo" type="text" placeholder="Título de la pista"
+                      v-model="track.titulo" type="text" placeholder="Título de la pista"
                       class="flex-grow px-3 py-2 border border-gray-300 rounded-md" required>
                     <input
-v-model="track.duracion" type="text" placeholder="Duración (ej: 3:45)"
+                      v-model="track.duracion" type="text" placeholder="Duración (ej: 3:45)"
                       class="w-24 px-3 py-2 border border-gray-300 rounded-md" required>
                     <button
-type="button" class="text-red-500 hover:text-red-700 p-1 rounded-full"
+                      type="button" class="text-red-500 hover:text-red-700 p-1 rounded-full"
                       @click="removeTrack(index)">
                       <XMarkIcon class="h-5 w-5" />
                     </button>
                   </div>
                   <button
-type="button" class="w-full bg-brand-verde-oscuro text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors flex items-center justify-center space-x-2"
+                    type="button" class="w-full bg-brand-verde-oscuro text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors flex items-center justify-center space-x-2"
                     @click="addTrack">
                     <PlusIcon class="h-5 w-5" />
                     <span>Añadir Pista</span>
@@ -88,7 +88,7 @@ type="button" class="w-full bg-brand-verde-oscuro text-white py-2 px-4 rounded-m
             <!-- Columna 2: Carga de Imagen -->
             <div class="space-y-6">
               <ImageUploader
-label="Imagen de Portada" :initial-preview="formData.cover_image_url"
+                label="Imagen de Portada" :initial-preview="formData.cover_image_url"
                 @file-change="file => handleFileChange(file)" />
             </div>
           </div>
@@ -100,15 +100,15 @@ label="Imagen de Portada" :initial-preview="formData.cover_image_url"
           <!-- Botones de Acción -->
           <div class="mt-8 flex justify-end space-x-4">
             <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+              type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
               @click="close">
               Cancelar
             </button>
             <button
-type="submit" :disabled="isLoading"
+              type="submit" :disabled="isLoading"
               class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
               <span v-if="isLoading">Guardando...</span>
-              <span v-else>Guardar</span>
+              <span>Guardar</span>
             </button>
           </div>
         </form>
@@ -182,7 +182,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.lanzamiento);
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 onMounted(async () => {
   try {

@@ -1,5 +1,5 @@
 <template>
-  <div class="artistas-view bg-brand-gris-claro min-h-screen py-6 md:py-10">
+  <div class="artistas-view bg-brand-gris-claro min-h-screen py-section-md">
     <div class="container mx-auto px-4 max-w-5xl">
       <header class="mb-6 md:mb-10 text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-brand-negro">Nuestros Artistas</h1>

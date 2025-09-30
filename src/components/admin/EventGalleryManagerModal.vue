@@ -1,16 +1,16 @@
 <template>
     <transition name="modal-fade">
         <div
-v-if="show" tabindex="-1"
+            v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-            @click.self="close">
+            >
             <div
                 class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl transform transition-all max-h-[90vh] overflow-y-auto">
                 <h2 class="text-2xl font-bold text-brand-negro mb-6">Galería de Evento: {{ eventoNombre }}</h2>
 
                 <div class="flex justify-end mb-4">
                     <button
-class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center"
+                        class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center"
                         @click="openCreateImageModal">
                         <PlusIcon class="h-5 w-5 mr-2" />
                         Añadir Imagen
@@ -21,20 +21,20 @@ class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80
                 <div v-else-if="error" class="p-8 text-center text-red-500">{{ error }}</div>
                 <div v-else-if="galleryImages.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div
-v-for="image in galleryImages" :key="image.id"
+                        v-for="image in galleryImages" :key="image.id"
                         class="relative group bg-gray-100 rounded-lg overflow-hidden shadow-md">
                         <img
-:src="`${API_BASE_URL}${image.url_imagen}`" :alt="image.descripcion || 'Imagen de galería'"
+                            :src="`${API_BASE_URL}${image.url_imagen}`" :alt="image.descripcion || 'Imagen de galería'"
                             class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
                         <div
                             class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <p class="text-sm font-medium truncate">{{ image.descripcion || 'Sin descripción' }}</p>
                             <div class="flex justify-end space-x-2 mt-2">
                                 <button
-class="text-brand-camel hover:text-brand-borgona text-sm"
+                                    class="text-brand-camel hover:text-brand-borgona text-sm"
                                     @click="openEditImageModal(image)">Editar</button>
                                 <button
-class="text-red-500 hover:text-red-700 text-sm"
+                                    class="text-red-500 hover:text-red-700 text-sm"
                                     @click="deleteImage(image.id)">Eliminar</button>
                             </div>
                         </div>
@@ -44,7 +44,7 @@ class="text-red-500 hover:text-red-700 text-sm"
 
                 <div class="mt-8 flex justify-end">
                     <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+                        type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
                         @click="close">
                         Cerrar
                     </button>
@@ -55,7 +55,7 @@ type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gra
 
     <!-- Modal para Crear/Editar Imagen de Galería -->
     <GaleriaImageFormModal
-:show="isImageFormModalOpen" :evento-id="eventoId" :image="selectedImage"
+        :show="isImageFormModalOpen" :evento-id="eventoId" :image="selectedImage"
         @close="closeImageFormModal" @save="handleImageSave" />
 </template>
 
@@ -87,7 +87,7 @@ const error = ref<string | null>(null);
 const isImageFormModalOpen = ref(false);
 const selectedImage = ref<GaleriaImage | null>(null);
 
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchGalleryImages = async () => {
@@ -135,15 +135,19 @@ const handleImageSave = () => {
 };
 
 const deleteImage = async (imageId: number) => {
-    if (confirm('¿Estás seguro de que quieres eliminar esta imagen de la galería?')) {
-        try {
-            await axios.delete(`${API_URL}/galerias-eventos/${imageId}`);
-            fetchGalleryImages(); // Recargar la lista
-        } catch (err) {
-            console.error("Error al eliminar imagen:", err);
-            alert('No se pudo eliminar la imagen.');
-        }
-    }
+  if (!window.confirm('¿Estás seguro de que quieres eliminar esta imagen?')) {
+    return;
+  }
+
+  try {
+    await axios.delete(`${API_URL}/galerias-eventos/${imageId}`);
+    // After deleting, refresh the gallery to show the changes
+    fetchGalleryImages();
+  } catch (err) {
+    console.error("Error al eliminar la imagen:", err);
+    // Optionally, set an error message to display to the user
+    error.value = 'No se pudo eliminar la imagen.';
+  }
 };
 
 const close = () => {

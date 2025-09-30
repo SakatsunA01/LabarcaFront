@@ -7,6 +7,7 @@ import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import LoginModal from '@/components/LoginModal.vue';
 import RegisterModal from '@/components/RegisterModal.vue';
 import FaithPrayerModal from '@/components/FaithPrayerModal.vue'; // Importar el nuevo modal
+import Snackbar from '@/components/Snackbar.vue';
 import { useUiStore } from '@/stores/uiStore';
 
 const uiStore = useUiStore();
@@ -37,31 +38,31 @@ const closeFaithPrayerModal = () => {
     <LoginModal :show="uiStore.showLoginModal" @close="uiStore.setShowLoginModal(false)" />
     <RegisterModal :show="uiStore.showRegisterModal" @close="uiStore.setShowRegisterModal(false)" @registration-success="handleRegistrationSuccess" />
     <FaithPrayerModal :show="showFaithPrayerModal" @close="closeFaithPrayerModal" />
+    <Snackbar
+      :visible="uiStore.snackbar.visible"
+      :message="uiStore.snackbar.message"
+      :type="uiStore.snackbar.type"
+      @update:visible="uiStore.hideSnackbar"
+    />
     <AppFooter />
   </div>
 </template>
 
 <style scoped>
-/* Puedes añadir estilos globales adicionales aquí si es necesario,
-   o importar una fuente personalizada en tu main.css/main.ts */
-/* Ejemplo para una fuente sans-serif más suave, si la tienes configurada:
-body {
-  font-family: 'TuFuentePersonalizada', sans-serif;
-}
-*/
-
 .route-fade-enter-active,
 .route-fade-leave-active {
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .route-fade-enter-from,
 .route-fade-leave-to {
   opacity: 0;
+  transform: translateY(10px);
 }
 
 .route-fade-enter-to,
 .route-fade-leave-from {
   opacity: 1;
+  transform: translateY(0);
 }
 </style>

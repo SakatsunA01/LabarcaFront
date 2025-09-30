@@ -1,67 +1,70 @@
 <template>
-  <div class="eventos-view bg-brand-gris-claro min-h-screen py-6 md:py-10">
-    <div class="container mx-auto px-4 max-w-5xl">
-      <header class="mb-6 md:mb-10 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-brand-negro">Nuestros Eventos</h1>
-      </header>
+  <div class="eventos-view bg-brand-gris-claro min-h-screen py-section-md">
+    <AnimatedSection>
+      <div class="container mx-auto px-4 max-w-5xl">
+        <header class="mb-6 md:mb-10 text-center">
+          <h1 class="text-4xl md:text-5xl font-bold text-brand-negro">Nuestros Eventos</h1>
+        </header>
 
-      <!-- Filtros -->
-      <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4">
-          <div class="flex space-x-2 sm:space-x-3">
-            <button
-:class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'todos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
-              @click="setFiltroActivo('todos')">
-              Todos
-            </button>
-            <button
-:class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'proximos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
-              @click="setFiltroActivo('proximos')">
-              Próximos
-            </button>
-            <button
-:class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'pasados' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
-              @click="setFiltroActivo('pasados')">
-              Pasados
-            </button>
+        <!-- Filtros -->
+        <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4">
+            <div class="flex space-x-2 sm:space-x-3">
+              <button
+  :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'todos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
+                @click="setFiltroActivo('todos')">
+                Todos
+              </button>
+              <button
+  :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'proximos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
+                @click="setFiltroActivo('proximos')">
+                Próximos
+              </button>
+              <button
+  :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'pasados' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
+                @click="setFiltroActivo('pasados')">
+                Pasados
+              </button>
+            </div>
+            <!-- Placeholder para el calendario -->
+            <div class="text-sm text-gray-500 mt-4 sm:mt-0">
+              <!-- Calendario (Implementación futura) -->
+              <!-- <button class="p-2 border rounded-md hover:bg-gray-100">📅 Seleccionar Fecha</button> -->
+            </div>
           </div>
-          <!-- Placeholder para el calendario -->
-          <div class="text-sm text-gray-500 mt-4 sm:mt-0">
-            <!-- Calendario (Implementación futura) -->
-            <!-- <button class="p-2 border rounded-md hover:bg-gray-100">📅 Seleccionar Fecha</button> -->
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Lista de Eventos -->
-      <transition name="fade" mode="out-in">
-        <div v-if="isLoading" class="text-center py-10">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
-          <p class="mt-4 text-brand-negro">Cargando eventos...</p>
-        </div>
-        <div v-else-if="Object.keys(eventosAgrupados).length > 0" class="space-y-10">
-          <div v-for="(eventosDelMes, mesAno) in eventosAgrupados" :key="mesAno" class="month-group">
-            <h2
-              class="text-xl md:text-2xl font-semibold text-brand-verde-oscuro mb-4 md:mb-6 border-b-2 border-brand-camel pb-2">
-              {{ mesAno }}
-            </h2>
-            <transition-group tag="div" name="list-anim" class="space-y-6">
-              <EventoCardHorizontal v-for="evento in eventosDelMes" :key="evento.id" :evento="evento" />
-            </transition-group>
+        <!-- Lista de Eventos -->
+        <transition name="fade" mode="out-in">
+          <div v-if="isLoading" class="text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
+            <p class="mt-4 text-brand-negro">Cargando eventos...</p>
           </div>
-        </div>
-        <div v-else :key="`no-eventos-${filtroActivo}`" class="text-center py-10 bg-white rounded-xl shadow-md">
-          <p class="text-xl text-brand-negro">No hay eventos que coincidan con tu búsqueda.</p>
-          <p class="text-gray-600 mt-2">Intenta con otros filtros o revisa más tarde.</p>
-        </div>
-      </transition>
-    </div>
+          <div v-else-if="Object.keys(eventosAgrupados).length > 0" class="space-y-10">
+            <div v-for="(eventosDelMes, mesAno) in eventosAgrupados" :key="mesAno" class="month-group">
+              <h2
+                class="text-xl md:text-2xl font-semibold text-brand-verde-oscuro mb-4 md:mb-6 border-b-2 border-brand-camel pb-2">
+                {{ mesAno }}
+              </h2>
+              <transition-group tag="div" name="list-anim" class="space-y-6">
+                <EventoCardHorizontal v-for="evento in eventosDelMes" :key="evento.id" :evento="evento" />
+              </transition-group>
+            </div>
+          </div>
+          <div v-else :key="`no-eventos-${filtroActivo}`" class="text-center py-10 bg-white rounded-xl shadow-md">
+            <p class="text-xl text-brand-negro">No hay eventos que coincidan con tu búsqueda.</p>
+            <p class="text-gray-600 mt-2">Intenta con otros filtros o revisa más tarde.</p>
+          </div>
+        </transition>
+      </div>
+    </AnimatedSection>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import EventoCardHorizontal from '@/components/EventoCardHorizontal.vue';
+import AnimatedSection from '@/components/AnimatedSection.vue';
 import axios from 'axios'; // Descomenta esto
 import { useUiStore } from '@/stores/uiStore';
 
@@ -83,7 +86,7 @@ interface EventosAgrupados {
 }
 
 const todosLosEventos = ref<Evento[]>([]);
-const filtroActivo = ref<'todos' | 'proximos' | 'pasados'>('proximos');
+const filtroActivo = ref<'todos' | 'proximos' | 'pasados'>('todos');
 const isLoading = ref(true);
 const uiStore = useUiStore();
 
@@ -137,10 +140,32 @@ const eventosFiltrados = computed(() => {
 const eventosAgrupados = computed(() => {
   const agrupados: EventosAgrupados = {};
   const eventosOrdenados = [...eventosFiltrados.value].sort((a, b) => {
-    // Ordenar por fecha, los más recientes primero si son pasados, los más próximos primero si son futuros/todos
+    const ahora = new Date();
+    const fechaA = new Date(a.fecha.replace(/-/g, '/'));
+    const fechaB = new Date(b.fecha.replace(/-/g, '/'));
+
+    if (filtroActivo.value === 'todos') {
+      const aEsFuturo = fechaA >= ahora;
+      const bEsFuturo = fechaB >= ahora;
+
+      if (aEsFuturo && !bEsFuturo) return -1; // a (futuro) va antes que b (pasado)
+      if (!aEsFuturo && bEsFuturo) return 1;  // b (futuro) va antes que a (pasado)
+
+      // Si ambos son futuros, ordenar por el más cercano
+      if (aEsFuturo && bEsFuturo) {
+        return fechaA.getTime() - fechaB.getTime();
+      }
+
+      // Si ambos son pasados, ordenar por el más reciente
+      if (!aEsFuturo && !bEsFuturo) {
+        return fechaB.getTime() - fechaA.getTime();
+      }
+    }
+
+    // Lógica original para 'proximos' y 'pasados'
     return filtroActivo.value === 'pasados'
-      ? new Date(b.fecha.replace(/-/g, '/')).getTime() - new Date(a.fecha.replace(/-/g, '/')).getTime()
-      : new Date(a.fecha.replace(/-/g, '/')).getTime() - new Date(b.fecha.replace(/-/g, '/')).getTime();
+      ? fechaB.getTime() - fechaA.getTime()
+      : fechaA.getTime() - fechaB.getTime();
   });
 
   eventosOrdenados.forEach(evento => {

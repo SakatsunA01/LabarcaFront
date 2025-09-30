@@ -1,9 +1,9 @@
 <template>
     <transition name="modal-fade">
         <div
-v-if="show" tabindex="-1"
+            v-if="show" tabindex="-1"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-            @click.self="close">
+            >
             <div
                 class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl transform transition-all max-h-[90vh] flex flex-col">
                 <h2 class="text-2xl font-bold text-brand-negro mb-6 flex-shrink-0">Testimonios de: {{ eventoNombre }}
@@ -14,7 +14,7 @@ v-if="show" tabindex="-1"
                     <div v-else-if="error" class="p-8 text-center text-red-500">{{ error }}</div>
                     <div v-else-if="testimonials.length > 0" class="space-y-4">
                         <div
-v-for="testimonio in testimonials" :key="testimonio.id"
+                            v-for="testimonio in testimonials" :key="testimonio.id"
                             class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex items-start justify-between">
                             <div class="flex-1">
                                 <p class="text-gray-800 italic">"{{ testimonio.comentario }}"</p>
@@ -25,7 +25,7 @@ v-for="testimonio in testimonials" :key="testimonio.id"
                                 </p>
                             </div>
                             <button
-class="ml-4 text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors"
+                                class="ml-4 text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors"
                                 @click="deleteTestimonial(testimonio.id)">
                                 <TrashIcon class="h-5 w-5" />
                             </button>
@@ -36,7 +36,7 @@ class="ml-4 text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 tr
 
                 <div class="mt-8 flex justify-end flex-shrink-0">
                     <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+                        type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
                         @click="close">
                         Cerrar
                     </button>
@@ -79,7 +79,7 @@ const isLoading = ref(false);
 const error = ref<string | null>(null);
 const authStore = useAuthStore();
 
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 const fetchTestimonials = async () => {
     if (!props.eventoId) {

@@ -1,9 +1,10 @@
 <template>
   <transition name="modal-fade">
     <div
-v-if="show" tabindex="-1"
+      v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      @click.self="close">
+      @click.self.stop
+      >
       <div
         class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold text-brand-negro mb-6">{{ isEditing ? 'Editar' : 'Crear' }} Artista</h2>
@@ -18,14 +19,14 @@ v-if="show" tabindex="-1"
                     <label for="name" class="block text-sm font-medium text-gray-700">Nombre <span
                         class="text-red-500">*</span></label>
                     <input
-id="name" v-model="formData.name" type="text" required
+                      id="name" v-model="formData.name" type="text" required
                       placeholder="Nombre completo del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
                   <div>
                     <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
                     <textarea
-id="description" v-model="formData.description" rows="4"
+                      id="description" v-model="formData.description" rows="4"
                       placeholder="Una breve biografía o descripción del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"></textarea>
                   </div>
@@ -33,7 +34,7 @@ id="description" v-model="formData.description" rows="4"
                     <label for="color" class="block text-sm font-medium text-gray-700">Color
                       Principal</label>
                     <input
-id="color" v-model="formData.color" type="color"
+                      id="color" v-model="formData.color" type="color"
                       title="Selecciona un color representativo para el artista"
                       class="mt-1 block w-full h-10 border border-gray-300 rounded-md shadow-sm">
                   </div>
@@ -49,7 +50,7 @@ id="color" v-model="formData.color" type="color"
                     <label for="spotifyEmbedUrl" class="block text-sm font-medium text-gray-700">URL
                       Spotify Embed</label>
                     <input
-id="spotifyEmbedUrl" v-model="formData.spotifyEmbedUrl" type="url"
+                      id="spotifyEmbedUrl" v-model="formData.spotifyEmbedUrl" type="url"
                       placeholder="URL de un álbum o canción de Spotify para incrustar"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -57,7 +58,7 @@ id="spotifyEmbedUrl" v-model="formData.spotifyEmbedUrl" type="url"
                     <label for="youtubeVideoId" class="block text-sm font-medium text-gray-700">ID
                       Video YouTube</label>
                     <input
-id="youtubeVideoId" v-model="formData.youtubeVideoId" type="text"
+                      id="youtubeVideoId" v-model="formData.youtubeVideoId" type="text"
                       placeholder="Ej: dQw4w9WgXcQ (solo el ID del video)"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -65,7 +66,7 @@ id="youtubeVideoId" v-model="formData.youtubeVideoId" type="text"
                     <label for="social_instagram" class="block text-sm font-medium text-gray-700">URL
                       Instagram</label>
                     <input
-id="social_instagram" v-model="formData.social_instagram" type="url"
+                      id="social_instagram" v-model="formData.social_instagram" type="url"
                       placeholder="Perfil de Instagram del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -73,7 +74,7 @@ id="social_instagram" v-model="formData.social_instagram" type="url"
                     <label for="social_facebook" class="block text-sm font-medium text-gray-700">URL
                       Facebook</label>
                     <input
-id="social_facebook" v-model="formData.social_facebook" type="url"
+                      id="social_facebook" v-model="formData.social_facebook" type="url"
                       placeholder="Página de Facebook del artista"
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                   </div>
@@ -85,13 +86,13 @@ id="social_facebook" v-model="formData.social_facebook" type="url"
             <!-- Columna 2: Carga de Imágenes -->
             <div class="space-y-6">
               <ImageUploader
-label="Imagen Principal (Card)" :initial-preview="formData.imageUrl"
+                label="Imagen Principal (Card)" :initial-preview="formData.imageUrl"
                 @file-change="file => handleFileChange(file, 'imageUrl')" />
               <ImageUploader
-label="Imagen Hero (Detalle)" :initial-preview="formData.heroImageUrl"
+                label="Imagen Hero (Detalle)" :initial-preview="formData.heroImageUrl"
                 @file-change="file => handleFileChange(file, 'heroImageUrl')" />
               <ImageUploader
-label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl"
+                label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl"
                 @file-change="file => handleFileChange(file, 'secondaryImageUrl')" />
             </div>
           </div>
@@ -103,12 +104,12 @@ label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl
           <!-- Botones de Acción -->
           <div class="mt-8 flex justify-end space-x-4">
             <button
-type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
+              type="button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
               @click="close">
               Cancelar
             </button>
             <button
-type="submit" :disabled="isLoading"
+              type="submit" :disabled="isLoading"
               class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg">
               <span v-if="isLoading">Guardando...</span>
               <span v-else>Guardar</span>
@@ -166,13 +167,28 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const isEditing = computed(() => !!props.artista);
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 
 watch(() => props.show, (newVal) => {
   if (newVal) {
     errorMessage.value = '';
     if (props.artista) {
-      formData.value = { ...defaultFormData, ...props.artista };
+      formData.value = {
+        ...defaultFormData,
+        ...props.artista,
+        name: props.artista.name || '',
+        description: props.artista.description || '',
+        color: props.artista.color || '#E2E2E2',
+        spotifyEmbedUrl: props.artista.spotifyEmbedUrl || '',
+        youtubeVideoId: props.artista.youtubeVideoId || '',
+        social_instagram: props.artista.social_instagram || '',
+        social_facebook: props.artista.social_facebook || '',
+        social_youtubeChannel: props.artista.social_youtubeChannel || '',
+        social_tiktok: props.artista.social_tiktok || '',
+        social_spotifyProfile: props.artista.social_spotifyProfile || '',
+      };
+      console.log('Artista data on modal open:', props.artista);
+      console.log('formData after init:', formData.value);
     } else {
       formData.value = { ...defaultFormData };
     }
@@ -218,7 +234,7 @@ const handleSubmit = async () => {
 };
 
 const close = () => {
-  emit('close');
+  // emit('close');
 };
 </script>
 

@@ -1,448 +1,387 @@
 <template>
-  <section :id="id" class="py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-white">
-    <div class="container mx-auto max-w-7xl">
-      <div class="max-w-2xl mx-auto"> <!-- Contenedor para centrar el contenido -->
-        <header class="text-center mb-8 md:mb-10">
-          <h2 class="text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">Palabra de Ánimo</h2>
-          <p class="text-lg text-gray-600 mt-2">
-            Encuentra consuelo y fortaleza en la Palabra.
+  <AnimatedSection>
+    <section :id="id" :style="sectionStyle" class="py-section-md px-4 sm:px-6 lg:px-8 animated-gradient-bg">
+      <div class="container mx-auto max-w-4xl">
+        <header class="text-center mb-10 md:mb-12">
+          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-4">Palabra de Ánimo</h2>
+          <p class="text-lg text-gray-700">
+            Selecciona cómo te sientes para recibir un versículo de fortaleza.
           </p>
         </header>
 
-        <section class="mb-8">
-          <h3 class="text-xl font-semibold text-brand-negro mb-5 text-center">
-            ¿Cómo te sientes hoy?
-          </h3>
-          
-          <div v-if="currentSelectedEmotionText" class="text-center mb-6">
-            <p class="text-brand-camel text-lg font-semibold">
-              Has seleccionado: <span class="text-brand-borgona">{{ currentSelectedEmotionText }}</span>
-            </p>
-          </div>
+        <div class="max-w-3xl mx-auto">
+          <!-- Mood Carousel -->
+          <section class="mb-10">
+            <div class="relative">
+              <div class="flex space-x-4 overflow-x-auto pb-4 scroll-snap-x-mandatory">
+                <div v-for="mood in moodOptions" :key="mood.key"
+                  class="flex-shrink-0 scroll-snap-align-center">
+                  <button type="button"
+                    class="flex flex-col items-center justify-center w-24 h-24 rounded-2xl transition-all duration-300 ease-in-out transform focus:outline-none"
+                    :class="[
+                      activeMoodKey === mood.key
+                        ? `${mood.bgColor} text-white shadow-lg scale-110`
+                        : 'bg-white/70 hover:bg-white text-brand-negro shadow-md hover:scale-105',
+                      isLoadingVerse ? 'opacity-50 cursor-not-allowed' : ''
+                    ]" :aria-pressed="activeMoodKey === mood.key" :disabled="isLoadingVerse"
+                    @click="handleMoodButtonClick(mood)">
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            <button
-v-for="mood in moodOptions" :key="mood.key" type="button"
-              class="w-full text-center px-6 py-4 rounded-lg transition-all duration-300 ease-in-out flex flex-col items-center justify-center text-base md:text-lg border-2 cursor-pointer transform hover:scale-105"
-              :class="[
-                activeMoodKey === mood.key
-                  ? 'bg-brand-camel text-white shadow-lg border-brand-camel'
-                  : 'bg-white hover:bg-brand-gris-claro border-gray-300 text-brand-negro',
-                isLoadingVerse ? 'opacity-50 cursor-not-allowed' : ''
-              ]" :aria-pressed="activeMoodKey === mood.key" :disabled="isLoadingVerse"
-              @click="handleMoodButtonClick(mood.key, mood.text)">
-              <component :is="mood.iconComponent" class="w-7 h-7 mb-2" />
-              <span>{{ mood.text }}</span>
-            </button>
-          </div>
-        </section>
+                    <component :is="mood.iconComponent" class="w-8 h-8 mb-1" />
+                    <span class="text-xs font-medium">{{ mood.text }}</span>
 
-        <section
-          class="verse-display-area bg-brand-verde-oscuro bg-opacity-10 p-6 rounded-xl flex flex-col justify-center items-center text-center min-h-[320px] border border-brand-verde-oscuro border-opacity-20">
-          <!-- Initial State -->
-          <div v-if="currentState === 'initial'" class="fade-in text-brand-verde-oscuro">
-            <LightBulbIcon class="w-16 h-16 mx-auto mb-3 opacity-70" />
-            <p class="italic text-xl">
-              Selecciona un estado de ánimo para comenzar.
-            </p>
-          </div>
-
-          <!-- Loading Verse State -->
-          <div v-if="currentState === 'loadingVerse'" class="w-full fade-in text-brand-camel">
-            <div class="flex justify-center items-center mb-2">
-              <ArrowPathIcon class="animate-spin h-10 w-10 text-brand-camel" />
-            </div>
-            <p class="italic mt-2 text-lg">
-              Buscando un versículo inspirador para ti...
-            </p>
-          </div>
-
-          <!-- Verse Content State -->
-          <div v-if="currentState === 'verseContentLoaded' && verseData" class="fade-in w-full">
-            <BookOpenIcon class="w-12 h-12 mx-auto mb-4 text-brand-verde-oscuro opacity-80" />
-            <blockquote class="text-xl italic text-brand-negro mb-4 leading-relaxed">
-              "{{ verseData.verseText }}"
-            </blockquote>
-            <p class="font-semibold text-brand-verde-oscuro text-md mb-5">
-              {{ verseData.verseCitation }} (RVR1960)
-            </p>
-            <hr class="w-3/4 border-brand-camel border-opacity-50 my-5 mx-auto" />
-            <h4 class="text-md font-semibold text-brand-negro mb-2">
-              Reflexión Inicial:
-            </h4>
-            <p
-class="text-gray-700 leading-relaxed text-base text-justify"
-              v-html="formatText(verseData.initialReflection)"></p>
-          </div>
-
-          <!-- Error State for Verse -->
-          <div
-v-if="currentState === 'errorVerse'"
-            class="w-full fade-in bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative"
-            role="alert">
-            <strong class="font-bold">Error: </strong>
-            <span class="block sm:inline">{{ errorVerseMessage }}</span>
-            <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="clearError('verse')">
-              <XMarkIcon class="h-6 w-6" role="button" />
-            </span>
-          </div>
-        </section>
-
-        <!-- Additional Actions Section -->
-        <div v-if="currentState === 'verseContentLoaded' && verseData" class="mt-8 space-y-6 text-center">
-          <!-- Generate Reflection -->
-          <div>
-            <button
-type="button"
-              class="bg-brand-borgona text-white py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors text-base font-medium shadow-md disabled:opacity-50"
-              :disabled="isLoadingReflection" @click="generateAdditionalReflection">
-              <SparklesIcon class="w-5 h-5 mr-2 inline-block" />
-              Generar Reflexión Adicional
-              <span
-v-if="isLoadingReflection"
-                class="ml-2 inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-            </button>
-            <div
-v-if="additionalReflection"
-              class="mt-4 p-5 rounded-xl text-sm text-brand-negro leading-relaxed text-left fade-in bg-brand-borgona bg-opacity-10 border border-brand-borgona border-opacity-30 min-h-[100px]">
-              <p v-html="formatText(additionalReflection)"></p>
-            </div>
-            <div
-v-if="errorReflectionMessage"
-              class="mt-3 bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md text-sm relative fade-in"
-              role="alert">
-              {{ errorReflectionMessage }}
-              <button
-class="absolute top-1 right-1 text-red-500 hover:text-red-700"
-                @click="clearError('reflection')">
-                <XMarkIcon class="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          <hr class="my-6 border-gray-300">
-
-          <!-- Explore Verse -->
-          <div>
-            <button
-type="button"
-              class="bg-brand-verde-oscuro text-white py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors text-base font-medium shadow-md disabled:opacity-50"
-              :disabled="isLoadingExploration" @click="exploreFurther">
-              <MagnifyingGlassIcon class="w-5 h-5 mr-2 inline-block" />
-              Profundizar en el Versículo
-              <span
-v-if="isLoadingExploration"
-                class="ml-2 inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-            </button>
-            <div
-v-if="verseExploration"
-              class="mt-4 p-5 rounded-xl text-sm text-brand-negro leading-relaxed text-left fade-in bg-brand-verde-oscuro bg-opacity-10 border border-brand-verde-oscuro border-opacity-30 min-h-[100px]">
-              <h4 class="font-semibold text-brand-negro mb-1">
-                Contexto Histórico/Literario:
-              </h4>
-              <p class="mb-3" v-html="formatText(verseExploration.historicalContext)"></p>
-              <h4 class="font-semibold text-brand-negro mb-1">
-                Tema Teológico Principal:
-              </h4>
-              <p class="mb-3" v-html="formatText(verseExploration.theologicalTheme)"></p>
-              <h4 class="font-semibold text-brand-negro mb-1">
-                Referencias Cruzadas:
-              </h4>
-              <div>
-                <template v-if="verseExploration.crossReferences && verseExploration.crossReferences.length > 0">
-                  <span
-v-for="(ref, i) in verseExploration.crossReferences" :key="i"
-                    class="inline-block bg-brand-camel bg-opacity-20 text-brand-camel text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full">
-                    {{ ref }}
-                  </span>
-                </template>
-                <p v-else class="text-xs text-gray-500">
-                  No se encontraron referencias cruzadas específicas.
-                </p>
+                  </button>
+                </div>
               </div>
             </div>
-            <div
-v-if="errorExplorationMessage"
-              class="mt-3 bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md text-sm relative fade-in"
-              role="alert">
-              {{ errorExplorationMessage }}
-              <button
-class="absolute top-1 right-1 text-red-500 hover:text-red-700"
-                @click="clearError('exploration')">
-                <XMarkIcon class="h-4 w-4" />
-              </button>
+          </section>
+
+          <!-- Verse Display Area -->
+          <transition name="fade-slide" mode="out-in">
+            <section :key="currentState"
+              class="verse-display-area bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-2xl flex flex-col justify-center items-center text-center min-h-[350px] border border-white/30 shadow-lg">
+              <div v-if="currentState === 'initial'" class="text-gray-500">
+
+                <LightBulbIcon class="w-16 h-16 mx-auto mb-3 opacity-50" />
+                <p class="italic text-xl">Desliza y elige un estado de ánimo.</p>
+
+              </div>
+
+              <div v-if="currentState === 'loadingVerse'" class="w-full text-brand-camel">
+
+                <ArrowPathIcon class="animate-spin h-12 w-12 mx-auto text-brand-camel" />
+                <p class="italic mt-3 text-lg">Buscando un versículo para ti...</p>
+
+              </div>
+
+              <div v-if="currentState === 'verseContentLoaded' && verseData" class="w-full">
+
+                <BookOpenIcon class="w-12 h-12 mx-auto mb-4 text-brand-verde-oscuro opacity-80" />
+                <blockquote class="text-xl md:text-2xl italic text-brand-negro mb-4 leading-relaxed">
+                  "{{ verseData.verseText }}"
+                </blockquote>
+                <p class="font-semibold text-brand-verde-oscuro text-lg mb-5">
+                  {{ verseData.verseCitation }} (RVR1960)
+                </p>
+
+                <hr class="w-3/4 border-brand-camel/50 my-5 mx-auto" />
+                <p class="text-gray-700 leading-relaxed text-base text-justify"
+                  v-html="formatText(verseData.initialReflection)"></p>
+
+              </div>
+
+              <div v-if="currentState === 'errorVerse'" class="w-full text-red-700">
+
+                <ExclamationTriangleIcon class="w-12 h-12 mx-auto mb-3 opacity-80" />
+                <p class="font-semibold">Error al buscar versículo</p>
+                <p class="text-sm mt-2">{{ errorVerseMessage }}</p>
+
+              </div>
+            </section>
+          </transition>
+
+          <!-- Exploration Buttons -->
+          <transition name="fade-slide">
+            <div v-if="currentState === 'verseContentLoaded' && verseData" class="mt-8 text-center">
+              <div class="flex justify-center items-center space-x-4">
+                <button @click="generateContext" :disabled="isLoadingContext"
+                  class="exploration-button bg-brand-verde-oscuro">
+                  <span v-if="!isLoadingContext">Profundizar en el Contexto</span>
+
+                  <ArrowPathIcon v-else class="animate-spin h-5 w-5" />
+
+                </button>
+                <button @click="generatePrayer" :disabled="isLoadingPrayer"
+                  class="exploration-button bg-brand-camel">
+                  <span v-if="!isLoadingPrayer">Generar una Oración</span>
+
+                  <ArrowPathIcon v-else class="animate-spin h-5 w-5" />
+
+                </button>
+              </div>
+
+              <!-- Context Display -->
+              <transition name="fade-slide">
+                <div v-if="contextData"
+                  class="mt-6 p-5 rounded-2xl text-base text-brand-negro leading-relaxed text-left bg-white/50 backdrop-blur-sm border border-white/30 shadow-lg">
+                  <h3 class="font-playfair font-bold text-lg mb-2 text-brand-negro">Contexto del
+                    Versículo</h3>
+                  <div class="space-y-3">
+                    <div>
+                      <h4 class="font-semibold">Autoría y Fecha:</h4>
+                      <p>{{ contextData.authorAndDate }}</p>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold">Contexto de la Época:</h4>
+                      <p>{{ contextData.locationAndSociety }}</p>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold">Significado Original:</h4>
+                      <p>{{ contextData.originalMeaning }}</p>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+
+              <!-- Prayer Display -->
+              <transition name="fade-slide">
+                <div v-if="prayerData"
+                  class="mt-6 p-5 rounded-2xl text-base text-brand-negro leading-relaxed text-left bg-white/50 backdrop-blur-sm border border-white/30 shadow-lg">
+                  <h3 class="font-playfair font-bold text-lg mb-2 text-brand-negro">Una Oración para
+                    Ti</h3>
+                  <p v-html="formatText(prayerData)"></p>
+                </div>
+              </transition>
+
             </div>
-          </div>
+          </transition>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </AnimatedSection>
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, type Component } from 'vue'
+import { ref, shallowRef, computed, type Component } from 'vue'
 import {
-  FaceFrownIcon,
-  ExclamationTriangleIcon,
-  FaceSmileIcon,
-  HeartIcon,
-  UserMinusIcon,
-  BoltIcon,
-  QuestionMarkCircleIcon,
-  HandThumbDownIcon,
-  StarIcon,
-  SparklesIcon as PeaceIcon,
-  UserGroupIcon,
-  LightBulbIcon,
-  ArrowPathIcon,
-  BookOpenIcon,
-  XMarkIcon,
-  SparklesIcon,
-  MagnifyingGlassIcon,
-  HandThumbUpIcon, // Nuevo icono
-  ShieldCheckIcon // Nuevo icono
+  FaceFrownIcon, ExclamationTriangleIcon, FaceSmileIcon, HeartIcon, UserMinusIcon, BoltIcon,
+  LightBulbIcon, ArrowPathIcon, BookOpenIcon, StarIcon, UserGroupIcon, QuestionMarkCircleIcon,
+  HandThumbDownIcon, FireIcon, ShieldExclamationIcon, ScaleIcon, SunIcon, MapIcon, SparklesIcon,
+  HandRaisedIcon, TrophyIcon, MagnifyingGlassIcon, ArrowPathIcon as RenewIcon
 } from '@heroicons/vue/24/outline'
+import AnimatedSection from '@/components/AnimatedSection.vue';
 
-defineProps({
-  id: String,
+defineProps({ id: String })
+
+const selectedColor = ref({
+  a: '#f9fafb',
+  b: '#f3f4f6'
 })
 
+const sectionStyle = computed(() => ({
+  '--color-a': selectedColor.value.a,
+  '--color-b': selectedColor.value.b,
+}))
+
 const moodOptions = ref([
-  { key: 'tristeza', text: 'Tristeza', iconComponent: shallowRef(FaceFrownIcon) },
-  { key: 'ansiedad', text: 'Ansiedad', iconComponent: shallowRef(ExclamationTriangleIcon) },
-  { key: 'alegria', text: 'Alegría', iconComponent: shallowRef(FaceSmileIcon) },
-  { key: 'miedo', text: 'Miedo', iconComponent: shallowRef(ExclamationTriangleIcon) },
-  { key: 'agradecimiento', text: 'Agradecimiento', iconComponent: shallowRef(HeartIcon) },
-  { key: 'soledad', text: 'Soledad', iconComponent: shallowRef(UserMinusIcon) },
-  { key: 'necesidad_fortaleza', text: 'Necesidad de Fortaleza', iconComponent: shallowRef(BoltIcon) },
-  { key: 'preocupacion', text: 'Preocupación', iconComponent: shallowRef(QuestionMarkCircleIcon) },
-  { key: 'desanimo', text: 'Desánimo', iconComponent: shallowRef(HandThumbDownIcon) },
-  { key: 'esperanza', text: 'Esperanza', iconComponent: shallowRef(StarIcon) },
-  { key: 'paz', text: 'Paz', iconComponent: shallowRef(PeaceIcon) },
-  { key: 'perdon', text: 'Perdón', iconComponent: shallowRef(UserGroupIcon) },
-  { key: 'confianza', text: 'Confianza', iconComponent: shallowRef(HandThumbUpIcon) },
-  { key: 'valentia', text: 'Valentía', iconComponent: shallowRef(ShieldCheckIcon) },
-  { key: 'gozo', text: 'Gozo', iconComponent: shallowRef(FaceSmileIcon) },
-  { key: 'inspiracion', text: 'Inspiración', iconComponent: shallowRef(LightBulbIcon) },
+  // Categoría 1: Estados de Ánimo Positivos y Edificantes
+  { key: 'alegria', text: 'Alegría', iconComponent: shallowRef(FaceSmileIcon), bgColor: 'bg-yellow-500', colors: { a: '#fef9c3', b: '#fde68a' } },
+  { key: 'agradecimiento', text: 'Agradecimiento', iconComponent: shallowRef(HeartIcon), bgColor: 'bg-pink-500', colors: { a: '#fce7f3', b: '#f9a8d4' } },
+  { key: 'paz', text: 'Paz', iconComponent: shallowRef(SparklesIcon), bgColor: 'bg-teal-500', colors: { a: '#d1fae5', b: '#a7f3d0' } },
+  { key: 'gozo', text: 'Gozo', iconComponent: shallowRef(SunIcon), bgColor: 'bg-orange-500', colors: { a: '#ffedd5', b: '#fed7aa' } },
+  { key: 'esperanza', text: 'Esperanza', iconComponent: shallowRef(StarIcon), bgColor: 'bg-green-500', colors: { a: '#dcfce7', b: '#bbf7d0' } },
+  { key: 'confianza', text: 'Confianza', iconComponent: shallowRef(BookOpenIcon), bgColor: 'bg-sky-500', colors: { a: '#e0f2fe', b: '#bae6fd' } },
+  { key: 'inspiracion', text: 'Inspiración', iconComponent: shallowRef(LightBulbIcon), bgColor: 'bg-violet-500', colors: { a: '#ede9fe', b: '#ddd6fe' } },
+  { key: 'fe', text: 'Fe', iconComponent: shallowRef(HandRaisedIcon), bgColor: 'bg-purple-500', colors: { a: '#f3e8ff', b: '#d8b4fe' } },
+  { key: 'victoria', text: 'Victoria', iconComponent: shallowRef(TrophyIcon), bgColor: 'bg-amber-500', colors: { a: '#fffbeb', b: '#fcd34d' } },
+
+
+  // Categoría 2: Estados de Ánimo Desafiantes (Emociones Negativas)
+  { key: 'tristeza', text: 'Tristeza', iconComponent: shallowRef(FaceFrownIcon), bgColor: 'bg-blue-500', colors: { a: '#dbeafe', b: '#bfdbfe' } },
+  { key: 'ansiedad', text: 'Ansiedad', iconComponent: shallowRef(ExclamationTriangleIcon), bgColor: 'bg-amber-500', colors: { a: '#fef3c7', b: '#fde68a' } },
+  { key: 'miedo', text: 'Miedo', iconComponent: shallowRef(ShieldExclamationIcon), bgColor: 'bg-slate-500', colors: { a: '#f1f5f9', b: '#e2e8f0' } },
+  { key: 'preocupacion', text: 'Preocupación', iconComponent: shallowRef(QuestionMarkCircleIcon), bgColor: 'bg-gray-500', colors: { a: '#f3f4f6', b: '#e5e7eb' } },
+  { key: 'desanimo', text: 'Desánimo', iconComponent: shallowRef(HandThumbDownIcon), bgColor: 'bg-stone-500', colors: { a: '#f5f5f4', b: '#e7e5e4' } },
+  { key: 'soledad', text: 'Soledad', iconComponent: shallowRef(UserMinusIcon), bgColor: 'bg-indigo-500', colors: { a: '#e0e7ff', b: '#c7d2fe' } },
+  { key: 'ira', text: 'Ira', iconComponent: shallowRef(FireIcon), bgColor: 'bg-red-600', colors: { a: '#fee2e2', b: '#fecaca' } },
+  { key: 'culpa', text: 'Culpa', iconComponent: shallowRef(ScaleIcon), bgColor: 'bg-rose-700', colors: { a: '#ffe4e6', b: '#fecdd3' } },
+  { key: 'duda', text: 'Duda', iconComponent: shallowRef(QuestionMarkCircleIcon), bgColor: 'bg-gray-600', colors: { a: '#f3f4f6', b: '#d1d5db' } },
+  { key: 'tentacion', text: 'Tentación', iconComponent: shallowRef(BoltIcon), bgColor: 'bg-red-400', colors: { a: '#fee2e2', b: '#fca5a5' } },
+
+  // Categoría 3: Necesidades y Búsquedas Espirituales Profundas
+  { key: 'fortaleza', text: 'Fortaleza', iconComponent: shallowRef(BoltIcon), bgColor: 'bg-lime-600', colors: { a: '#f7fee7', b: '#d9f99d' } },
+  { key: 'guia', text: 'Guía y Dirección', iconComponent: shallowRef(MapIcon), bgColor: 'bg-cyan-600', colors: { a: '#cffafe', b: '#a5f3fc' } },
+  { key: 'perdon', text: 'Perdón', iconComponent: shallowRef(UserGroupIcon), bgColor: 'bg-fuchsia-600', colors: { a: '#fae8ff', b: '#f5d0fe' } },
+  { key: 'proposito', text: 'Propósito', iconComponent: shallowRef(BoltIcon), bgColor: 'bg-emerald-600', colors: { a: '#ecfdf5', b: '#a7f3d0' } },
+  { key: 'sabiduria', text: 'Sabiduría', iconComponent: shallowRef(BookOpenIcon), bgColor: 'bg-orange-600', colors: { a: '#fff7ed', b: '#fed7aa' } },
+  { key: 'renovacion', text: 'Renovación', iconComponent: shallowRef(RenewIcon), bgColor: 'bg-indigo-600', colors: { a: '#e0e7ff', b: '#a5b4fc' } },
+  { key: 'busqueda', text: 'Búsqueda de Dios', iconComponent: shallowRef(MagnifyingGlassIcon), bgColor: 'bg-zinc-600', colors: { a: '#f4f4f5', b: '#d4d4d8' } },
 ])
 
-const currentState = ref('initial') // 'initial', 'loadingVerse', 'verseContentLoaded', 'errorVerse'
+const currentState = ref('initial')
 const activeMoodKey = ref<string | null>(null)
-const currentSelectedEmotionText = ref('')
 
-interface VerseData {
-  verseCitation: string;
-  verseText: string;
-  initialReflection: string;
-}
-interface VerseExploration {
-  historicalContext: string;
-  theologicalTheme: string;
-  crossReferences: string[];
-}
+interface VerseData { verseCitation: string; verseText: string; initialReflection: string; }
+interface ContextData { authorAndDate: string; locationAndSociety: string; originalMeaning: string; }
 
 const verseData = ref<VerseData | null>(null)
-const additionalReflection = ref('')
-const verseExploration = ref<VerseExploration | null>(null)
+const contextData = ref<ContextData | null>(null)
+const prayerData = ref('')
 
 const isLoadingVerse = ref(false)
-const isLoadingReflection = ref(false)
-const isLoadingExploration = ref(false)
+const isLoadingContext = ref(false)
+const isLoadingPrayer = ref(false)
 
 const errorVerseMessage = ref('')
-const errorReflectionMessage = ref('')
-const errorExplorationMessage = ref('')
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
-const GEMINI_MODEL_NAME = 'gemini-1.5-flash-latest'
+const GEMINI_MODEL_NAME = 'gemini-2.5-flash'
 
-const formatText = (text: string | undefined): string => {
-  return text ? text.replace(/\n/g, '<br>') : ''
-}
-
-const clearError = (type: 'verse' | 'reflection' | 'exploration') => {
-  if (type === 'verse') {
-    errorVerseMessage.value = ''
-    if (currentState.value === 'errorVerse') currentState.value = 'initial'
-  } else if (type === 'reflection') {
-    errorReflectionMessage.value = ''
-  } else if (type === 'exploration') {
-    errorExplorationMessage.value = ''
-  }
-}
+const formatText = (text: string | undefined): string => text ? text.replace(/\n/g, '<br>') : ''
 
 async function fetchFromGemini(prompt: string, jsonSchema: any = null) {
-  if (!GEMINI_API_KEY) {
-    throw new Error(
-      'API Key para Gemini no está configurada. Por favor, añada VITE_GEMINI_API_KEY a su archivo .env',
-    )
-  }
-
+  if (!GEMINI_API_KEY) throw new Error('API Key para Gemini no configurada.')
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`
-
-  const payload: any = {
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-  }
-
+  const payload: any = { contents: [{ role: 'user', parts: [{ text: prompt }] }] }
   if (jsonSchema) {
-    payload.generationConfig = {
-      responseMimeType: 'application/json',
-      responseSchema: jsonSchema,
-    }
+    payload.generationConfig = { responseMimeType: 'application/json', responseSchema: jsonSchema }
   }
-
-  const response = await fetch(apiUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-
+  const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
   if (!response.ok) {
-    const errorData = await response
-      .json()
-      .catch(() => ({ error: { message: 'Error desconocido de la API.' } }))
-    console.error('API Error Data:', errorData)
+    const errorData = await response.json().catch(() => ({ error: { message: 'Error desconocido' } }))
     throw new Error(`Error ${response.status}: ${errorData.error?.message || response.statusText}`)
   }
-
   const result = await response.json()
-
-  if (
-    !result.candidates ||
-    !result.candidates[0].content ||
-    !result.candidates[0].content.parts ||
-    !result.candidates[0].content.parts[0].text
-  ) {
-    console.error('Unexpected API Response:', result)
-    throw new Error('Respuesta inesperada o vacía de la API.')
-  }
-
-  return jsonSchema
-    ? JSON.parse(result.candidates[0].content.parts[0].text)
-    : result.candidates[0].content.parts[0].text
+  const text = result.candidates?.[0]?.content?.parts?.[0]?.text
+  if (!text) throw new Error('Respuesta inesperada de la API.')
+  return jsonSchema ? JSON.parse(text) : text
 }
 
-const handleMoodButtonClick = async (moodKey: string, moodText: string) => {
-  activeMoodKey.value = moodKey
-  currentSelectedEmotionText.value = moodText
-
+const handleMoodButtonClick = async (mood: typeof moodOptions.value[0]) => {
+  activeMoodKey.value = mood.key
+  selectedColor.value = mood.colors
   currentState.value = 'loadingVerse'
   isLoadingVerse.value = true
   verseData.value = null
-  additionalReflection.value = ''
-  verseExploration.value = null
+  contextData.value = null
+  prayerData.value = ''
   errorVerseMessage.value = ''
-  errorReflectionMessage.value = ''
-  errorExplorationMessage.value = ''
 
   const verseRequestSchema = {
     type: 'OBJECT',
-    properties: {
-      verseCitation: { type: 'STRING' },
-      verseText: { type: 'STRING' },
-      initialReflection: { type: 'STRING' },
-    },
+    properties: { verseCitation: { type: 'STRING' }, verseText: { type: 'STRING' }, initialReflection: { type: 'STRING' } },
     required: ['verseCitation', 'verseText', 'initialReflection'],
   }
-  const prompt = `Eres un erudito bíblico experto en la Biblia Reina Valera 1960. Un usuario se siente '${currentSelectedEmotionText.value}'.
-  Busca en la Biblia Reina Valera 1960 un versículo (texto y cita exacta, por ejemplo, 'Juan 3:16') que sea profundamente alentador y directamente relevante para esta emoción.
-  Además, proporciona una reflexión inicial concisa y significativa (2-4 frases) sobre cómo este versículo puede ofrecer consuelo o fortaleza.
-  Es absolutamente crucial que el texto del versículo sea exacto y no se altere.
-  Devuelve la respuesta en formato JSON adhiriéndote estrictamente al esquema proporcionado.
-  Ejemplo: {"verseCitation": "Salmo 23:1", "verseText": "Jehová es mi pastor; nada me faltará.", "initialReflection": "Este pasaje nos asegura el cuidado constante de Dios..."}`
+  const prompt = `**Instrucciones:** Eres un erudito bíblico y pastor que busca dar consuelo. Un usuario se siente **${mood.text}**. Tu tarea es doble:
+  1.  Encuentra en la Biblia (versión Reina Valera 1960) un versículo que sea profundamente alentador y relevante para este estado de ánimo.
+  2.  Escribe una reflexión personal y pastoral sobre ese versículo, actuando como una conversación con un amigo sabio. La reflexión debe:
+      *   Reconocer el estado de ánimo del usuario (ej. "Entiendo que hoy sientes ${mood.text}...").
+      *   Explicar cómo el versículo ofrece consuelo o esperanza.
+      *   Ofrecer un consejo práctico y alentador.
+      *   Tener un tono cálido, personal y esperanzador.
+
+  **Formato de Salida:** Devuelve la respuesta estrictamente en formato JSON usando las claves: "verseCitation" (cita del versículo), "verseText" (texto del versículo), y "initialReflection" (la reflexión pastoral).`
 
   try {
-    const parsedResult = await fetchFromGemini(prompt, verseRequestSchema)
-    verseData.value = parsedResult
+    verseData.value = await fetchFromGemini(prompt, verseRequestSchema)
     currentState.value = 'verseContentLoaded'
   } catch (error: any) {
-    console.error('Error al buscar versículo:', error)
-    errorVerseMessage.value = `No se pudo obtener un versículo: ${error.message}. Intenta con otra emoción o más tarde.`
+    errorVerseMessage.value = error.message
     currentState.value = 'errorVerse'
   } finally {
     isLoadingVerse.value = false
   }
 }
 
-const generateAdditionalReflection = async () => {
+const generateContext = async () => {
   if (!verseData.value) return
+  isLoadingContext.value = true
+  prayerData.value = '' // Ocultar oración si estaba visible
+  contextData.value = null // Limpiar contexto anterior
 
-  isLoadingReflection.value = true
-  additionalReflection.value = ''
-  errorReflectionMessage.value = ''
-
-  const prompt = `Actúa como un consejero espiritual cálido y comprensivo. Un usuario se siente '${currentSelectedEmotionText.value}' y está meditando en el versículo: '${verseData.value.verseText}' (${verseData.value.verseCitation}) de la Reina Valera 1960.
-  Escribe una breve reflexión adicional o una oración corta y personal (3-5 frases). Debe ser alentadora, relevante para la emoción y el versículo, y ofrecer una perspectiva fresca, sin repetir la reflexión inicial que ya se le dio.
-  Enfócate en la aplicación práctica o en una palabra de esperanza.`
-
-  try {
-    const generatedText = await fetchFromGemini(prompt)
-    additionalReflection.value = generatedText
-  } catch (error: any) {
-    console.error('Error al generar reflexión adicional:', error)
-    errorReflectionMessage.value = `No se pudo generar la reflexión adicional: ${error.message}`
-  } finally {
-    isLoadingReflection.value = false
-  }
-}
-
-const exploreFurther = async () => {
-  if (!verseData.value) return
-
-  isLoadingExploration.value = true
-  verseExploration.value = null
-  errorExplorationMessage.value = ''
-
-  const explorationSchema = {
+  const schema = {
     type: 'OBJECT',
     properties: {
-      historicalContext: { type: 'STRING' },
-      theologicalTheme: { type: 'STRING' },
-      crossReferences: { type: 'ARRAY', items: { type: 'STRING' } },
+      authorAndDate: { type: 'STRING' },
+      locationAndSociety: { type: 'STRING' },
+      originalMeaning: { type: 'STRING' },
     },
-    required: ['historicalContext', 'theologicalTheme', 'crossReferences'],
+    required: ['authorAndDate', 'locationAndSociety', 'originalMeaning'],
   }
-
-  const prompt = `Eres un comentarista bíblico y erudito conciso, especializado en la Reina Valera 1960. Para el versículo '${verseData.value.verseCitation}: ${verseData.value.verseText}', proporciona la siguiente información:
-  1.  Un breve contexto histórico o literario del libro/pasaje (1-2 frases).
-  2.  Un tema teológico principal resaltado en este versículo (1 frase concisa).
-  3.  Dos o tres referencias cruzadas a otros versículos bíblicos relevantes (solo las citas, por ejemplo, 'Salmo 46:1').
-  Devuelve la respuesta estrictamente en formato JSON usando las claves: "historicalContext", "theologicalTheme", "crossReferences" (esta última debe ser un array de strings con las citas).`
+  const prompt = `**Título:** Proporciona un contexto histórico y teológico con convicción.
+  **Instrucciones:** Eres un pastor y erudito bíblico. Para el versículo **${verseData.value.verseCitation}**, presenta un análisis histórico y cultural. La explicación debe ser directa, sin dudas, y desde una perspectiva de fe que reconoce la Biblia como la Palabra de Dios.
+  **Puntos Clave a Cubrir:**
+  * **Autor y Fecha:** Identifica el autor y el período en el que fue escrito el libro.
+  * **Contexto Original:** Describe el contexto social y cultural de la audiencia original.
+  * **Mensaje Central:** Explica claramente el significado del versículo para su público en esa época.
+  **Formato de Salida:** Devuelve la respuesta en formato de texto plano (no JSON), estructurada con subtítulos para cada punto.`
 
   try {
-    const explorationData = await fetchFromGemini(prompt, explorationSchema)
-    verseExploration.value = explorationData
-  } catch (error: any) {
-    console.error('Error al profundizar en el versículo:', error)
-    errorExplorationMessage.value = `No se pudo obtener información adicional: ${error.message}`
-  } finally {
-    isLoadingExploration.value = false
-  }
+    contextData.value = await fetchFromGemini(prompt, schema)
+  } catch (e) { console.error(e) } finally { isLoadingContext.value = false }
 }
+
+const generatePrayer = async () => {
+  if (!verseData.value) return
+  isLoadingPrayer.value = true
+  contextData.value = null // Ocultar contexto si estaba visible
+  prayerData.value = '' // Limpiar oración anterior
+
+  const prompt = `**Título:** Genera una oración personal basada en el versículo.
+**Instrucciones:** Basado en el versículo **${verseData.value.verseCitation}: "${verseData.value.verseText}"** y el estado de ánimo del usuario de **${activeMoodKey.value}**, crea una oración modelo.
+**Puntos Clave de la Oración:**
+*   **Reconocimiento:** Inicia reconociendo a Dios, haciendo referencia al versículo.
+*   **Petición:** Presenta una petición relacionada con el estado de ánimo del usuario.
+*   **Confianza y Fe:** Concluye con una declaración de fe.
+
+**Tono:** El lenguaje debe ser devocional, humilde y honesto.`
+
+  try {
+    prayerData.value = await fetchFromGemini(prompt)
+  } catch (e) { console.error(e) } finally { isLoadingPrayer.value = false }
+}
+
 </script>
 
 <style scoped>
-.fade-in {
-  animation: fadeInAnimation 0.5s ease-in-out forwards;
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
 }
 
-@keyframes fadeInAnimation {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.scroll-snap-x-mandatory {
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-snap-align-center {
+  scroll-snap-align: center;
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.exploration-button {
+  @apply text-white py-2 px-5 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md flex items-center justify-center font-medium;
+}
+
+.animated-gradient-bg {
+  background: radial-gradient(circle, var(--color-a), var(--color-b));
+  background-size: 200% 200%;
+  transition: background 2s ease-in-out;
+  animation: gradient-flow 10s ease infinite;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 50% 0%;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  50% {
+    background-position: 50% 100%;
   }
-}
 
-.leading-relaxed {
-  line-height: 1.7;
-}
-
-.text-justify {
-  text-align: justify;
+  100% {
+    background-position: 50% 0%;
+  }
 }
 </style>

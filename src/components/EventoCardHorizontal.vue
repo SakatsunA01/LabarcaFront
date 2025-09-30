@@ -19,22 +19,27 @@
         📍 {{ evento.lugar }}
       </p>
       <p v-if="evento.descripcion" class="text-gray-700 text-sm md:text-base mb-4 flex-grow leading-relaxed">
-        {{ evento.descripcion.substring(0, 150) }}{{ evento.descripcion.length > 150 ? '...' : '' }}
+        {{ evento.descripcion.substring(0, 250) }}{{ evento.descripcion.length > 250 ? '...' : '' }}
       </p>
       <div v-else class="flex-grow"></div> <!-- Espaciador si no hay descripción -->
 
       <div class="mt-auto flex flex-col sm:flex-row gap-3 pt-3 border-t border-gray-200">
-        <router-link
-:to="`/eventos/${evento.id}`"
-          class="flex-1 text-center bg-brand-verde-oscuro text-white py-2.5 px-5 rounded-md hover:bg-opacity-80 transition-colors text-sm font-medium"
-          @click="prepararNavegacionDetalle">
-          Más Información
-        </router-link>
         <a
-v-if="evento.link_compra" :href="evento.link_compra" target="_blank" rel="noopener noreferrer"
-          class="flex-1 text-center bg-brand-borgona text-white py-2.5 px-5 rounded-md hover:bg-opacity-80 transition-colors text-sm font-medium">
+          v-if="evento.link_compra"
+          :href="evento.link_compra"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex-1 text-center border border-brand-borgona text-brand-borgona py-2.5 px-5 rounded-md hover:bg-brand-borgona hover:text-white transition-colors text-sm font-medium"
+        >
           Comprar Entradas
         </a>
+        <router-link
+          :to="`/eventos/${evento.id}`"
+          class="flex-1 text-center bg-brand-borgona text-white py-2.5 px-5 rounded-md hover:bg-opacity-80 transition-colors text-sm font-medium"
+          @click="prepararNavegacionDetalle"
+        >
+          Más Información
+        </router-link>
       </div>
     </div>
   </div>

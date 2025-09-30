@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 h-full flex flex-col">
+    <div class="bg-white rounded-xl shadow-card hover:shadow-card-hover overflow-hidden transform hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
         <router-link :to="{ name: 'comunidad-detalle', params: { id: post.id } }">
             <img v-if="post.url_imagen" :src="fullImageUrl" alt="Imagen del post" class="w-full h-48 object-cover">
             <div v-else class="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -9,8 +9,8 @@
         <div class="p-6 flex-grow flex flex-col">
             <div class="mb-2">
                 <span
-v-for="category in post.categories" :key="category.id" 
-                      class="inline-block bg-brand-borgona text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
+                    v-for="category in post.categories" :key="category.id" 
+                    class="inline-block bg-brand-borgona text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
                     {{ category.name }}
                 </span>
             </div>
@@ -23,7 +23,7 @@ v-for="category in post.categories" :key="category.id"
             <div class="text-gray-700 flex-grow" v-html="truncatedContent"></div>
             <div class="mt-6 flex justify-between items-center">
                 <router-link
-:to="{ name: 'comunidad-detalle', params: { id: post.id } }"
+                    :to="{ name: 'comunidad-detalle', params: { id: post.id } }"
                     class="font-semibold text-brand-camel hover:text-brand-negro transition-colors duration-300">
                     Leer más &rarr;
                 </router-link>

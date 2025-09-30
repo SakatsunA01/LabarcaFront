@@ -107,7 +107,7 @@ const searchTerm = ref('');
 const isModalOpen = ref(false);
 const eventoSeleccionado = ref<Evento | null>(null);
 
-const API_URL = 'https://api.labarcaministerio.com';
+const API_URL = 'https://api.labarcaministerio.com/api';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchEventos = async () => {

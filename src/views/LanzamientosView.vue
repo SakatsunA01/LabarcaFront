@@ -1,5 +1,5 @@
 <template>
-  <div class="lanzamientos-view bg-brand-gris-claro min-h-screen py-6 md:py-10">
+  <div class="lanzamientos-view bg-brand-gris-claro min-h-screen py-section-md">
     <div class="container mx-auto px-4 max-w-5xl">
       <header class="mb-6 md:mb-10 text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-brand-negro">Todos los Lanzamientos</h1>
@@ -75,7 +75,10 @@ onMounted(async () => {
   isLoading.value = true;
   try {
     const response = await axios.get(`${API_URL}/lanzamientos`);
-    todosLosLanzamientos.value = response.data;
+    // Ordenar por fecha de lanzamiento, los más nuevos primero
+    todosLosLanzamientos.value = response.data.sort((a: Lanzamiento, b: Lanzamiento) => {
+      return new Date(b.fecha_lanzamiento).getTime() - new Date(a.fecha_lanzamiento).getTime();
+    });
   } catch (error) {
     console.error('Error al cargar lanzamientos:', error);
   } finally {
