@@ -15,7 +15,7 @@
       </router-link>
     </div>
 
-    <!-- Menu Items -->
+    <!-- Desktop Menu Items -->
     <ul class="hidden md:flex items-center space-x-6">
       <li>
         <router-link to="/about" class="flex items-center space-x-2" :class="textColorClass">
@@ -49,10 +49,10 @@
       </li>
     </ul>
 
-    <!-- Actions: Login and Social Icons -->
+    <!-- Actions & Mobile Menu Button -->
     <div class="flex items-center space-x-4">
       <!-- User/Login Section -->
-      <div v-if="authStore.isAuthenticated && authStore.currentUser" ref="userMenuContainer" class="relative">
+      <div v-if="authStore.isAuthenticated && authStore.currentUser" ref="userMenuContainer" class="relative hidden md:block">
         <button class="flex items-center" :class="textColorClass" @click="toggleUserMenu">
           <span class="mr-2">{{ authStore.currentUser.name }}</span>
           <ChevronDownIcon class="h-5 w-5 transition-transform duration-200" :class="{ 'rotate-180': userMenuOpen }" />
@@ -89,44 +89,95 @@
           </div>
         </transition>
       </div>
-      <button v-else class="text-xl" :class="textColorClass" aria-label="Login" @click="openLoginModal">
+      <button v-else class="text-xl hidden md:block" :class="textColorClass" aria-label="Login" @click="openLoginModal">
         <UserIcon class="h-7 w-7" />
       </button>
 
-      <div class="flex space-x-3">
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-xl"
-          :class="textColorClass"
-          aria-label="Instagram"
-        >
-          <CameraIcon class="h-6 w-6" />
-        </a>
-        <a
-          href="https://facebook.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-xl"
-          :class="textColorClass"
-          aria-label="Facebook"
-        >
-          <UsersIcon class="h-6 w-6" />
-        </a>
-        <a
-          href="https://whatsapp.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-xl"
-          :class="textColorClass"
-          aria-label="WhatsApp"
-        >
-          <ChatBubbleOvalLeftEllipsisIcon class="h-6 w-6" />
-        </a>
-      </div>
+      <!-- Mobile Menu Button -->
+      <button class="md:hidden text-xl" :class="textColorClass" aria-label="Open menu" @click="toggleMobileMenu">
+        <Bars3Icon class="h-7 w-7" />
+      </button>
     </div>
-    <!-- Podrías añadir un botón para menú hamburguesa en móviles aquí -->
+
+    <!-- Mobile Menu Panel -->
+    <transition name="mobile-menu-fade">
+      <div v-if="mobileMenuOpen" class="fixed inset-0 bg-white z-50 flex flex-col">
+        <!-- Mobile Menu Header -->
+        <div class="flex justify-between items-center p-4 border-b border-gray-200">
+          <h2 class="text-2xl font-bold text-brand-negro">Menu</h2>
+          <button @click="toggleMobileMenu" class="text-brand-negro">
+            <XMarkIcon class="h-8 w-8" />
+          </button>
+        </div>
+
+        <!-- Mobile Menu Links -->
+        <ul class="flex flex-col items-center justify-start pt-16 flex-grow space-y-6">
+          <li>
+            <router-link to="/about" @click="toggleMobileMenu" class="text-2xl text-brand-negro hover:text-brand-camel flex items-center space-x-3">
+              <UserGroupIcon class="h-7 w-7" />
+              <span>Nosotros</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/eventos" @click="toggleMobileMenu" class="text-2xl text-brand-negro hover:text-brand-camel flex items-center space-x-3">
+              <CalendarDaysIcon class="h-7 w-7" />
+              <span>Eventos</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/artistas" @click="toggleMobileMenu" class="text-2xl text-brand-negro hover:text-brand-camel flex items-center space-x-3">
+              <MicrophoneIcon class="h-7 w-7" />
+              <span>Artistas</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/lanzamientos" @click="toggleMobileMenu" class="text-2xl text-brand-negro hover:text-brand-camel flex items-center space-x-3">
+              <PlayCircleIcon class="h-7 w-7" />
+              <span>Lanzamientos</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/comunidad" @click="toggleMobileMenu" class="text-2xl text-brand-negro hover:text-brand-camel flex items-center space-x-3">
+              <ChatBubbleLeftRightIcon class="h-7 w-7" />
+              <span>Comunidad</span>
+            </router-link>
+          </li>
+           <!-- Mobile Login/User Actions -->
+          <li class="absolute bottom-16">
+            <div v-if="authStore.isAuthenticated && authStore.currentUser" class="text-center">
+                <router-link
+                  v-if="authStore.isAdmin"
+                  to="/admin"
+                   @click="toggleMobileMenu"
+                  class="flex items-center space-x-3 block px-4 py-2 text-lg"
+                >
+                  <Cog8ToothIcon class="h-6 w-6" />
+                  <span>Panel Admin</span>
+                </router-link>
+                <router-link
+                  to="/peticion-oracion"
+                   @click="toggleMobileMenu"
+                  class="flex items-center space-x-3 block px-4 py-2 text-lg"
+                >
+                  <HeartIcon class="h-6 w-6" />
+                  <span>Pedido de Oración</span>
+                </router-link>
+                <button
+                  class="flex items-center space-x-3 w-full text-left px-4 py-2 text-lg"
+                  @click="handleLogout"
+                >
+                  <ArrowLeftStartOnRectangleIcon class="h-6 w-6" />
+                  <span>Cerrar Sesión</span>
+                </button>
+            </div>
+             <button v-else class="text-xl flex items-center space-x-3" aria-label="Login" @click="openLoginModal">
+                <UserIcon class="h-7 w-7" />
+                <span>Iniciar Sesión</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </transition>
   </nav>
 </template>
 
@@ -134,7 +185,6 @@
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import {
   UserIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
   ChevronDownIcon,
   UserGroupIcon,
   CalendarDaysIcon,
@@ -144,8 +194,8 @@ import {
   Cog8ToothIcon,
   HeartIcon,
   ArrowLeftStartOnRectangleIcon,
-  CameraIcon,
-  UsersIcon,
+  Bars3Icon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline';
 import { useUiStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -155,7 +205,6 @@ export default defineComponent({
   name: 'AppNavbar',
   components: {
     UserIcon,
-    ChatBubbleOvalLeftEllipsisIcon,
     ChevronDownIcon,
     UserGroupIcon,
     CalendarDaysIcon,
@@ -165,14 +214,15 @@ export default defineComponent({
     Cog8ToothIcon,
     HeartIcon,
     ArrowLeftStartOnRectangleIcon,
-    CameraIcon,
-    UsersIcon,
+    Bars3Icon,
+    XMarkIcon,
   },
   setup() {
     const uiStore = useUiStore();
     const authStore = useAuthStore();
     const router = useRouter();
     const userMenuOpen = ref(false);
+    const mobileMenuOpen = ref(false);
     const userMenuContainer = ref<HTMLElement | null>(null);
     const isScrolled = ref(false);
 
@@ -198,6 +248,7 @@ export default defineComponent({
 
     const openLoginModal = () => {
       uiStore.setShowLoginModal(true);
+      mobileMenuOpen.value = false; // Close mobile menu when login modal opens
     };
 
     const closeUserMenu = () => {
@@ -207,10 +258,15 @@ export default defineComponent({
     const toggleUserMenu = () => {
       userMenuOpen.value = !userMenuOpen.value;
     };
+    
+    const toggleMobileMenu = () => {
+      mobileMenuOpen.value = !mobileMenuOpen.value;
+    };
 
     const handleLogout = () => {
       authStore.logout();
       closeUserMenu();
+      mobileMenuOpen.value = false;
       router.push('/');
     };
 
@@ -232,8 +288,10 @@ export default defineComponent({
       openLoginModal,
       authStore,
       userMenuOpen,
+      mobileMenuOpen,
       userMenuContainer,
       toggleUserMenu,
+      toggleMobileMenu,
       handleLogout,
       closeUserMenu,
       isScrolled,
@@ -253,5 +311,15 @@ export default defineComponent({
 .user-menu-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.mobile-menu-fade-enter-active,
+.mobile-menu-fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.mobile-menu-fade-enter-from,
+.mobile-menu-fade-leave-to {
+  opacity: 0;
 }
 </style>

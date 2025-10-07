@@ -34,7 +34,7 @@
           </div>
           <div class="w-full h-full">
             <img
-              src="https://images.unsplash.com/photo-1528716321680-815a8cdb8cbe?q=80&w=1974&auto=format&fit=crop"
+              src="@/assets/fotohomeversiculo.png"
               alt="Comunidad en adoración"
               class="object-cover w-full h-full max-h-[500px] rounded-lg shadow-card filter grayscale-20">
           </div>
