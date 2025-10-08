@@ -60,7 +60,6 @@ onMounted(async () => {
       .filter((slide: HeroSlide) => slide.is_active)
       .sort((a: HeroSlide, b: HeroSlide) => a.order - b.order);
     
-    console.log('Slides cargados y filtrados:', slides.value); // Debugging line
 
     if (slides.value.length > 0) {
       startAutoplay();

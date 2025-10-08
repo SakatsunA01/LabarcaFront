@@ -6,8 +6,11 @@
     <div class="flex justify-between items-center mb-6">
       <div class="w-1/3">
         <input
-v-model="searchTerm" type="text" placeholder="Buscar por nombre o email..."
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
+          v-model="searchTerm"
+          type="text"
+          placeholder="Buscar por nombre o email..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+        />
       </div>
     </div>
 
@@ -21,9 +24,7 @@ v-model="searchTerm" type="text" placeholder="Buscar por nombre o email..."
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-            <th scope="col" class="relative px-6 py-3">
-              <span class="sr-only">Acciones</span>
-            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -31,25 +32,31 @@ v-model="searchTerm" type="text" placeholder="Buscar por nombre o email..."
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-               <span
-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  :class="user.admin_sn ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                :class="user.admin_sn ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'"
+              >
                 {{ user.admin_sn ? 'Admin' : 'Usuario' }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button @click="openUserDetailsModal(user)" class="text-gray-600 hover:text-gray-900 mr-4">
+                    <EyeIcon class="h-5 w-5" />
+                </button>
               <button
-class="text-brand-camel hover:text-brand-borgona mr-4" 
-                      :disabled="isCurrentUser(user.id)"
-                      :class="{'opacity-50 cursor-not-allowed': isCurrentUser(user.id)}"
-                      @click="toggleAdmin(user)">
+                class="text-brand-camel hover:text-brand-borgona mr-4"
+                :disabled="isCurrentUser(user.id)"
+                :class="{ 'opacity-50 cursor-not-allowed': isCurrentUser(user.id) }"
+                @click="toggleAdmin(user)"
+              >
                 {{ user.admin_sn ? 'Quitar Admin' : 'Hacer Admin' }}
               </button>
               <button
-class="text-red-600 hover:text-red-900" 
-                      :disabled="isCurrentUser(user.id)"
-                      :class="{'opacity-50 cursor-not-allowed': isCurrentUser(user.id)}"
-                      @click="deleteUser(user.id)">
+                class="text-red-600 hover:text-red-900"
+                :disabled="isCurrentUser(user.id)"
+                :class="{ 'opacity-50 cursor-not-allowed': isCurrentUser(user.id) }"
+                @click="deleteUser(user.id)"
+              >
                 Eliminar
               </button>
             </td>
@@ -58,6 +65,9 @@ class="text-red-600 hover:text-red-900"
       </table>
       <div v-else class="p-8 text-center text-gray-500">No se encontraron usuarios.</div>
     </div>
+
+    <UserDetailsModal :show="isModalOpen" :user="selectedUser" @close="isModalOpen = false" />
+
   </div>
 </template>
 
@@ -65,12 +75,19 @@ class="text-red-600 hover:text-red-900"
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
+import UserDetailsModal from '@/components/admin/UserDetailsModal.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 interface User {
   id: number;
   name: string;
   email: string;
   admin_sn: 0 | 1;
+  phone?: string;
+  belongs_to_church: boolean;
+  church_name?: string;
+  pastor_name?: string;
+  created_at: string;
 }
 
 const users = ref<User[]>([]);
@@ -79,10 +96,18 @@ const error = ref<string | null>(null);
 const searchTerm = ref('');
 const authStore = useAuthStore();
 
+const isModalOpen = ref(false);
+const selectedUser = ref<User | null>(null);
+
 const currentUserId = computed(() => authStore.currentUser?.id);
 
 const isCurrentUser = (id: number) => {
   return id === currentUserId.value;
+};
+
+const openUserDetailsModal = (user: User) => {
+  selectedUser.value = user;
+  isModalOpen.value = true;
 };
 
 const fetchUsers = async () => {
