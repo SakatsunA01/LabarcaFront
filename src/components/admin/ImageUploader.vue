@@ -65,11 +65,14 @@ const emit = defineEmits(['file-change']);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const getFullUrl = (path: string | null | undefined): string | null => {
-  if (path && !path.startsWith('blob:')) {
-    const baseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace('/api', '');
-    return `${baseUrl}${path}`;
+  if (!path) return null;
+  if (path.startsWith('blob:') || /^https?:\/\//i.test(path)) return path;
+  try {
+    const base = import.meta.env.VITE_API_BASE_URL || '';
+    return new URL(path, base).toString();
+  } catch {
+    return path;
   }
-  return path || null;
 };
 
 const previewUrl = ref<string | null>(getFullUrl(props.initialPreview));

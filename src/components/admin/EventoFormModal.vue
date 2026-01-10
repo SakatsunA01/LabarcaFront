@@ -54,6 +54,29 @@
                                             placeholder="URL para comprar entradas"
                                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
                                     </div>
+                                    <div>
+                                        <label for="general_product_id" class="block text-sm font-medium text-gray-700">Entrada General</label>
+                                        <select
+                                            id="general_product_id" v-model="formData.general_product_id"
+                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
+                                            <option :value="null">Sin entrada</option>
+                                            <option v-for="product in products" :key="product.id" :value="product.id">
+                                                {{ product.name }} - {{ formatPrice(product.price_ars) }} (stock {{ product.stock }})
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="vip_product_id" class="block text-sm font-medium text-gray-700">Entrada VIP</label>
+                                        <select
+                                            id="vip_product_id" v-model="formData.vip_product_id"
+                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel">
+                                            <option :value="null">Sin entrada</option>
+                                            <option v-for="product in products" :key="product.id" :value="product.id">
+                                                {{ product.name }} - {{ formatPrice(product.price_ars) }} (stock {{ product.stock }})
+                                            </option>
+                                        </select>
+                                        <p class="mt-2 text-xs text-gray-500">Si asignas entradas internas, el boton de compra usara el checkout interno.</p>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>
@@ -118,6 +141,8 @@ interface EventoFormData {
     nombre: string;
     fecha: string;
     link_compra: string | null;
+    general_product_id: number | null;
+    vip_product_id: number | null;
     descripcion: string | null;
     lugar: string | null;
     imagenUrl: string | null;
@@ -127,6 +152,8 @@ const defaultFormData: EventoFormData = {
     nombre: '',
     fecha: '', // YYYY-MM-DDTHH:mm format for datetime-local input
     link_compra: null,
+    general_product_id: null,
+    vip_product_id: null,
     descripcion: null,
     lugar: null,
     imagenUrl: null,
@@ -139,9 +166,19 @@ const imageFiles = ref<{ [key: string]: File | null }>({
 
 const isLoading = ref(false);
 const errorMessage = ref('');
+const products = ref<{ id: number; name: string; price_ars: number; stock: number }[]>([]);
 
 const isEditing = computed(() => !!props.evento);
 const API_URL = 'https://api.labarcaministerio.com/api';
+
+const fetchProducts = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/products`);
+        products.value = response.data;
+    } catch (error) {
+        console.error('Error al cargar productos:', error);
+    }
+};
 
 watch(() => props.show, (newVal) => {
     if (newVal) {
@@ -156,8 +193,13 @@ watch(() => props.show, (newVal) => {
         }
         // Reset files
         imageFiles.value = { imagenUrl: null };
+        fetchProducts();
     }
 });
+
+const formatPrice = (value: number) => {
+    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(value);
+};
 
 const handleFileChange = (file: File | null, fieldName: string) => {
     imageFiles.value[fieldName] = file;
@@ -169,9 +211,15 @@ const handleSubmit = async () => {
 
     const submissionData = new FormData();
     Object.entries(formData.value).forEach(([key, value]) => {
-        // Append non-null/undefined values
-        if (value !== null && value !== undefined) {
-            submissionData.append(key, value);
+        if (key === 'imagenUrl' && typeof value === 'string') {
+            return;
+        }
+        if (value === null) {
+            submissionData.append(key, '');
+            return;
+        }
+        if (value !== undefined) {
+            submissionData.append(key, String(value));
         }
     });
     // Append image file if present

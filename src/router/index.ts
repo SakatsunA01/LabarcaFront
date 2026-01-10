@@ -12,6 +12,17 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/perfil',
+      name: 'perfil',
+      component: () => import('../views/ProfileView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        if (authStore.isAuthenticated) return next();
+        // Si no está autenticado, redirigimos al home (puedes abrir modal de login desde allí)
+        next({ name: 'home' });
+      },
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -81,6 +92,21 @@ const router = createRouter({
         component: PlaceholderView,
     },
     {
+        path: '/pago/success',
+        name: 'pago-success',
+        component: () => import('../views/PagoSuccessView.vue'),
+    },
+    {
+        path: '/pago/pending',
+        name: 'pago-pending',
+        component: () => import('../views/PagoPendingView.vue'),
+    },
+    {
+        path: '/pago/failure',
+        name: 'pago-failure',
+        component: () => import('../views/PagoFailureView.vue'),
+    },
+    {
         path: '/privacidad',
         name: 'privacidad',
         component: PlaceholderView,
@@ -131,6 +157,16 @@ const router = createRouter({
           path: 'eventos',
           name: 'admin-eventos',
           component: () => import('../views/admin/AdminEventosView.vue'),
+        },
+        {
+          path: 'products',
+          name: 'admin-products',
+          component: () => import('../views/admin/AdminProductsView.vue'),
+        },
+        {
+          path: 'ticket-orders',
+          name: 'admin-ticket-orders',
+          component: () => import('../views/admin/AdminTicketOrdersView.vue'),
         },
         {
           path: 'lanzamientos',

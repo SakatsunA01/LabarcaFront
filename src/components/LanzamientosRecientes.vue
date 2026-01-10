@@ -1,6 +1,6 @@
 <template>
   <AnimatedSection>
-    <section class="py-section-md px-2 sm:px-4 lg:px-6 bg-gray-50">
+    <section class="py-section-md px-2 sm:px-4 lg:px-6 bg-brand-cream dark:bg-brand-negro">
       <div class="container mx-auto max-w-7xl">
         <div class="flex justify-between items-center mb-10 md:mb-12">
           <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro">Nuestra Música Más Reciente</h2>

@@ -1,6 +1,6 @@
 <template>
     <div class="p-6 md:p-8">
-        <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestión de Historias</h1>
+        <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestion de Hitosrias</h1>
 
         <div class="flex justify-end mb-6">
             <button class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors" @click="openModal(null)">
@@ -13,9 +13,9 @@
             <table class="w-full table-auto">
                 <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-600">
                     <tr>
-                        <th class="p-4">Título</th>
+                        <th class="p-4">TÃ­tulo</th>
                         <th class="p-4">Autor</th>
-                        <th class="p-4">Fecha de Publicación</th>
+                        <th class="p-4">Fecha de PublicaciÃ³n</th>
                         <th class="p-4">Acciones</th>
                     </tr>
                 </thead>
@@ -25,8 +25,9 @@
                         <td class="p-4">{{ post.autor || 'N/A' }}</td>
                         <td class="p-4">{{ post.fecha_publicacion ? formatDate(post.fecha_publicacion) : 'No publicada' }}</td>
                         <td class="p-4 flex items-center space-x-2">
-                            <button class="text-blue-600 hover:text-blue-800" @click="openModal(post)">Editar</button>
-                            <button class="text-red-600 hover:text-red-800" @click="confirmDelete(post)">Eliminar</button>
+                            <button class="bg-blue-600 text-white py-1 px-2 rounded-md hover:bg-blue-700 transition-colors" @click="openModal(post)">Editar</button>
+                            <button class="bg-red-600 text-white py-1 px-2 rounded-md hover:bg-red-700 transition-colors" @click="confirmDelete(post)">Eliminar</button>
+                            <button class="bg-brand-camel text-white py-1 px-2 rounded-md hover:bg-opacity-90 transition-colors" @click="openPreview(post)">Vista previa</button>
                         </td>
                     </tr>
                     <tr v-if="posts.length === 0">
@@ -45,6 +46,29 @@
             @close="closeModal"
             @save="handleSave"
         />
+
+        <!-- Vista previa -->
+        <transition name="modal-fade">
+            <div
+                v-if="previewPost"
+                class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+                @click.self="closePreview">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-brand-negro">Vista previa historia</h2>
+                        <button class="text-gray-500 hover:text-brand-negro" @click="closePreview">Cerrar</button>
+                    </div>
+                    <div class="p-6 md:p-8 bg-brand-gris-claro">
+                        <div class="bg-white rounded-2xl shadow-card border border-black/5 overflow-hidden">
+                            <div class="p-4 overflow-auto">
+                                <StoryGenerator :post="previewPost" :preview="true" />
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-4">Vista de ejemplo para Instagram.</p>
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -54,6 +78,7 @@ import { getPosts, deletePost, type Post } from '@/services/postService';
 import { useAuthStore } from '@/stores/authStore';
 
 const PostFormModal = defineAsyncComponent(() => import('@/components/admin/PostFormModal.vue'));
+const StoryGenerator = defineAsyncComponent(() => import('@/components/admin/StoryGenerator.vue'));
 
 const posts = ref<Post[]>([]);
 const isLoading = ref(true);
@@ -62,11 +87,13 @@ const authStore = useAuthStore();
 
 const isModalOpen = ref(false);
 const selectedPost = ref<Post | null>(null);
+const previewPost = ref<Post | null>(null);
+
 
 const fetchPosts = async () => {
     try {
         isLoading.value = true;
-        posts.value = await getPosts(); // Por ahora, trae todos
+        posts.value = await getPosts();
     } catch (err) {
         console.error('Error al cargar posts:', err);
         error.value = 'No se pudieron cargar las historias.';
@@ -87,14 +114,22 @@ const closeModal = () => {
 
 const handleSave = () => {
     closeModal();
-    fetchPosts(); // Recargar la lista de posts
+    fetchPosts();
+};
+
+const openPreview = (post: Post) => {
+    previewPost.value = post;
+};
+
+const closePreview = () => {
+    previewPost.value = null;
 };
 
 const confirmDelete = async (post: Post) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar la historia "${post.titulo}"?`)) {
+    if (window.confirm(`Â¿EstÃ¡s seguro de que quieres eliminar la historia "${post.titulo}"?`)) {
         try {
             await deletePost(post.id, authStore.token!);
-            fetchPosts(); // Recargar la lista
+            fetchPosts();
         } catch (err) {
             console.error('Error al eliminar el post:', err);
             alert('No se pudo eliminar la historia.');
@@ -111,3 +146,15 @@ onMounted(() => {
     fetchPosts();
 });
 </script>
+
+<style scoped>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+    transition: opacity 0.25s ease-out;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+    opacity: 0;
+}
+</style>

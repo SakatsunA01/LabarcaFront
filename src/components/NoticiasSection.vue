@@ -1,14 +1,17 @@
 <template>
   <AnimatedSection>
-    <section class="bg-gray-50 py-section-md px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-6 md:mb-8">
+    <section class="py-section-md px-2 sm:px-4 lg:px-6 bg-white dark:bg-brand-negro">
+      <div class="container mx-auto max-w-7xl">
+        <div class="flex justify-between items-center mb-10 md:mb-12 border-b border-black/5 dark:border-white/10 pb-4">
+          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro dark:text-white">
             Historias de Nuestra Comunidad
           </h2>
-          <p class="mt-4 font-inter text-lg text-brand-camel">
-            Testimonios, procesos y noticias que nos unen.
-          </p>
+          <router-link
+            to="/comunidad"
+            class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80 transition-all duration-300 text-md font-medium flex items-center gap-2 shadow-md hover:shadow-lg">
+            <span>Ver Todas</span>
+            <ArrowRightIcon class="h-4 w-4" />
+          </router-link>
         </div>
 
         <!-- Filtros de Categoría -->
@@ -37,38 +40,14 @@
         </div>
 
         <div v-else-if="posts.length > 0" class="transition-opacity duration-500">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-            <!-- Post Destacado -->
-            <router-link
-              v-if="featuredPost" :to="{ name: 'comunidad-detalle', params: { id: featuredPost.id } }"
-              class="md:col-span-2 lg:col-span-2 rounded-lg overflow-hidden shadow-card hover:shadow-card-hover group transition-shadow duration-300 ease-in-out">
-              <div class="relative w-full h-96">
-                <img
-                  :src="featuredPost.url_imagen" :alt="featuredPost.titulo"
-                  class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-6 text-white">
-                  <h3 class="text-2xl font-bold">{{ featuredPost.titulo }}</h3>
-                  <p class="mt-2 text-sm opacity-90">{{ featuredPost.contenido.substring(0, 120) }}...</p>
-                </div>
-              </div>
-            </router-link>
-
-            <!-- Posts Secundarios -->
-            <div class="lg:col-span-1 flex flex-col space-y-8">
-              <PostCard
-                v-for="(post, index) in secondaryPosts" :key="post.id" :post="post"
-                :style="{ transitionDelay: `${index * 150}ms` }" />
+          <!-- Tres cards compactas, todas iguales -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              v-for="(post, index) in topThreePosts"
+              :key="post.id"
+              class="rounded-lg overflow-hidden shadow-card hover:shadow-xl transition-all duration-300 relative group h-full w-full min-h-[260px]">
+              <PostCard :post="post" :compact="true" :style="{ transitionDelay: `${index * 150}ms` }" />
             </div>
-          </div>
-          
-          <div class="text-center mt-16">
-            <router-link
-              to="/comunidad"
-              class="bg-brand-camel text-white py-3 px-8 rounded-md hover:bg-opacity-80 transition-colors text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center gap-2">
-              <span>Ver Todas las Historias</span>
-              <ArrowRightIcon class="h-5 w-5" />
-            </router-link>
           </div>
         </div>
 
@@ -97,8 +76,7 @@ const categories = ref<Category[]>([]);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
-const featuredPost = computed(() => posts.value.length > 0 ? posts.value[0] : null);
-const secondaryPosts = computed(() => posts.value.slice(1, 3));
+const topThreePosts = computed(() => posts.value.slice(0, 3));
 
 onMounted(async () => {
   try {

@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   // Asegúrate de que sea `export default`
   content: [
     './index.html',
@@ -13,6 +14,8 @@ export default {
         'brand-verde-oscuro': '#234E4B',
         'brand-negro': '#171C1E',
         'brand-gris-claro': '#E2E2E2',
+        'brand-cream': '#F5EFE6',
+        'brand-carbon': '#0F1315',
       },
       fontFamily: {
         sans: ['"Inter"', 'sans-serif'], // Inter como fuente por defecto

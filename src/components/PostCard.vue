@@ -1,12 +1,12 @@
 <template>
-    <div class="bg-white rounded-xl shadow-card hover:shadow-card-hover overflow-hidden transform hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
+    <div class="bg-white rounded-lg shadow-card hover:shadow-card-hover overflow-hidden transform hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
         <router-link :to="{ name: 'comunidad-detalle', params: { id: post.id } }">
-            <img v-if="post.url_imagen" :src="fullImageUrl" alt="Imagen del post" class="w-full h-48 object-cover">
-            <div v-else class="w-full h-48 bg-gray-200 flex items-center justify-center">
+            <img v-if="post.url_imagen" :src="fullImageUrl" alt="Imagen del post" :class="['w-full object-cover', compact ? 'h-32' : 'h-48']">
+            <div v-else :class="['w-full bg-gray-200 flex items-center justify-center', compact ? 'h-32' : 'h-48']">
                 <span class="text-gray-500">Sin imagen</span>
             </div>
         </router-link>
-        <div class="p-6 flex-grow flex flex-col">
+        <div :class="['flex-grow flex flex-col', compact ? 'p-3' : 'p-6']">
             <div class="mb-2">
                 <span
                     v-for="category in post.categories" :key="category.id" 
@@ -14,14 +14,14 @@
                     {{ category.name }}
                 </span>
             </div>
-            <h3 class="text-xl font-bold text-brand-negro mb-2 font-display">{{ post.titulo }}</h3>
-            <p v-if="post.autor || post.fecha_publicacion" class="text-sm text-gray-500 mb-4">
+            <h3 :class="[compact ? 'text-base' : 'text-xl', 'font-bold text-brand-negro mb-1 font-display leading-tight']">{{ post.titulo }}</h3>
+            <p v-if="post.autor || post.fecha_publicacion" :class="[compact ? 'text-xs mb-2' : 'text-sm mb-4', 'text-gray-500']">
                 <span v-if="post.autor">Por {{ post.autor }}</span>
                 <span v-if="post.autor && post.fecha_publicacion"> &bull; </span>
                 <span v-if="post.fecha_publicacion">{{ formatDate(post.fecha_publicacion) }}</span>
             </p>
-            <div class="text-gray-700 flex-grow" v-html="truncatedContent"></div>
-            <div class="mt-6 flex justify-between items-center">
+            <div :class="['text-gray-700 flex-grow', compact ? 'line-clamp-2' : 'line-clamp-4']" v-html="truncatedContent"></div>
+            <div :class="[compact ? 'mt-3' : 'mt-6', 'flex justify-between items-center']">
                 <router-link
                     :to="{ name: 'comunidad-detalle', params: { id: post.id } }"
                     class="font-semibold text-brand-camel hover:text-brand-negro transition-colors duration-300">
@@ -40,6 +40,7 @@ import LikeButton from './LikeButton.vue';
 
 const props = defineProps<{
     post: Post;
+    compact?: boolean;
 }>();
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -70,3 +71,6 @@ const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', options);
 };
 </script>
+
+
+

@@ -1,11 +1,11 @@
 <template>
   <AnimatedSection>
-    <section class="py-section-md px-2 sm:px-4 lg:px-6 bg-white">
+    <section class="py-section-md px-2 sm:px-4 lg:px-6 bg-white dark:bg-brand-negro">
       <div class="container mx-auto max-w-7xl">
         
         <!-- Header de la sección -->
-        <div class="flex justify-between items-center mb-10 md:mb-12">
-          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro">
+        <div class="flex justify-between items-center mb-10 md:mb-12 border-b border-black/5 dark:border-white/10 pb-4">
+          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro dark:text-white">
             Nuestros Eventos
           </h2>
           <router-link

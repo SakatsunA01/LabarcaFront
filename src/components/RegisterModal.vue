@@ -1,80 +1,84 @@
 <template>
     <transition name="modal-fade">
-        <div
-v-if="show"
+        <div v-if="show"
             class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
             @click.self="closeModal">
-            <div class="bg-brand-gris-claro p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all">
-                <button
-class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors"
+            <div
+                class="bg-brand-gris-claro p-6 md:p-8 rounded-xl shadow-2xl w-full sm:max-w-md md:max-w-lg lg:max-w-xl relative max-h-[90vh] overflow-y-auto transform transition-all">
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors"
                     @click="closeModal">
                     <XMarkIcon class="h-6 w-6" />
                 </button>
                 <h2 class="text-2xl font-bold text-brand-negro text-center mb-6">Crear Cuenta</h2>
-                <form @submit.prevent="handleRegister">
+                <form @submit.prevent="handleRegister" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-brand-negro mb-1">Nombre</label>
-                        <input
-id="name" v-model="name" type="text"
+                        <input id="name" v-model="name" type="text"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
                     <div class="mb-4">
-                        <label for="email-reg" class="block text-sm font-medium text-brand-negro mb-1">Correo ElectrÃ³nico</label>
-                        <input
-id="email-reg" v-model="email" type="email"
+                        <label for="birth_date" class="block text-sm font-medium text-brand-negro mb-1">Fecha de
+                            Nacimiento</label>
+                        <input id="birth_date" v-model="birth_date" type="date" :max="maxBirthDate"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white text-brand-negro appearance-none focus:outline-none focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
+                            aria-label="Fecha de nacimiento" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="email-reg" class="block text-sm font-medium text-brand-negro mb-1">Correo
+                            ElectrÃ³nico</label>
+                        <input id="email-reg" v-model="email" type="email"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
                     <div class="mb-4">
                         <label for="phone" class="block text-sm font-medium text-brand-negro mb-1">TelÃ©fono</label>
-                        <input
-id="phone" v-model="phone" type="tel"
+                        <input id="phone" v-model="phone" type="tel"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
-                    <div class="mb-4 flex items-center">
-                        <input
-id="belongs_to_church" v-model="belongs_to_church" type="checkbox"
+                    <div class="mb-4 flex items-center md:col-span-2">
+                        <input id="belongs_to_church" v-model="belongs_to_church" type="checkbox"
                             class="h-4 w-4 text-brand-camel focus:ring-brand-camel border-gray-300 rounded">
-                        <label for="belongs_to_church" class="ml-2 block text-sm text-gray-900">Â¿Perteneces a una iglesia?</label>
+                        <label for="belongs_to_church" class="ml-2 block text-sm text-gray-900">Â¿Perteneces a una
+                            iglesia?</label>
                     </div>
-                    <div v-if="belongs_to_church">
+                    <div v-if="belongs_to_church" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="mb-4">
-                            <label for="church_name" class="block text-sm font-medium text-brand-negro mb-1">Nombre de la Iglesia</label>
-                            <input
-id="church_name" v-model="church_name" type="text"
+                            <label for="church_name" class="block text-sm font-medium text-brand-negro mb-1">Nombre de
+                                la Iglesia</label>
+                            <input id="church_name" v-model="church_name" type="text"
                                 class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                                 :required="belongs_to_church" />
                         </div>
                         <div class="mb-4">
-                            <label for="pastor_name" class="block text-sm font-medium text-brand-negro mb-1">Nombre del Pastor</label>
-                            <input
-id="pastor_name" v-model="pastor_name" type="text"
+                            <label for="pastor_name" class="block text-sm font-medium text-brand-negro mb-1">Nombre del
+                                Pastor</label>
+                            <input id="pastor_name" v-model="pastor_name" type="text"
                                 class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                                 :required="belongs_to_church" />
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label for="password-reg" class="block text-sm font-medium text-brand-negro mb-1">ContraseÃ±a</label>
-                        <input
-id="password-reg" v-model="password" type="password"
+                        <label for="password-reg"
+                            class="block text-sm font-medium text-brand-negro mb-1">ContraseÃ±a</label>
+                        <input id="password-reg" v-model="password" type="password"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
                     <div class="mb-6">
-                        <label for="password-confirm" class="block text-sm font-medium text-brand-negro mb-1">Confirmar ContraseÃ±a</label>
-                        <input
-id="password-confirm" v-model="password_confirmation" type="password"
+                        <label for="password-confirm" class="block text-sm font-medium text-brand-negro mb-1">Confirmar
+                            ContraseÃ±a</label>
+                        <input id="password-confirm" v-model="password_confirmation" type="password"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow"
                             required />
                     </div>
-                    <div v-if="errorMessage" class="mb-4 text-red-600 text-sm text-center p-2 bg-red-100 rounded-md">
+                    <div v-if="errorMessage"
+                        class="mb-4 text-red-600 text-sm text-center p-2 bg-red-100 rounded-md md:col-span-2">
                         {{ errorMessage }}
                     </div>
-                    <button
-type="submit" :disabled="isLoading"
-                        class="w-full bg-brand-camel text-white py-3 px-4 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-camel focus:ring-offset-2">
+                    <button type="submit" :disabled="isLoading"
+                        class="w-full md:col-span-2 bg-brand-camel text-white py-3 px-4 rounded-md hover:bg-opacity-90 transition-all duration-300 font-medium disabled:opacity-60 flex items-center justify-center shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-camel focus:ring-offset-2">
                         <span v-if="isLoading" class="animate-pulse">Creando cuenta...</span>
                         <span v-else>Registrarse</span>
                     </button>
@@ -101,6 +105,9 @@ defineProps<{
 const emit = defineEmits(['close', 'registration-success']);
 
 const name = ref('');
+const birth_date = ref('');
+// Evita fechas futuras en el selector
+const maxBirthDate = new Date().toISOString().split('T')[0];
 const email = ref('');
 const phone = ref('');
 const belongs_to_church = ref(false);
@@ -114,35 +121,59 @@ const errorMessage = ref('');
 const authStore = useAuthStore();
 const uiStore = useUiStore();
 
+const validateEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+const validatePhone = (val: string) => /^[0-9+()\-\s]{6,}$/.test(val);
+
 const handleRegister = async () => {
-    isLoading.value = true;
     errorMessage.value = '';
-    if (password.value !== password_confirmation.value) {
-        errorMessage.value = 'Las contraseÃ±as no coinciden.';
-        isLoading.value = false;
+    if (!name.value.trim()) {
+        errorMessage.value = "El nombre es obligatorio.";
+    } else if (!birth_date.value) {
+        errorMessage.value = "La fecha de nacimiento es obligatoria.";
+    } else if (birth_date.value > maxBirthDate) {
+        errorMessage.value = "La fecha de nacimiento no puede ser futura.";
+    } else if (!email.value.trim() || !validateEmail(email.value)) {
+        errorMessage.value = "Ingresa un correo electrónico válido.";
+    } else if (!phone.value.trim() || !validatePhone(phone.value)) {
+        errorMessage.value = "Ingresa un teléfono válido.";
+    } else if (password.value.length < 6) {
+        errorMessage.value = "La contraseña debe tener al menos 6 caracteres.";
+    } else if (password.value !== password_confirmation.value) {
+        errorMessage.value = "Las contraseñas no coinciden.";
+    } else if (belongs_to_church.value && (!church_name.value.trim() || !pastor_name.value.trim())) {
+        errorMessage.value = "Completa Iglesia y Pastor si marcas que perteneces a una iglesia.";
+    }
+
+    if (errorMessage.value) {
+        uiStore.showSnackbar(errorMessage.value, 'error');
         return;
     }
+
+    isLoading.value = true;
     try {
         await authStore.register({
-            name: name.value,
-            email: email.value,
-            phone: phone.value,
+            name: name.value.trim(),
+            birth_date: birth_date.value,
+            email: email.value.trim(),
+            phone: phone.value.trim(),
             belongs_to_church: belongs_to_church.value,
-            church_name: church_name.value,
-            pastor_name: pastor_name.value,
+            church_name: belongs_to_church.value ? church_name.value.trim() : '',
+            pastor_name: belongs_to_church.value ? pastor_name.value.trim() : '',
             password: password.value,
             password_confirmation: password_confirmation.value,
         });
-        // Si el registro es exitoso, emitimos el evento de Ã©xito
+        uiStore.showSnackbar('Cuenta creada con éxito. ¡Bienvenido/a!', 'success');
         closeModal();
         emit('registration-success');
-    } catch (error: any) {
-        errorMessage.value = error.response?.data?.message || 'OcurriÃ³ un error en el registro.';
+    } catch (error) {
+        const anyErr: any = error as any;
+        const msg = anyErr?.response?.data?.message || 'Ocurrió un error en el registro.';
+        errorMessage.value = msg;
+        uiStore.showSnackbar(msg, 'error');
     } finally {
         isLoading.value = false;
     }
 };
-
 const closeModal = () => {
     uiStore.setShowRegisterModal(false);
     emit('close');
@@ -186,3 +217,4 @@ const switchToLogin = () => {
     transform: scale(1) translateY(0);
 }
 </style>
+

@@ -54,22 +54,38 @@ to="/eventos"
 
           <!-- Testimonios -->
           <section class="mb-10 md:mb-16">
-            <h2 class="text-3xl font-bold text-brand-negro mb-8 text-center">Testimonios</h2>
+            <h2 class="text-3xl font-bold text-brand-negro mb-4 text-center">Testimonios</h2>
+            <p class="text-center text-sm text-gray-500 max-w-3xl mx-auto mb-6">
+              Los testimonios se muestran a la comunidad después de ser aprobados. Si adjuntas una foto, la publicaremos
+              cuando un moderador valide su contenido.
+            </p>
             <div v-if="evento.testimonios && evento.testimonios.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div
   v-for="testimonio in evento.testimonios" :key="testimonio.id"
                 class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div v-if="testimonio.foto_url" class="mb-4">
+                  <img
+                    :src="testimonio.foto_url"
+                    alt="Foto del testimonio"
+                    class="w-full h-40 object-cover rounded-md border border-gray-200"
+                  />
+                </div>
                 <p class="text-gray-800 italic mb-3 leading-relaxed">"{{ testimonio.comentario }}"</p>
-                <p class="text-sm text-brand-camel text-right font-medium">- {{ testimonio.nombre_usuario || 'Anónimo' }}
+                <p class="text-sm text-brand-camel text-right font-medium">
+                  - {{ testimonio.nombre_usuario || 'Ánimo' }}
                 </p>
               </div>
             </div>
-            <p v-else class="text-center text-gray-600 italic py-6">Aún no hay testimonios para este evento. ¡Sé el
-              primero!</p>
+            <p v-else class="text-center text-gray-600 italic py-6">
+              Aún no hay testimonios para este evento. ¡Sé el primero!
+            </p>
 
             <!-- Formulario Nuevo Testimonio -->
             <div v-if="authStore.isAuthenticated" class="mt-10 p-6 md:p-8 bg-gray-50 rounded-xl border border-gray-200">
-              <h3 class="text-xl font-semibold text-brand-negro mb-4">Deja tu Testimonio</h3>
+              <h3 class="text-xl font-semibold text-brand-negro mb-2">Deja tu Testimonio</h3>
+              <p class="text-sm text-gray-500 mb-5">
+                Puedes adjuntar una foto (máximo {{ MAX_PHOTO_SIZE_MB }} MB). En celulares también puedes tomarla en el momento.
+              </p>
               <form @submit.prevent="handleTestimonioSubmit">
                 <textarea
                   v-model="newTestimonioComentario"
@@ -77,6 +93,31 @@ to="/eventos"
                   placeholder="Escribe tu comentario aquí..."
                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-brand-camel focus:border-brand-camel transition-colors"
                   :disabled="isSubmitting"></textarea>
+                <div class="mt-4 flex flex-col gap-2">
+                  <label class="text-sm font-semibold text-brand-negro">Foto opcional</label>
+                  <input
+                    ref="photoInput"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-camel file:text-white"
+                    @change="handlePhotoChange"
+                    :disabled="isSubmitting"
+                  />
+                  <p class="text-xs text-gray-500">
+                    Máximo {{ MAX_PHOTO_SIZE_MB }} MB por foto y puedes abrir la cámara del celular para capturarla al instante.
+                  </p>
+                  <div v-if="photoPreviewUrl" class="relative">
+                    <img :src="photoPreviewUrl" alt="Vista previa" class="h-32 w-full object-cover rounded-md border border-dashed border-brand-gris-claro" />
+                    <button
+                      type="button"
+                      class="absolute top-1 right-1 rounded-full bg-black/70 text-xs text-white px-3 py-1 hover:bg-black/80"
+                      @click="clearPhotoSelection"
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                </div>
                 <button
                   type="submit"
                   :disabled="isSubmitting || !newTestimonioComentario.trim()"
@@ -91,9 +132,15 @@ to="/eventos"
                 </button>
               </form>
             </div>
-             <div v-else class="mt-10 text-center">
-                <p class="text-gray-600">Debes <button @click="uiStore.setShowLoginModal(true)" class="text-brand-camel hover:underline font-semibold">iniciar sesión</button> para dejar un testimonio.</p>
-              </div>
+            <div v-else class="mt-10 text-center">
+              <p class="text-gray-600">
+                Debes
+                <button @click="uiStore.setShowLoginModal(true)" class="text-brand-camel hover:underline font-semibold">
+                  iniciar sesión
+                </button>
+                para dejar un testimonio.
+              </p>
+            </div>
           </section>
 
           <!-- Galería -->
@@ -125,7 +172,7 @@ to="/eventos"
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useUiStore } from '@/stores/uiStore';
@@ -139,6 +186,8 @@ interface Testimonio {
   comentario: string;
   nombre_usuario?: string;
   usuario?: { name: string };
+  foto_url?: string | null;
+  approved?: boolean;
 }
 
 interface GaleriaImagen {
@@ -174,6 +223,46 @@ const error = ref<string | null>(null);
 
 const newTestimonioComentario = ref('');
 const isSubmitting = ref(false);
+const MAX_PHOTO_SIZE_MB = 4;
+const MAX_PHOTO_SIZE_BYTES = MAX_PHOTO_SIZE_MB * 1024 * 1024;
+const selectedPhoto = ref<File | null>(null);
+const photoPreviewUrl = ref<string | null>(null);
+const photoInputRef = ref<HTMLInputElement | null>(null);
+
+const resetPhotoPreview = () => {
+  if (photoPreviewUrl.value) {
+    URL.revokeObjectURL(photoPreviewUrl.value);
+    photoPreviewUrl.value = null;
+  }
+};
+
+const clearPhotoSelection = () => {
+  selectedPhoto.value = null;
+  resetPhotoPreview();
+  if (photoInputRef.value) {
+    photoInputRef.value.value = '';
+  }
+};
+
+const handlePhotoChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0] ?? null;
+  if (!file) {
+    clearPhotoSelection();
+    return;
+  }
+
+  if (file.size > MAX_PHOTO_SIZE_BYTES) {
+    uiStore.showSnackbar(`La foto supera los ${MAX_PHOTO_SIZE_MB} MB permitidos.`, 'error');
+    input.value = '';
+    clearPhotoSelection();
+    return;
+  }
+
+  selectedPhoto.value = file;
+  resetPhotoPreview();
+  photoPreviewUrl.value = URL.createObjectURL(file);
+};
 
 const fetchEvento = async () => {
   const eventoId = route.params.id;
@@ -206,22 +295,18 @@ const handleTestimonioSubmit = async () => {
 
   isSubmitting.value = true;
   try {
-    const newTestimonio = {
-      id_evento: evento.value.id,
-      comentario: newTestimonioComentario.value,
-    };
-    const response = await testimonioService.createTestimonio(newTestimonio);
-    
-    // Optimistamente actualiza la UI o recarga los testimonios
-    if (evento.value.testimonios) {
-        evento.value.testimonios.push(response.data);
-    } else {
-        evento.value.testimonios = [response.data];
+    const formData = new FormData();
+    formData.append('id_evento', String(evento.value.id));
+    formData.append('comentario', newTestimonioComentario.value.trim());
+    if (selectedPhoto.value) {
+      formData.append('foto', selectedPhoto.value);
     }
 
-    newTestimonioComentario.value = '';
-    uiStore.showSnackbar('¡Gracias por tu testimonio!', 'success');
+    await testimonioService.createTestimonio(formData);
 
+    newTestimonioComentario.value = '';
+    clearPhotoSelection();
+    uiStore.showSnackbar('Gracias por tu testimonio. Será visible una vez aprobado.', 'success');
   } catch (err: any) {
     console.error('Error al enviar el testimonio:', err);
     uiStore.showSnackbar(err.response?.data?.message || 'Error al enviar el testimonio', 'error');
@@ -235,6 +320,10 @@ onMounted(() => {
   fetchEvento().finally(() => {
       uiStore.setRouteLoading(false);
   });
+});
+
+onBeforeUnmount(() => {
+  resetPhotoPreview();
 });
 
 </script>

@@ -1,9 +1,9 @@
 <template>
   <AnimatedSection>
-    <section class="bg-white py-section-md px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section class="bg-brand-cream dark:bg-brand-negro py-section-md px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div class="max-w-7xl mx-auto">
         <div class="text-center">
-          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-10 md:mb-12 flex items-center justify-center gap-3">
+          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro dark:text-white mb-10 md:mb-12 flex items-center justify-center gap-3">
             <SparklesIcon class="h-8 w-8 text-brand-camel" />
             <span>Somos un Eco de Su Voz</span>
             <SparklesIcon class="h-8 w-8 text-brand-camel" />
@@ -14,7 +14,7 @@
         </div>
 
         <div class="mt-16 grid md:grid-cols-2 gap-12 items-center">
-          <div class="text-brand-negro font-inter text-base leading-relaxed">
+          <div class="text-brand-negro dark:text-gray-200 font-inter text-base leading-relaxed">
             <p>
               Creemos firmemente que la música es más que melodía y armonía; es un vehículo divino para la transformación,
               una herramienta poderosa para conectar corazones y proclamar la verdad del Evangelio. En La Barca, nuestra

@@ -10,8 +10,8 @@
   >
     <!-- Logo -->
     <div class="navbar-brand">
-      <router-link to="/" class="text-2xl font-bold" :class="textColorClass">
-        La Barca Music
+      <router-link to="/">
+        <img :src="logo" alt="La Barca Music" class="h-12 w-auto">
       </router-link>
     </div>
 
@@ -51,6 +51,17 @@
 
     <!-- Actions & Mobile Menu Button -->
     <div class="flex items-center space-x-4">
+      <!-- Theme Toggle -->
+      <button class="hidden md:block" :class="textColorClass" @click="uiStore.toggleTheme()" :title="uiStore.theme === 'dark' ? 'Modo oscuro' : 'Modo claro'">
+        <template v-if="uiStore.theme === 'dark'">
+          <!-- Moon Icon shows current dark mode -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M21.752 15.002A9.718 9.718 0 0112 21.75 9.75 9.75 0 1112 2.25c.764 0 1.51.09 2.223.26a.75.75 0 01.208 1.38 7.5 7.5 0 009.32 9.32.75.75 0 011.38.208c.17.713.26 1.46.26 2.223z"/></svg>
+        </template>
+        <template v-else>
+          <!-- Sun Icon shows current light mode -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 18a6 6 0 100-12 6 6 0 000 12z"/><path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zm0 15.75a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V18a.75.75 0 01.75-.75zm9-6a.75.75 0 010 1.5h-1.5a.75.75 0 010-1.5H21zM4.5 12a.75.75 0 01-.75.75H2.25a.75.75 0 010-1.5H3.75A.75.75 0 014.5 12zm12.97-6.47a.75.75 0 011.06 0l1.06 1.06a.75.75 0 11-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zM4.47 18.97a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06L5.53 18.97a.75.75 0 01-1.06 0zm13.06 1.06a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM4.47 5.03a.75.75 0 011.06 0L6.59 6.09a.75.75 0 01-1.06 1.06L4.47 6.09a.75.75 0 010-1.06z" clip-rule="evenodd"/></svg>
+        </template>
+      </button>
       <!-- User/Login Section -->
       <div v-if="authStore.isAuthenticated && authStore.currentUser" ref="userMenuContainer" class="relative hidden md:block">
         <button class="flex items-center" :class="textColorClass" @click="toggleUserMenu">
@@ -62,6 +73,14 @@
             v-if="userMenuOpen"
             class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 text-brand-negro z-50"
           >
+            <router-link
+              to="/perfil"
+              class="flex items-center space-x-3 block px-4 py-2 text-sm hover:bg-brand-gris-claro"
+              @click="closeUserMenu"
+            >
+              <UserIcon class="h-5 w-5" />
+              <span>Mi Perfil</span>
+            </router-link>
             <router-link
               v-if="authStore.isAdmin"
               to="/admin"
@@ -146,6 +165,14 @@
           <li class="absolute bottom-16">
             <div v-if="authStore.isAuthenticated && authStore.currentUser" class="text-center">
                 <router-link
+                  to="/perfil"
+                   @click="toggleMobileMenu"
+                  class="flex items-center space-x-3 block px-4 py-2 text-lg"
+                >
+                  <UserIcon class="h-6 w-6" />
+                  <span>Mi Perfil</span>
+                </router-link>
+                <router-link
                   v-if="authStore.isAdmin"
                   to="/admin"
                    @click="toggleMobileMenu"
@@ -183,6 +210,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import logoWhite from '@/assets/LA BARCA music 3.svg';
+import logoColor from '@/assets/LA BARCA music 2.svg';
 import {
   UserIcon,
   ChevronDownIcon,
@@ -225,6 +254,10 @@ export default defineComponent({
     const mobileMenuOpen = ref(false);
     const userMenuContainer = ref<HTMLElement | null>(null);
     const isScrolled = ref(false);
+
+    const logo = computed(() => {
+      return isScrolled.value ? logoColor : logoWhite;
+    });
 
     const textColorClass = computed(() => {
       return isScrolled.value
@@ -285,8 +318,10 @@ export default defineComponent({
     });
 
     return {
+      logo,
       openLoginModal,
       authStore,
+      uiStore,
       userMenuOpen,
       mobileMenuOpen,
       userMenuContainer,

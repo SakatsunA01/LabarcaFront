@@ -1,6 +1,7 @@
 <template>
   <main>
     <HeroCarousel />
+    <AvailableTicketsSection />
     <EventosDestacados />
     <LanzamientosRecientes />
     <ArtistasDestacados />
@@ -21,6 +22,7 @@ import MisionSection from '@/components/MisionSection.vue';
 // import TiendaSection from '@/components/TiendaSection.vue';
 import PalabraDeAnimo from '@/components/PalabraDeAnimo.vue';
 
+import AvailableTicketsSection from '@/components/AvailableTicketsSection.vue';
 import { useAuthStore } from '@/stores/authStore';
 
 const authStore = useAuthStore();

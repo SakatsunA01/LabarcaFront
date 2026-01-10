@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-interface User {
+export interface User {
   id: number
   name: string
   email: string
@@ -10,6 +10,7 @@ interface User {
   belongs_to_church?: boolean;
   church_name?: string | null;
   pastor_name?: string | null;
+  birth_date?: string | null;
 }
 
 export interface AuthState {
@@ -19,7 +20,8 @@ export interface AuthState {
   isLoading: boolean
 }
 
-const API_URL = 'https://api.labarcaministerio.com/api'
+// Usa env en desarrollo/producción; fallback a prod si no está definido
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://api.labarcaministerio.com/api'
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
@@ -100,6 +102,74 @@ export const useAuthStore = defineStore('auth', {
         this.token = null
         localStorage.removeItem('authToken')
         console.error('Error fetching user:', error)
+      }
+    },
+    async updateProfile(payload: Partial<User> & { password?: string; password_confirmation?: string }) {
+      this.isLoading = true;
+      this.error = null;
+
+      const config = { withCredentials: true, headers: { 'Authorization': `Bearer ${this.token}` } } as const;
+
+      // Permite definir endpoint y método por ENV, con soporte de :id
+      const overridePath = (import.meta as any).env?.VITE_PROFILE_UPDATE_ENDPOINT as string | undefined;
+      type UpdateMethod = 'put'|'patch'|'post';
+      const overrideMethodRaw = ((import.meta as any).env?.VITE_PROFILE_UPDATE_METHOD as string | undefined)?.toLowerCase();
+      const overrideMethod: UpdateMethod | undefined =
+        overrideMethodRaw === 'put' || overrideMethodRaw === 'patch' || overrideMethodRaw === 'post'
+          ? (overrideMethodRaw as UpdateMethod)
+          : undefined;
+
+      const userId = this.user?.id;
+      const buildUrl = (path: string) => path.replace(':id', String(userId ?? ''));
+
+      // Lista de candidatos en orden
+      const candidates: Array<{ method: 'put'|'patch'|'post', url: string }> = [];
+
+      if (overridePath && overrideMethod) {
+        candidates.push({ method: overrideMethod, url: `${API_URL}${buildUrl(overridePath)}` });
+      }
+
+      // Convenciones comunes (Laravel/REST)
+      candidates.push(
+        { method: 'put', url: `${API_URL}/user` },
+        ...(userId ? [{ method: 'put', url: `${API_URL}/users/${userId}` } as const] : []),
+        ...(userId ? [{ method: 'patch', url: `${API_URL}/users/${userId}` } as const] : []),
+        { method: 'post', url: `${API_URL}/user/update` },
+        { method: 'put', url: `${API_URL}/user/profile-information` },
+        { method: 'patch', url: `${API_URL}/user/profile-information` },
+      );
+
+      const acceptable = (status?: number) => status === 405 || status === 404;
+
+      try {
+        let response: any = null;
+        for (const c of candidates) {
+          try {
+            if (c.method === 'put') response = await axios.put(c.url, payload, config);
+            else if (c.method === 'patch') response = await axios.patch(c.url, payload, config);
+            else response = await axios.post(c.url, payload, config);
+            break; // éxito
+          } catch (err: any) {
+            const status = err?.response?.status;
+            if (!acceptable(status)) throw err;
+            // Continua probando siguiente candidato
+          }
+        }
+
+        if (!response) throw new Error('No update endpoint matched (404/405). Configura VITE_PROFILE_UPDATE_ENDPOINT.');
+
+        if (response.data && (response.data.user || response.data.id)) {
+          this.user = (response.data.user ?? response.data) as User;
+        } else {
+          await this.fetchUser();
+        }
+        return response.data;
+      } catch (error: any) {
+        this.error = error.response?.data?.message || error.message || 'Error al actualizar el perfil.';
+        console.error('Update profile error:', error.response?.data || error);
+        throw error;
+      } finally {
+        this.isLoading = false;
       }
     },
     logout() {

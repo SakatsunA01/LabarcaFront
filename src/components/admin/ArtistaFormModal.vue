@@ -3,7 +3,7 @@
     <div
       v-if="show" tabindex="-1"
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      @click.self.stop
+      @click.self="close"
       >
       <div
         class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all max-h-[90vh] overflow-y-auto">
@@ -86,13 +86,13 @@
             <!-- Columna 2: Carga de Imágenes -->
             <div class="space-y-6">
               <ImageUploader
-                label="Imagen Principal (Card)" :initial-preview="formData.imageUrl"
+                label="Imagen Principal (Card)" :initial-preview="formData.imageUrl" file-type="image"
                 @file-change="file => handleFileChange(file, 'imageUrl')" />
               <ImageUploader
-                label="Imagen Hero (Detalle)" :initial-preview="formData.heroImageUrl"
+                label="Imagen Hero (Detalle)" :initial-preview="formData.heroImageUrl" file-type="image"
                 @file-change="file => handleFileChange(file, 'heroImageUrl')" />
               <ImageUploader
-                label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl"
+                label="Imagen Secundaria (Detalle)" :initial-preview="formData.secondaryImageUrl" file-type="image"
                 @file-change="file => handleFileChange(file, 'secondaryImageUrl')" />
             </div>
           </div>
@@ -206,9 +206,12 @@ const handleSubmit = async () => {
   errorMessage.value = '';
 
   const submissionData = new FormData();
+  const imageFields = ['imageUrl', 'heroImageUrl', 'secondaryImageUrl'];
+  // En edición, no enviar campos de imagen si no se reemplazaron, para no borrar la existente.
   Object.entries(formData.value).forEach(([key, value]) => {
+    if (imageFields.includes(key)) return; // se manejan aparte
     if (value !== null && value !== undefined) {
-      submissionData.append(key, value);
+      submissionData.append(key, String(value));
     }
   });
   Object.entries(imageFiles.value).forEach(([key, file]) => {
@@ -234,7 +237,7 @@ const handleSubmit = async () => {
 };
 
 const close = () => {
-  // emit('close');
+  emit('close');
 };
 </script>
 

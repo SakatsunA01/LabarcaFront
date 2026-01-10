@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-interface SnackbarState {
+export interface SnackbarState {
   visible: boolean;
   message: string;
   type: 'success' | 'error' | 'info';
@@ -12,6 +12,7 @@ export const useUiStore = defineStore('ui', {
     isRouteLoading: false,
     showLoginModal: false,
     showRegisterModal: false, // Nuevo estado para el modal de registro
+    theme: (localStorage.getItem('theme') as 'light' | 'dark' | null) || 'light',
     snackbar: {
       visible: false,
       message: '',
@@ -35,6 +36,23 @@ export const useUiStore = defineStore('ui', {
     setShowRegisterModal(show: boolean) {
       this.showRegisterModal = show
       if (show) this.showLoginModal = false // Cierra el otro modal si se abre este
+    },
+    initTheme() {
+      const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      if (stored) this.theme = stored;
+      this.applyTheme();
+    },
+    setTheme(theme: 'light' | 'dark') {
+      this.theme = theme;
+      localStorage.setItem('theme', theme);
+      this.applyTheme();
+    },
+    toggleTheme() {
+      this.setTheme(this.theme === 'dark' ? 'light' : 'dark');
+    },
+    applyTheme() {
+      const root = document.documentElement;
+      if (this.theme === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
     },
     showSnackbar(message: string, type: 'success' | 'error' | 'info' = 'info', duration: number = 4000) {
       if (this.snackbar.timeout) {

@@ -28,8 +28,14 @@ export interface NewTestimonio {
   comentario: string;
 }
 
+export type TestimonioPayload = NewTestimonio | FormData;
+
 export const testimonioService = {
-  createTestimonio(testimonio: NewTestimonio) {
-    return apiClient.post('/api/testimonios-eventos', testimonio);
+  createTestimonio(testimonio: TestimonioPayload) {
+    const config =
+      testimonio instanceof FormData
+        ? { headers: { 'Content-Type': undefined } }
+        : undefined;
+    return apiClient.post('/api/testimonios-eventos', testimonio, config);
   },
 };
