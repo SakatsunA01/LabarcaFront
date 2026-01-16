@@ -1,59 +1,56 @@
 <template>
-  <div class="eventos-view bg-brand-gris-claro min-h-screen py-section-md">
+  <div class="eventos-view bg-brand-gris-claro min-h-screen py-16">
     <AnimatedSection>
       <div class="container mx-auto px-4 max-w-5xl">
-        <header class="mb-6 md:mb-10 text-center">
-          <h1 class="text-4xl md:text-5xl font-bold text-brand-negro">Nuestros Eventos</h1>
+        <header class="mb-12 text-center space-y-3">
+          <span class="text-brand-camel uppercase tracking-[0.4em] text-[10px] font-bold">Experiencias La Barca</span>
+          <h1 class="text-5xl md:text-6xl font-playfair text-brand-negro italic">Nuestros Eventos</h1>
+          <div class="w-20 h-1 bg-brand-camel/20 mx-auto rounded-full mt-4"></div>
         </header>
 
-        <!-- Filtros -->
-        <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
-          <div class="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4">
-            <div class="flex space-x-2 sm:space-x-3">
-              <button
-  :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'todos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
-                @click="setFiltroActivo('todos')">
-                Todos
-              </button>
-              <button
-  :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'proximos' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
-                @click="setFiltroActivo('proximos')">
-                Próximos
-              </button>
-              <button
-  :class="['px-4 py-2 rounded-md text-sm font-medium transition-colors', filtroActivo === 'pasados' ? 'bg-brand-camel text-white' : 'bg-gray-200 text-brand-negro hover:bg-gray-300']"
-                @click="setFiltroActivo('pasados')">
-                Pasados
-              </button>
-            </div>
-            <!-- Placeholder para el calendario -->
-            <div class="text-sm text-gray-500 mt-4 sm:mt-0">
-              <!-- Calendario (Implementación futura) -->
-              <!-- <button class="p-2 border rounded-md hover:bg-gray-100">📅 Seleccionar Fecha</button> -->
-            </div>
+        <section class="mb-12 flex justify-center">
+          <div class="inline-flex p-1.5 bg-white rounded-full shadow-card border border-gray-100">
+            <button v-for="filtro in (['todos', 'proximos', 'pasados'] as const)" :key="filtro" :class="[
+              'px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300',
+              filtroActivo === filtro
+                ? 'bg-brand-camel text-white shadow-md'
+                : 'text-gray-400 hover:text-brand-negro'
+            ]" @click="setFiltroActivo(filtro)">
+              {{ filtro === 'todos' ? 'Todos' : filtro === 'proximos' ? 'Próximos' : 'Pasados' }}
+            </button>
           </div>
         </section>
 
-        <!-- Lista de Eventos -->
         <transition name="fade" mode="out-in">
-          <div v-if="isLoading" class="text-center py-10">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
-            <p class="mt-4 text-brand-negro">Cargando eventos...</p>
+          <div v-if="isLoading" class="flex flex-col items-center justify-center py-20">
+            <div class="w-12 h-12 border-2 border-brand-camel border-t-transparent rounded-full animate-spin"></div>
+            <p class="mt-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold">Cargando agenda</p>
           </div>
-          <div v-else-if="Object.keys(eventosAgrupados).length > 0" class="space-y-10">
+
+          <div v-else-if="Object.keys(eventosAgrupados).length > 0" class="space-y-16">
             <div v-for="(eventosDelMes, mesAno) in eventosAgrupados" :key="mesAno" class="month-group">
-              <h2
-                class="text-xl md:text-2xl font-semibold text-brand-verde-oscuro mb-4 md:mb-6 border-b-2 border-brand-camel pb-2">
-                {{ mesAno }}
-              </h2>
+              <div class="flex items-center gap-6 mb-8">
+                <h2 class="font-playfair text-3xl text-brand-negro shrink-0">
+                  {{ mesAno }}
+                </h2>
+                <div class="h-[1px] w-full bg-brand-camel/20"></div>
+              </div>
+
               <transition-group tag="div" name="list-anim" class="space-y-6">
-                <EventoCardHorizontal v-for="evento in eventosDelMes" :key="evento.id" :evento="evento" />
+                <EventoCardHorizontal v-for="evento in eventosDelMes" :key="evento.id" :evento="evento"
+                  class="transform transition-all hover:shadow-card-hover hover:-translate-y-1" />
               </transition-group>
             </div>
           </div>
-          <div v-else :key="`no-eventos-${filtroActivo}`" class="text-center py-10 bg-white rounded-xl shadow-md">
-            <p class="text-xl text-brand-negro">No hay eventos que coincidan con tu búsqueda.</p>
-            <p class="text-gray-600 mt-2">Intenta con otros filtros o revisa más tarde.</p>
+
+          <div v-else :key="`no-eventos-${filtroActivo}`"
+            class="text-center py-20 bg-white rounded-3xl shadow-card border-2 border-dashed border-gray-100 max-w-3xl mx-auto">
+            <div class="mb-4 opacity-20">
+              <CalendarIcon class="w-12 h-12 mx-auto text-brand-negro" />
+            </div>
+            <p class="text-xl font-playfair text-brand-negro">No se encontraron eventos</p>
+            <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Intenta con otros filtros o vuelve pronto.
+            </p>
           </div>
         </transition>
       </div>

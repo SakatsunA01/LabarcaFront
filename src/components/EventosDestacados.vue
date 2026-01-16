@@ -1,131 +1,106 @@
 <template>
   <AnimatedSection>
-    <section class="py-section-md px-2 sm:px-4 lg:px-6 bg-white dark:bg-brand-negro">
+    <section class="py-10 sm:py-12 lg:py-14 px-4 sm:px-6 lg:px-8 bg-white dark:bg-brand-negro">
       <div class="container mx-auto max-w-7xl">
-        
-        <!-- Header de la sección -->
-        <div class="flex justify-between items-center mb-10 md:mb-12 border-b border-black/5 dark:border-white/10 pb-4">
-          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro dark:text-white">
-            Nuestros Eventos
-          </h2>
-          <router-link
-            to="/eventos"
-            class="bg-brand-camel text-white py-2 px-6 rounded-md hover:bg-opacity-80 transition-all duration-300 text-md font-medium flex items-center gap-2 shadow-md hover:shadow-lg">
-            <span>Ver Todos</span>
-            <ArrowRightIcon class="h-4 w-4" />
+
+        <div
+          class="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-black/5 dark:border-white/10 pb-6 gap-4">
+          <div>
+            <span class="text-brand-camel uppercase tracking-[0.4em] text-[10px] font-bold mb-2 block">Calendario
+              Oficial</span>
+            <h2 class="font-playfair text-4xl md:text-5xl text-brand-negro dark:text-white leading-tight">
+              Nuestros Eventos
+            </h2>
+          </div>
+          <router-link to="/eventos"
+            class="group flex items-center gap-2 text-brand-camel font-bold uppercase text-[10px] tracking-widest hover:text-brand-negro dark:hover:text-white transition-colors">
+            Ver agenda completa
+            <ArrowRightIcon class="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </router-link>
         </div>
 
-        <div v-if="isLoading" class="text-center py-10">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
-          <p class="mt-4 text-brand-negro">Cargando eventos...</p>
+        <div v-if="isLoading" class="flex flex-col items-center justify-center py-20">
+          <div class="w-12 h-12 border-2 border-brand-camel border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p class="text-[10px] uppercase tracking-widest text-gray-400">Cargando eventos destacados</p>
         </div>
+
         <div v-else-if="error" class="text-center py-10 text-red-500">
           <ExclamationCircleIcon class="h-12 w-12 mx-auto text-red-400 mb-4" />
-          <p>{{ error }}</p>
+          <p class="font-playfair italic">{{ error }}</p>
         </div>
-        
-        <!-- Grid de Eventos -->
-        <div v-else-if="eventosDestacados.length > 0"
-          class="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:h-[550px]">
 
-          <!-- Evento Principal -->
+        <div v-else-if="eventosDestacados.length > 0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[600px]">
+
           <div v-if="eventosDestacados[0]"
-            class="lg:col-span-3 h-full rounded-lg overflow-hidden shadow-card hover:shadow-xl transition-all duration-300 relative min-h-[450px] group">
+            class="lg:col-span-8 h-full rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-500 relative group cursor-pointer border border-gray-100 dark:border-white/5">
             <img
-              :src="eventosDestacados[0].imagenUrl ? `${API_BASE_URL}${eventosDestacados[0].imagenUrl}` : 'https://placehold.co/800x600/3498DB/FFFFFF?text=Evento'"
-              :alt="eventosDestacados[0].nombre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-            <span v-if="eventosDestacados[0].tipo"
-              class="absolute top-4 left-4 bg-brand-verde-oscuro text-white text-xs font-semibold px-3 py-1 rounded-full z-10 backdrop-blur-sm">
-              {{ eventosDestacados[0].tipo }}
-            </span>
+              :src="eventosDestacados[0].imagenUrl ? `${API_BASE_URL}${eventosDestacados[0].imagenUrl}` : 'https://placehold.co/800x600'"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+
+            <div class="absolute top-6 left-6 z-20">
+              <span
+                class="bg-white/90 backdrop-blur text-brand-negro text-[9px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg shadow-sm">
+                {{ eventosDestacados[0].tipo }}
+              </span>
+            </div>
+
             <div
-              class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white flex flex-col justify-end h-1/2">
-              <h3 class="font-playfair text-2xl xl:text-3xl font-semibold mb-2">{{ eventosDestacados[0].nombre }}</h3>
-              <p v-if="eventosDestacados[0].descripcion" class="text-sm md:text-base text-gray-200 mb-2 line-clamp-2">
-                {{ eventosDestacados[0].descripcion }}
-              </p>
-              <div class="flex items-center text-sm md:text-base mb-4">
-                <CalendarDaysIcon class="h-5 w-5 mr-2 text-brand-camel" />
-                <span>{{ eventosDestacados[0].fechaFormateada }}</span>
-                <span v-if="eventosDestacados[0].lugar" class="ml-4 flex items-center">
-                  <MapPinIcon class="h-5 w-5 mr-2 text-brand-camel" />
-                  {{ eventosDestacados[0].lugar }}
-                </span>
+              class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-8 md:p-12">
+              <div class="max-w-xl animate-fade-in">
+                <h3 class="font-playfair text-3xl md:text-5xl text-white mb-6 leading-tight">{{
+                  eventosDestacados[0].nombre }}</h3>
+
+                <div
+                  class="flex flex-wrap items-center gap-6 text-white/80 text-[10px] font-bold uppercase tracking-widest mb-8">
+                  <div class="flex items-center gap-2">
+                    <CalendarDaysIcon class="h-4 w-4 text-brand-camel" />
+                    {{ eventosDestacados[0].fechaFormateada.split(' - ')[0] }}
+                  </div>
+                  <div v-if="eventosDestacados[0].lugar" class="flex items-center gap-2">
+                    <MapPinIcon class="h-4 w-4 text-brand-camel" />
+                    {{ eventosDestacados[0].lugar }}
+                  </div>
+                </div>
+
+                <router-link :to="`/eventos/${eventosDestacados[0].id}`"
+                  class="inline-flex items-center bg-brand-camel hover:bg-white hover:text-brand-negro text-white py-4 px-10 rounded-full transition-all duration-500 text-[10px] font-bold uppercase tracking-[0.3em] shadow-lg active:scale-95">
+                  Más Información
+                  <ArrowRightIcon class="h-3 w-3 ml-3" />
+                </router-link>
               </div>
-              <router-link :to="`/eventos/${eventosDestacados[0].id}`"
-                class="self-start bg-brand-borgona text-white py-2 px-6 rounded-md hover:bg-brand-verde-oscuro transition-colors text-base font-medium flex items-center">
-                Más Información <ArrowRightIcon class="h-4 w-4 ml-2" />
-              </router-link>
             </div>
           </div>
 
-          <!-- Contenedor para eventos secundarios -->
-          <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 grid-rows-2 gap-4">
+          <div class="lg:col-span-4 flex flex-col gap-6">
+            <div v-for="(evento, idx) in eventosDestacados.slice(1, 3)" :key="evento.id"
+              class="flex-1 rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-500 relative group border border-gray-100 dark:border-white/5">
+              <img :src="evento.imagenUrl ? `${API_BASE_URL}${evento.imagenUrl}` : 'https://placehold.co/400x300'"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
 
-            <!-- Evento Secundario 1 -->
-            <div v-if="eventosDestacados[1]"
-              class="rounded-lg overflow-hidden shadow-card hover:shadow-xl transition-all duration-300 relative group h-full w-full min-h-[260px]">
-              <img
-                :src="eventosDestacados[1].imagenUrl ? `${API_BASE_URL}${eventosDestacados[1].imagenUrl}` : 'https://placehold.co/400x250/E91E63/FFFFFF?text=Evento'"
-                :alt="eventosDestacados[1].nombre"
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              <span v-if="eventosDestacados[1].tipo"
-                class="absolute top-3 left-3 bg-brand-verde-oscuro text-white text-xs font-semibold px-3 py-1 rounded-full z-10">
-                {{ eventosDestacados[1].tipo }}
-              </span>
               <div
-                class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white flex flex-col justify-end h-full">
-                <div class="flex-grow"></div>
-                <div>
-                  <h4 class="font-playfair text-xl font-semibold mb-2 line-clamp-2">{{ eventosDestacados[1].nombre }}</h4>
-                  <div class="flex items-center text-sm mb-3 text-gray-200">
-                    <CalendarDaysIcon class="h-4 w-4 mr-2 text-brand-camel flex-shrink-0" />
-                    <span>{{ eventosDestacados[1].fechaFormateada.split(' - ')[0] }}</span>
-                  </div>
-                  <router-link :to="`/eventos/${eventosDestacados[1].id}`"
-                    class="self-start bg-brand-borgona/90 text-white py-2 px-4 rounded-md hover:bg-brand-verde-oscuro transition-colors text-sm font-medium flex items-center w-full justify-center">
-                    Más Información <ArrowRightIcon class="h-4 w-4 ml-2" />
-                  </router-link>
-                </div>
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8">
+                <span class="text-brand-camel text-[8px] font-black uppercase tracking-[0.3em] mb-2">{{ evento.tipo
+                  }}</span>
+                <h4
+                  class="font-playfair text-xl text-white mb-4 line-clamp-2 leading-tight group-hover:text-brand-camel transition-colors">
+                  {{ evento.nombre }}</h4>
+
+                <router-link :to="`/eventos/${evento.id}`"
+                  class="text-white/70 hover:text-white text-[9px] font-bold uppercase tracking-widest flex items-center gap-2 transition-all">
+                  Detalles
+                  <ArrowRightIcon class="h-3 w-3" />
+                </router-link>
               </div>
             </div>
-
-            <!-- Evento Secundario 2 -->
-            <div v-if="eventosDestacados[2]"
-              class="rounded-lg overflow-hidden shadow-card hover:shadow-xl transition-all duration-300 relative group h-full w-full min-h-[260px]">
-              <img
-                :src="eventosDestacados[2].imagenUrl ? `${API_BASE_URL}${eventosDestacados[2].imagenUrl}` : 'https://placehold.co/400x250/9C27B0/FFFFFF?text=Evento'"
-                :alt="eventosDestacados[2].nombre"
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              <span v-if="eventosDestacados[2].tipo"
-                class="absolute top-3 left-3 bg-brand-verde-oscuro text-white text-xs font-semibold px-3 py-1 rounded-full z-10">
-                {{ eventosDestacados[2].tipo }}
-              </span>
-              <div
-                class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white flex flex-col justify-end h-full">
-                <div class="flex-grow"></div>
-                <div>
-                  <h4 class="font-playfair text-xl font-semibold mb-2 line-clamp-2">{{ eventosDestacados[2].nombre }}</h4>
-                  <div class="flex items-center text-sm mb-3 text-gray-200">
-                    <CalendarDaysIcon class="h-4 w-4 mr-2 text-brand-camel flex-shrink-0" />
-                    <span>{{ eventosDestacados[2].fechaFormateada.split(' - ')[0] }}</span>
-                  </div>
-                  <router-link :to="`/eventos/${eventosDestacados[2].id}`"
-                    class="self-start bg-brand-borgona/90 text-white py-2 px-4 rounded-md hover:bg-brand-verde-oscuro transition-colors text-sm font-medium flex items-center w-full justify-center">
-                    Más Información <ArrowRightIcon class="h-4 w-4 ml-2" />
-                  </router-link>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
-        <div v-else class="text-center text-brand-negro py-10">
-          <CalendarDaysIcon class="h-12 w-12 mx-auto text-brand-camel mb-4" />
-          <p class="text-xl font-playfair">No hay eventos disponibles en este momento</p>
-          <p class="text-base text-gray-600">¡Vuelve pronto!</p>
+        <div v-else
+          class="text-center py-24 bg-gray-50 dark:bg-white/5 rounded-3xl border border-dashed border-black/10 dark:border-white/10">
+          <CalendarDaysIcon class="h-10 w-10 mx-auto text-brand-camel mb-4 opacity-40" />
+          <p class="text-xl font-playfair text-brand-negro dark:text-white italic">Estamos preparando nuevos encuentros.
+          </p>
+          <p class="text-[9px] text-gray-400 mt-2 uppercase tracking-[0.4em] font-bold">Vuelve a visitarnos pronto</p>
         </div>
 
       </div>
