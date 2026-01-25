@@ -64,6 +64,16 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <div class="flex flex-wrap justify-end gap-2">
+                <button class="text-brand-verde-oscuro hover:text-brand-camel" @click="openParticipantsModal(sorteo)">
+                  Participantes
+                </button>
+                <button
+                  v-if="sorteo.estado === 'cerrado'"
+                  class="text-brand-negro hover:text-brand-camel"
+                  @click="openWinnerModal(sorteo)"
+                >
+                  Ver ganador
+                </button>
                 <button class="text-brand-camel hover:text-brand-borgona" @click="openEditModal(sorteo)">Editar</button>
                 <button
                   v-if="sorteo.estado !== 'cerrado'"
@@ -105,7 +115,21 @@
       :stage="closeStage"
       :winner-name="winnerName"
       :winner-email="winnerEmail"
+      :rolling-names="rollingNames"
       @close="closeCloseModal"
+    />
+    <SorteoParticipantsModal
+      :show="showParticipantsModal"
+      :sorteo-id="participantsSorteoId"
+      :sorteo-name="participantsSorteoName"
+      @close="closeParticipantsModal"
+      @updated="fetchSorteos"
+    />
+    <SorteoWinnerModal
+      :show="showWinnerModal"
+      :winner-name="modalWinnerName"
+      :winner-email="modalWinnerEmail"
+      @close="closeWinnerModal"
     />
   </div>
 </template>
@@ -116,6 +140,8 @@ import axios from 'axios';
 import { PlusIcon } from '@heroicons/vue/24/outline';
 import SorteoFormModal from '@/components/admin/SorteoFormModal.vue';
 import SorteoCloseModal from '@/components/admin/SorteoCloseModal.vue';
+import SorteoParticipantsModal from '@/components/admin/SorteoParticipantsModal.vue';
+import SorteoWinnerModal from '@/components/admin/SorteoWinnerModal.vue';
 import ConfirmDialog from '@/components/admin/ConfirmDialog.vue';
 
 interface Winner {
@@ -158,6 +184,13 @@ const showCloseModal = ref(false);
 const closeStage = ref<'pending' | 'result'>('pending');
 const winnerName = ref<string | null>(null);
 const winnerEmail = ref<string | null>(null);
+const rollingNames = ref<string[]>([]);
+const showParticipantsModal = ref(false);
+const participantsSorteoId = ref<number | null>(null);
+const participantsSorteoName = ref('');
+const showWinnerModal = ref(false);
+const modalWinnerName = ref<string | null>(null);
+const modalWinnerEmail = ref<string | null>(null);
 
 const API_URL = 'https://api.labarcaministerio.com/api';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -205,7 +238,15 @@ const normalizeRequirements = (value: Sorteo['requisitos']) => {
 const formatRequirements = (value: Sorteo['requisitos']) => {
   const list = normalizeRequirements(value);
   if (!list.length) return 'Sin requisitos';
-  return list.map((item) => item.type || 'Requisito').join(', ');
+  return list.map((item) => formatRequirementLabel(item)).join(', ');
+};
+
+const formatRequirementLabel = (item: Requirement) => {
+  if (!item?.type) return 'Requisito';
+  if (item.type === 'registration_schedule') return 'Registro en horario';
+  if (item.type === 'ticket_purchase') return 'Compra de entrada';
+  if (item.type === 'custom_text') return 'Requisito manual';
+  return item.type;
 };
 
 const formatDateTime = (value: string) => {
@@ -233,6 +274,30 @@ const openEditModal = (sorteo: Sorteo) => {
   isModalOpen.value = true;
 };
 
+const openWinnerModal = (sorteo: Sorteo) => {
+  modalWinnerName.value = sorteo.ganador?.name || null;
+  modalWinnerEmail.value = sorteo.ganador?.email || null;
+  showWinnerModal.value = true;
+};
+
+const closeWinnerModal = () => {
+  showWinnerModal.value = false;
+  modalWinnerName.value = null;
+  modalWinnerEmail.value = null;
+};
+
+const openParticipantsModal = (sorteo: Sorteo) => {
+  participantsSorteoId.value = sorteo.id;
+  participantsSorteoName.value = sorteo.nombre;
+  showParticipantsModal.value = true;
+};
+
+const closeParticipantsModal = () => {
+  showParticipantsModal.value = false;
+  participantsSorteoId.value = null;
+  participantsSorteoName.value = '';
+};
+
 const closeModal = () => {
   isModalOpen.value = false;
 };
@@ -247,6 +312,21 @@ const confirmCloseSorteo = (sorteo: Sorteo) => {
   showConfirmClose.value = true;
 };
 
+const loadRollingNames = async (sorteoId: number) => {
+  try {
+    const response = await axios.get(`${API_URL}/admin/sorteos/${sorteoId}/users`, {
+      params: { eligible_only: true },
+    });
+    rollingNames.value = response.data.map((user: { name: string }) => user.name).filter(Boolean);
+    if (!rollingNames.value.length) {
+      rollingNames.value = ['Sorteando...'];
+    }
+  } catch (error) {
+    console.error('Error al cargar candidatos del sorteo:', error);
+    rollingNames.value = ['Sorteando...'];
+  }
+};
+
 const performClose = async () => {
   if (!pendingCloseSorteo.value) return;
   showConfirmClose.value = false;
@@ -255,11 +335,13 @@ const performClose = async () => {
   closeStage.value = 'pending';
   winnerName.value = null;
   winnerEmail.value = null;
+  rollingNames.value = [];
 
   const currentSorteo = pendingCloseSorteo.value;
   pendingCloseSorteo.value = null;
 
   try {
+    loadRollingNames(currentSorteo.id);
     const response = await axios.post(`${API_URL}/admin/sorteos/${currentSorteo.id}/close`);
     const winner = response.data?.winner || response.data?.ganador;
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -289,6 +371,7 @@ const updateSorteoAfterClose = (id: number, winner: Winner | null) => {
 
 const closeCloseModal = () => {
   showCloseModal.value = false;
+  rollingNames.value = [];
   fetchSorteos();
 };
 

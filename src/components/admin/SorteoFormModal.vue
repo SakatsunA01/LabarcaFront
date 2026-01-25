@@ -86,7 +86,7 @@
                       <button
                         type="button"
                         class="text-xs text-red-600 hover:text-red-900"
-                        @click="removeRequirement(req.id)"
+                        @click="req.id && removeRequirement(req.id)"
                       >
                         Quitar
                       </button>
@@ -106,7 +106,7 @@
                         <div>
                           <label class="block text-xs uppercase tracking-widest text-gray-500">Hora inicio</label>
                           <input
-                            v-model="req.data.start_time"
+                            v-model="(req.data ||= { start_time: '', end_time: '', days: [] }).start_time"
                             type="time"
                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"
                           >
@@ -114,7 +114,7 @@
                         <div>
                           <label class="block text-xs uppercase tracking-widest text-gray-500">Hora fin</label>
                           <input
-                            v-model="req.data.end_time"
+                            v-model="(req.data ||= { start_time: '', end_time: '', days: [] }).end_time"
                             type="time"
                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"
                           >
@@ -131,7 +131,7 @@
                             <input
                               type="checkbox"
                               :value="day.value"
-                              v-model="req.data.days"
+                              v-model="(req.data ||= { start_time: '', end_time: '', days: [] }).days"
                               class="rounded border-gray-300 text-brand-camel focus:ring-brand-camel"
                             >
                             {{ day.label }}
@@ -147,17 +147,17 @@
                       <div>
                         <label class="block text-xs uppercase tracking-widest text-gray-500">Tipo de compra</label>
                         <select
-                          v-model="req.data.mode"
+                          v-model="(req.data ||= { mode: 'any', event_id: null }).mode"
                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"
                         >
                           <option value="any">Cualquier entrada</option>
                           <option value="event">Entrada de evento especifico</option>
                         </select>
                       </div>
-                      <div v-if="req.data.mode === 'event'">
+                      <div v-if="(req.data ||= { mode: 'any', event_id: null }).mode === 'event'">
                         <label class="block text-xs uppercase tracking-widest text-gray-500">Evento</label>
                         <select
-                          v-model="req.data.event_id"
+                          v-model="(req.data ||= { mode: 'any', event_id: null }).event_id"
                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"
                         >
                           <option :value="null">Seleccionar evento</option>
@@ -171,7 +171,7 @@
                     <div v-else-if="req.type === 'custom_text'" class="space-y-2">
                       <label class="block text-xs uppercase tracking-widest text-gray-500">Requisito</label>
                       <input
-                        v-model="req.data.text"
+                        v-model="(req.data ||= { text: '' }).text"
                         type="text"
                         placeholder="Ej: Seguir en Instagram"
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-camel focus:border-brand-camel"
@@ -188,6 +188,7 @@
                   </button>
                 </div>
               </fieldset>
+
             </div>
 
             <div class="space-y-6">
@@ -237,9 +238,9 @@ import axios from 'axios';
 import ImageUploader from './ImageUploader.vue';
 
 interface Requirement {
-  id: string;
-  type: 'registration_schedule' | 'ticket_purchase' | 'custom_text';
-  data: Record<string, any>;
+  id?: string;
+  type?: string;
+  data?: Record<string, any>;
 }
 
 interface Sorteo {
@@ -313,15 +314,16 @@ const fetchEventos = async () => {
   }
 };
 
-const createRequirement = (type: Requirement['type']): Requirement => {
+const createRequirement = (type?: Requirement['type']): Requirement => {
+  const normalizedType = type || 'registration_schedule';
   const base = { id: `${Date.now()}-${Math.random()}` };
-  if (type === 'registration_schedule') {
-    return { ...base, type, data: { start_time: '', end_time: '', days: [] } };
+  if (normalizedType === 'registration_schedule') {
+    return { ...base, type: normalizedType, data: { start_time: '', end_time: '', days: [] } };
   }
-  if (type === 'ticket_purchase') {
-    return { ...base, type, data: { mode: 'any', event_id: null } };
+  if (normalizedType === 'ticket_purchase') {
+    return { ...base, type: normalizedType, data: { mode: 'any', event_id: null } };
   }
-  return { ...base, type, data: { text: '' } };
+  return { ...base, type: normalizedType, data: { text: '' } };
 };
 
 const addRequirement = () => {
@@ -333,7 +335,8 @@ const removeRequirement = (id: string) => {
 };
 
 const handleRequirementTypeChange = (req: Requirement) => {
-  const updated = createRequirement(req.type);
+  const updated = createRequirement(req.type || 'registration_schedule');
+  req.type = updated.type;
   req.data = updated.data;
 };
 
@@ -355,7 +358,7 @@ const toLocalDateTimeInput = (value: string) => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
-watch(() => props.show, (newVal) => {
+watch(() => props.show, async (newVal) => {
   if (newVal) {
     errorMessage.value = '';
     if (props.sorteo) {
@@ -370,7 +373,7 @@ watch(() => props.show, (newVal) => {
       formData.value = { ...defaultFormData };
     }
     imageFiles.value = { premio_imagen_url: null };
-    fetchEventos();
+    await fetchEventos();
   }
 });
 

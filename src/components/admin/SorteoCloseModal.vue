@@ -14,6 +14,9 @@
           <div v-if="stage === 'pending'" class="space-y-4">
             <div class="mx-auto h-16 w-16 rounded-full border-4 border-brand-camel border-t-transparent animate-spin"></div>
             <p class="text-sm uppercase tracking-widest text-gray-500">Buscando ganador</p>
+            <div class="text-2xl font-semibold text-brand-camel tracking-widest animate-pulse rolling-name">
+              {{ rollingName }}
+            </div>
             <p class="text-gray-600">Estamos seleccionando al ganador de forma aleatoria.</p>
           </div>
 
@@ -44,18 +47,59 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { ref, watch, onBeforeUnmount } from 'vue';
+
+const props = defineProps<{
   show: boolean;
   stage: 'pending' | 'result';
   winnerName: string | null;
   winnerEmail: string | null;
+  rollingNames: string[];
 }>();
 
 const emit = defineEmits(['close']);
 
+const rollingName = ref('Sorteando...');
+let rollingIndex = 0;
+let rollingInterval: ReturnType<typeof setInterval> | null = null;
+
+const stopRolling = () => {
+  if (rollingInterval) {
+    clearInterval(rollingInterval);
+    rollingInterval = null;
+  }
+};
+
+const startRolling = () => {
+  stopRolling();
+  const names = props.rollingNames && props.rollingNames.length ? props.rollingNames : ['Sorteando...'];
+  rollingIndex = 0;
+  rollingName.value = names[rollingIndex];
+  rollingInterval = setInterval(() => {
+    rollingIndex = (rollingIndex + 1) % names.length;
+    rollingName.value = names[rollingIndex];
+  }, 120);
+};
+
+watch(
+  () => [props.show, props.stage, props.rollingNames],
+  () => {
+    if (props.show && props.stage === 'pending') {
+      startRolling();
+    } else {
+      stopRolling();
+    }
+  },
+  { deep: true }
+);
+
 const closeModal = () => {
   emit('close');
 };
+
+onBeforeUnmount(() => {
+  stopRolling();
+});
 </script>
 
 <style scoped>
@@ -67,5 +111,9 @@ const closeModal = () => {
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
+}
+
+.rolling-name {
+  min-height: 2.5rem;
 }
 </style>
