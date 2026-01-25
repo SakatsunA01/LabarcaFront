@@ -196,7 +196,7 @@ const router = createRouter({
         {
             path: 'sorteos',
             name: 'admin-sorteos',
-            component: PlaceholderView,
+            component: () => import('../views/admin/AdminSorteosView.vue'),
         },
         {
             path: 'configuraciones',

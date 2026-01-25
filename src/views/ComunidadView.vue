@@ -1,46 +1,43 @@
 <template>
-  <div class="bg-brand-cream text-brand-negro min-h-screen">
-    <div class="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
-      <h1 class="text-4xl md:text-6xl font-bold text-center mb-4 font-display">
-        Historias de Nuestra Comunidad
-      </h1>
-      <p class="text-center text-lg text-brand-camel mb-12 max-w-2xl mx-auto">
-        Descubre testimonios, procesos creativos y noticias que nos unen como comunidad artística.
-      </p>
+  <div class="comunidad-view bg-brand-gris-claro min-h-screen py-12 md:py-16 font-sans">
+    <div class="container mx-auto px-6 max-w-6xl">
 
-      <!-- Filtros de Categoría -->
-      <div v-if="categories.length > 0" class="flex justify-center flex-wrap gap-2 md:gap-4 mb-12">
-        <button
-:class="[selectedCategory === null ? 'bg-brand-camel text-white' : 'bg-white text-brand-negro hover:bg-brand-camel/20']"
-          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm"
-          @click="selectCategory(null)">
-          Todas
-        </button>
-        <button
-v-for="category in categories" :key="category.id" :class="[selectedCategory === category.id ? 'bg-brand-camel text-white' : 'bg-white text-brand-negro hover:bg-brand-camel/20']"
-          class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 shadow-sm"
-          @click="selectCategory(category.id)">
-          {{ category.name }}
-        </button>
-      </div>
+      <header class="mb-16 text-center space-y-3">
+        <span class="text-brand-camel uppercase tracking-[0.5em] text-[10px] font-bold block">Voces & Vivencias</span>
+        <h1 class="text-5xl md:text-7xl font-playfair text-brand-negro italic">Comunidad</h1>
+      </header>
 
-      <div v-if="isLoading" class="text-center py-10">
-        <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-camel mb-4"></div>
-        <p class="text-xl">Cargando historias...</p>
-      </div>
+      <transition name="fade" mode="out-in">
+        <div v-if="filteredPosts.length > 0" class="space-y-12 md:space-y-20">
 
-      <div v-if="error" class="text-center text-red-500 bg-red-100 p-4 rounded-lg">
-        <p>{{ error }}</p>
-      </div>
+          <div class="group">
+            <PostCard :post="filteredPosts[0]" layout="hero" class="h-[500px] md:h-[600px]" />
+          </div>
 
-      <div v-if="!isLoading && !error">
-        <div v-if="filteredPosts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <PostCard v-for="post in filteredPosts" :key="post.id" :post="post" />
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+
+            <div v-if="filteredPosts[1]" class="md:col-span-7">
+              <PostCard :post="filteredPosts[1]" layout="featured" />
+            </div>
+
+            <div v-if="filteredPosts[2]" class="md:col-span-5 flex flex-col justify-center">
+              <PostCard :post="filteredPosts[2]" layout="compact" />
+            </div>
+
+            <div v-if="filteredPosts[3]" class="md:col-span-5 flex flex-col justify-center">
+              <PostCard :post="filteredPosts[3]" layout="compact" />
+            </div>
+
+            <div v-if="filteredPosts[4]" class="md:col-span-7">
+              <PostCard :post="filteredPosts[4]" layout="featured" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-12 border-t border-black/5">
+            <PostCard v-for="post in filteredPosts.slice(5)" :key="post.id" :post="post" layout="standard" />
+          </div>
         </div>
-        <div v-else class="text-center py-10">
-            <p class="text-xl text-brand-negro">No hay historias en esta categoría aún.</p>
-        </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -92,7 +89,7 @@ const filteredPosts = computed(() => {
   if (selectedCategory.value === null) {
     return posts.value;
   }
-  return posts.value.filter(post => 
+  return posts.value.filter(post =>
     post.categories?.some(cat => cat.id === selectedCategory.value)
   );
 });
@@ -105,7 +102,22 @@ const selectCategory = (categoryId: number | null) => {
 
 // Observar cambios en la URL para actualizar el filtro
 watch(() => route.query.category, (newCategoryId) => {
-    selectedCategory.value = newCategoryId ? Number(newCategoryId) : null;
+  selectedCategory.value = newCategoryId ? Number(newCategoryId) : null;
 });
 
 </script>
+<style scoped>
+.shadow-card {
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.05);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.6s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

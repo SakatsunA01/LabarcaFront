@@ -5,7 +5,7 @@
       class="fixed inset-0 bg-brand-negro bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div v-if="user" class="bg-brand-gris-claro p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-lg transform transition-all">
+      <div v-if="user" class="bg-brand-gris-claro p-6 md:p-10 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all">
         <button
           class="absolute top-4 right-4 text-gray-400 hover:text-brand-negro transition-colors"
           @click="closeModal"
@@ -34,7 +34,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-gray-500">Miembro desde</p>
-                            <p class="text-gray-900">{{ new Date(user.created_at).toLocaleDateString('es-ES') }}</p>
+                            <p class="text-gray-900">{{ formatMemberSince(user.created_at) }}</p>
                         </div>
                     </div>
                     <div class="border-t pt-4 mt-4">
@@ -90,6 +90,11 @@ defineProps({
 });
 
 const emit = defineEmits(['close']);
+
+const formatMemberSince = (value: string) => {
+  const date = new Date(value.replace(/-/g, '/'));
+  return date.toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
+};
 
 const closeModal = () => {
   emit('close');

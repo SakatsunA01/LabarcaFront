@@ -1,6 +1,6 @@
 <template>
   <AnimatedSection>
-    <section class="py-10 sm:py-12 lg:py-14 px-4 sm:px-6 lg:px-8 bg-white dark:bg-brand-negro">
+    <section class="py-10 sm:py-12 lg:py-14 px-4 sm:px-6 lg:px-8 bg-transparent">
       <div class="container mx-auto max-w-7xl">
 
         <div

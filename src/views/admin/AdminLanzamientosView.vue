@@ -2,9 +2,9 @@
   <div class="admin-lanzamientos-view p-4">
     <h1 class="text-2xl font-bold mb-4">Gestión de Lanzamientos</h1>
 
-    <div class="mb-4 flex justify-end">
+    <div class="mb-4 flex flex-col sm:flex-row sm:justify-end gap-3">
       <button
-class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
+class="w-full sm:w-auto bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
         @click="openCreateModal">
         Crear Nuevo Lanzamiento
       </button>
@@ -16,7 +16,7 @@ class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transi
     </div>
 
     <div v-else-if="lanzamientos.length > 0" class="overflow-x-auto bg-white shadow-md rounded-lg">
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 min-w-[720px]">
         <thead class="bg-gray-50">
           <tr>
             <th
@@ -48,8 +48,10 @@ v-if="lanzamiento.cover_image_url" :src="`${API_BASE_URL}${lanzamiento.cover_ima
               <span v-else>Sin portada</span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button class="text-brand-camel hover:text-brand-borgona mr-3" @click="openEditModal(lanzamiento)">Editar</button>
-              <button class="text-red-600 hover:text-red-900" @click="deleteLanzamiento(lanzamiento.id)">Eliminar</button>
+              <div class="flex flex-wrap justify-end gap-2">
+                <button class="text-brand-camel hover:text-brand-borgona" @click="openEditModal(lanzamiento)">Editar</button>
+                <button class="text-red-600 hover:text-red-900" @click="deleteLanzamiento(lanzamiento.id)">Eliminar</button>
+              </div>
             </td>
           </tr>
         </tbody>

@@ -76,40 +76,55 @@
         </div>
         <div class="p-6 md:p-8">
           <div v-if="orderError" class="text-red-600 text-sm bg-red-100 p-2 rounded">{{ orderError }}</div>
-          <div v-else-if="orders.length === 0" class="text-sm text-gray-500">Todavia no tenes entradas compradas.</div>
-          <div v-else class="space-y-4">
+          <div v-else-if="approvedOrders.length === 0" class="text-sm text-gray-500">Todavia no tenes entradas aprobadas.</div>
+          <div v-else class="space-y-6">
             <div
-              v-for="orderItem in orders"
+              v-for="orderItem in approvedOrders"
               :key="orderItem.id"
-              class="border border-gray-200 rounded-xl p-4">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <p class="text-sm text-gray-500">Evento</p>
-                  <p class="text-lg font-semibold text-brand-negro">{{ orderItem.event?.nombre || 'Evento' }}</p>
-                  <p class="text-sm text-gray-600">{{ formatDate(orderItem.event?.fecha) }}</p>
-                  <p class="text-sm text-gray-600">{{ orderItem.event?.lugar || 'Ubicacion por confirmar' }}</p>
+              class="bg-white rounded-2xl shadow-card border border-black/5 overflow-hidden">
+              <div class="relative h-40 md:h-48 bg-brand-negro">
+                <img
+                  v-if="orderItem.event?.imagenUrl"
+                  :src="`${API_BASE_URL}${orderItem.event.imagenUrl}`"
+                  alt="Imagen evento"
+                  class="absolute inset-0 h-full w-full object-cover opacity-80">
+                <div v-else class="absolute inset-0 bg-gray-800/80"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div class="absolute bottom-4 left-4 text-white">
+                  <p class="text-xs uppercase tracking-widest text-brand-gris-claro">Entrada digital</p>
+                  <h3 class="text-2xl font-bold">{{ orderItem.event?.nombre || 'Evento' }}</h3>
                 </div>
-                <span
-                  class="px-3 py-1 rounded-full text-xs font-medium"
-                  :class="orderItem.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'">
-                  {{ orderItem.status === 'approved' ? 'Aprobada' : orderItem.status }}
+                <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Aprobada
                 </span>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+              <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Fecha</p>
+                  <p class="text-base font-medium text-brand-negro">{{ formatDate(orderItem.event?.fecha) }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Lugar</p>
+                  <p class="text-base font-medium text-brand-negro">{{ orderItem.event?.lugar || 'Por confirmar' }}</p>
+                </div>
                 <div>
                   <p class="text-sm text-gray-500">Tipo de entrada</p>
                   <p class="text-base font-medium text-brand-negro">{{ orderItem.product?.name || 'Entrada' }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Comprador</p>
+                  <p class="text-base font-medium text-brand-negro">{{ authStore.currentUser?.name || 'Usuario' }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Cantidad</p>
                   <p class="text-base font-medium text-brand-negro">{{ orderItem.quantity }}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">Total</p>
+                  <p class="text-sm text-gray-500">Monto</p>
                   <p class="text-base font-medium text-brand-negro">{{ formatPrice(orderItem.unit_price_ars * orderItem.quantity) }}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">Orden</p>
+                  <p class="text-sm text-gray-500">Numero de orden</p>
                   <p class="text-base font-medium text-brand-negro">{{ orderItem.mp_payment_id || orderItem.id }}</p>
                 </div>
               </div>
@@ -150,13 +165,15 @@ interface TicketOrder {
   unit_price_ars: number;
   status: string;
   mp_payment_id?: string | null;
-  event?: { nombre: string; fecha: string; lugar?: string | null };
+  event?: { nombre: string; fecha: string; lugar?: string | null; imagenUrl?: string | null };
   product?: { name: string };
 }
 
 const orders = ref<TicketOrder[]>([]);
 const isLoadingOrders = ref(false);
 const orderError = ref('');
+const approvedOrders = computed(() => orders.value.filter((order) => order.status === 'approved'));
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.labarcaministerio.com';
 
 const fillFromUser = () => {
   const u = authStore.currentUser;

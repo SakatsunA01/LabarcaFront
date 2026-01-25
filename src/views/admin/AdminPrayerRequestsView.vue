@@ -3,8 +3,8 @@
     <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestión de Peticiones de Oración</h1>
 
     <!-- Controles Superiores: Búsqueda -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="w-1/3">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div class="w-full md:w-1/3">
         <input
 v-model="searchTerm" type="text" placeholder="Buscar por usuario o texto..."
           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
@@ -12,10 +12,10 @@ v-model="searchTerm" type="text" placeholder="Buscar por usuario o texto..."
     </div>
 
     <!-- Tabla de Peticiones -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="bg-white rounded-xl shadow-md overflow-x-auto">
       <div v-if="loading" class="p-8 text-center text-gray-500">Cargando peticiones...</div>
       <div v-else-if="error" class="p-8 text-center text-red-500">{{ error }}</div>
-      <table v-else-if="filteredRequests.length" class="min-w-full divide-y divide-gray-200">
+      <table v-else-if="filteredRequests.length" class="min-w-full divide-y divide-gray-200 min-w-[720px]">
         <thead class="bg-gray-50">
           <tr>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
@@ -40,9 +40,11 @@ class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button class="text-blue-600 hover:text-blue-900 mr-4" @click="openDetailModal(request)">Ver</button>
-              <button class="text-brand-camel hover:text-brand-borgona mr-4" @click="toggleApproval(request)">{{ request.is_approved ? 'Desaprobar' : 'Aprobar' }}</button>
-              <button class="text-red-600 hover:text-red-900" @click="deleteRequest(request.id)">Eliminar</button>
+              <div class="flex flex-wrap justify-end gap-2">
+                <button class="text-blue-600 hover:text-blue-900" @click="openDetailModal(request)">Ver</button>
+                <button class="text-brand-camel hover:text-brand-borgona" @click="toggleApproval(request)">{{ request.is_approved ? 'Desaprobar' : 'Aprobar' }}</button>
+                <button class="text-red-600 hover:text-red-900" @click="deleteRequest(request.id)">Eliminar</button>
+              </div>
             </td>
           </tr>
         </tbody>

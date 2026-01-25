@@ -1,88 +1,97 @@
 <template>
-  <section class="bg-brand-cream py-10 lg:py-12 px-2 sm:px-4 lg:px-6">
-    <div class="container mx-auto max-w-7xl space-y-4">
+  <section class="bg-brand-gris-claro py-4 md:py-8 px-6">
+    <div class="container mx-auto max-w-7xl">
 
-      <div class="flex flex-col gap-2 border-b border-black/10 pb-2 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h2 class="text-3xl md:text-4xl font-playfair text-brand-negro leading-tight">Entradas disponibles</h2>
-          <p class="text-gray-600 font-sans text-sm tracking-wide mt-1">
-            Reserva tu lugar en nuestros próximos encuentros.
+      <header class="flex flex-col md:flex-row md:items-end justify-between mb-3 border-b border-black/5 pb-2">
+        <div class="space-y-1">
+          <span class="text-brand-camel uppercase tracking-[0.4em] text-[10px] font-bold block">Próximas
+            Experiencias</span>
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-playfair text-brand-negro italic leading-tight">
+            Entradas Disponibles
+          </h2>
+          <p class="text-gray-500 font-sans text-xs italic pt-1">
+            Reserva tu lugar en nuestros próximos encuentros de adoración.
           </p>
         </div>
         <router-link to="/eventos"
-          class="hidden md:inline-flex items-center gap-2 bg-brand-camel hover:opacity-90 text-white px-5 py-2 rounded-lg text-sm transition-all shadow-sm">
-          Ver todos los eventos
-          <ArrowRightIcon class="w-4 h-4" />
+          class="group mt-6 md:mt-0 flex items-center gap-2 text-brand-camel font-bold uppercase text-[10px] tracking-widest hover:text-brand-negro transition-colors">
+          Explorar agenda completa
+          <ArrowRightIcon class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </router-link>
+      </header>
+
+      <div v-if="isLoading" class="space-y-3">
+        <div v-for="i in 2" :key="i" class="h-32 bg-white/40 animate-pulse rounded-2xl border border-white/60"></div>
       </div>
 
-      <div v-if="isLoading" class="grid gap-6 sm:gap-8">
-        <div v-for="i in 2" :key="i" class="h-48 bg-white/50 animate-pulse rounded-xl"></div>
-      </div>
-
-      <div v-else class="space-y-4">
+      <div v-else class="space-y-3 md:space-y-5">
         <article v-for="entry in availableEntries" :key="entry.event.id"
-          class="bg-white rounded-2xl shadow-card border border-gray-100 overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-card-hover duration-300">
-
-          <div class="w-full md:w-72 h-48 md:h-auto shrink-0 relative">
+          class="bg-white rounded-2xl shadow-card border border-gray-50 overflow-hidden flex flex-col lg:flex-row transition-all hover:shadow-card-hover duration-500 group">
+          <div class="w-full lg:w-72 h-32 lg:h-56 shrink-0 relative overflow-hidden">
             <img v-if="entry.event.imagenUrl" :src="`${baseUrl}${entry.event.imagenUrl}`"
-              class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-              Sin imagen
+              class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+            <div v-else
+              class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 font-playfair italic">
+              Sin imagen oficial
             </div>
 
-            <div
-              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded text-brand-negro text-xs font-bold shadow-sm">
-              <div class="flex items-center gap-1 text-[11px] font-bold">
-                <CalendarDaysIcon class="w-3 h-3 text-brand-camel" />
-                <span>{{ entry.event.fechaFormateada?.split(' de ')[0] ?? '' }}</span>
-                <span class="text-[10px] uppercase text-gray-500">
-                  {{ entry.event.fechaFormateada?.split(' de')[1]?.substring(0,3) ?? '' }}
+            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-xl">
+              <div class="text-center leading-none">
+                <span class="block text-xl font-playfair font-bold text-brand-negro">
+                  {{ entry.event.fechaFormateada?.split(' de ')[0] ?? '' }}
+                </span>
+                <span class="text-[9px] uppercase tracking-widest text-brand-camel font-bold">
+                  {{ entry.event.fechaFormateada?.split(' de')[1]?.substring(0, 3) ?? '' }}
                 </span>
               </div>
             </div>
           </div>
 
-          <div class="flex-1 p-3 flex flex-col justify-between">
-            <div class="flex flex-col lg:flex-row justify-between gap-4">
-              <div class="space-y-1">
-                <h3 class="text-2xl font-playfair text-brand-negro">{{ entry.event.nombre }}</h3>
-                <div class="flex items-center gap-2 text-gray-500 text-sm font-sans">
+          <div class="flex-1 p-4 md:p-5 flex flex-col justify-between">
+            <div class="flex flex-col xl:flex-row justify-between items-start gap-5">
+              <div class="space-y-2">
+                <h3 class="text-2xl md:text-3xl font-playfair text-brand-negro italic leading-tight">
+                  {{ entry.event.nombre }}
+                </h3>
+                <div class="flex items-center gap-2 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
                   <MapPinIcon class="w-4 h-4 text-brand-camel" />
                   {{ entry.event.lugar || 'Lugar por confirmar' }}
                 </div>
               </div>
 
-              <div class="lg:text-right shrink-0">
-                <span class="flex items-center gap-1 text-[10px] uppercase tracking-widest text-gray-400 block font-bold">
-                  <CurrencyDollarIcon class="w-3 h-3 text-brand-camel" />
-                  <span>Total</span>
+              <div class="xl:text-right shrink-0">
+                <span class="text-[9px] uppercase tracking-[0.3em] text-gray-400 font-bold block mb-1">Inversión
+                  Total</span>
+                <span class="text-2xl md:text-3xl font-playfair text-brand-borgona italic leading-none">
+                  {{ formattedTotalFor(entry) }}
                 </span>
-                <span class="text-2xl font-bold text-brand-borgona">{{ formattedTotalFor(entry) }}</span>
               </div>
             </div>
 
-            <div class="mt-2 flex flex-wrap items-end gap-3 border-t border-gray-50 pt-3">
-              <div class="flex-1 min-w-[140px] space-y-1">
-                <label class="flex items-center gap-1 text-[10px] uppercase font-bold text-gray-400 font-sans">
-                  <TicketIcon class="w-3.5 h-3.5 text-brand-camel" />
-                  Tipo de Entrada
+            <div class="mt-3 flex flex-wrap items-end gap-3 border-t border-gray-50 pt-3">
+              <div class="flex-1 min-w-[180px] space-y-2">
+                <label class="text-[9px] uppercase tracking-widest font-bold text-gray-400 flex items-center gap-2">
+                  <TicketIcon class="w-3 h-3" /> Tipo de Experiencia
                 </label>
-                <select v-model="stateFor(entry.event.id).ticketId"
-                  class="w-full bg-gray-50 border border-brand-gris-claro rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-camel outline-none transition-all cursor-pointer">
-                  <option v-for="t in entry.tickets" :key="t.id" :value="t.id">
-                    {{ t.label }} ({{ formatPrice(t.price_ars) }})
-                  </option>
-                </select>
+                <div class="relative group/select">
+                  <select v-model="stateFor(entry.event.id).ticketId"
+                    class="w-full bg-brand-gris-claro/50 border border-transparent rounded-2xl px-4 py-3 text-sm font-medium focus:bg-white focus:border-brand-camel/30 outline-none transition-all cursor-pointer appearance-none">
+                    <option v-for="t in entry.tickets" :key="t.id" :value="t.id">
+                      {{ t.label }} — {{ formatPrice(t.price_ars) }}
+                    </option>
+                  </select>
+                  <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none opacity-30">
+                    <ChevronDownIcon class="w-4 h-4" />
+                  </div>
+                </div>
               </div>
 
-              <div class="w-24 space-y-1">
-                <label class="flex items-center gap-1 text-[10px] uppercase font-bold text-gray-400 font-sans">
-                  <UserGroupIcon class="w-3.5 h-3.5 text-brand-camel" />
-                  Cant.
+              <div class="w-28 space-y-2">
+                <label class="text-[9px] uppercase tracking-widest font-bold text-gray-400 flex items-center gap-2">
+                  <UserGroupIcon class="w-3 h-3" /> Cant.
                 </label>
                 <select v-model.number="stateFor(entry.event.id).quantity"
-                  class="w-full bg-gray-50 border border-brand-gris-claro rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-camel outline-none transition-all cursor-pointer">
+                  class="w-full bg-brand-gris-claro/50 border border-transparent rounded-2xl px-4 py-3 text-sm font-medium focus:bg-white focus:border-brand-camel/30 outline-none transition-all cursor-pointer">
                   <option v-for="qty in quantityOptionsFor(entry.event.id, entry.tickets)" :key="qty" :value="qty">
                     {{ qty }}
                   </option>
@@ -90,13 +99,14 @@
               </div>
 
               <button @click="handleCheckout(entry)" :disabled="submittingOrders[entry.event.id]"
-                class="flex-1 md:flex-none px-8 py-2.5 bg-brand-borgona hover:opacity-90 text-white rounded-lg font-bold text-sm transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 uppercase tracking-wider">
-                <span v-if="!submittingOrders[entry.event.id]">Comprar</span>
+                class="flex-1 lg:flex-none px-8 py-3 bg-brand-borgona hover:bg-brand-negro text-white rounded-2xl font-bold text-[9px] uppercase tracking-[0.2em] transition-all duration-500 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center gap-3">
+                <span v-if="!submittingOrders[entry.event.id]">Adquirir entrada</span>
                 <div v-else class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               </button>
             </div>
 
-            <p v-if="checkoutErrors[entry.event.id]" class="mt-2 text-xs text-red-500 italic font-sans">
+            <p v-if="checkoutErrors[entry.event.id]"
+              class="mt-4 text-[10px] text-red-500 italic font-bold uppercase tracking-widest">
               {{ checkoutErrors[entry.event.id] }}
             </p>
           </div>
@@ -104,15 +114,18 @@
       </div>
 
       <div v-if="!availableEntries.length && !isLoading"
-        class="text-center py-8 bg-white rounded-2xl border border-dashed border-brand-gris-claro shadow-card">
-        <TicketIcon class="h-6 w-6 text-brand-camel mx-auto mb-3" />
-        <p class="text-gray-400 font-playfair text-lg italic">No hay entradas disponibles por el momento.</p>
+        class="text-center py-7 bg-white rounded-3xl border-2 border-dashed border-gray-100 shadow-card">
+        <TicketIcon class="h-8 w-8 text-gray-200 mx-auto mb-2" />
+        <p class="text-xl font-playfair text-brand-negro italic">Sin cupos disponibles</p>
+        <p class="text-[9px] uppercase tracking-widest text-gray-400 mt-2">Vuelve pronto para nuevas fechas y preventas.
+        </p>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
@@ -309,4 +322,8 @@ const loadData = async () => {
 
 onMounted(loadData);
 </script>
-"@
+<style scoped>
+.shadow-card { box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05); }
+.shadow-card-hover { box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08); }
+select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+</style>

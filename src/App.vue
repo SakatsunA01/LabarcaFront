@@ -36,14 +36,11 @@ const closeFaithPrayerModal = () => {
     </main>
     <LoadingOverlay :is-loading="uiStore.isRouteLoading" />
     <LoginModal :show="uiStore.showLoginModal" @close="uiStore.setShowLoginModal(false)" />
-    <RegisterModal :show="uiStore.showRegisterModal" @close="uiStore.setShowRegisterModal(false)" @registration-success="handleRegistrationSuccess" />
+    <RegisterModal :show="uiStore.showRegisterModal" @close="uiStore.setShowRegisterModal(false)"
+      @registration-success="handleRegistrationSuccess" />
     <FaithPrayerModal :show="showFaithPrayerModal" @close="closeFaithPrayerModal" />
-    <Snackbar
-      :visible="uiStore.snackbar.visible"
-      :message="uiStore.snackbar.message"
-      :type="uiStore.snackbar.type"
-      @update:visible="uiStore.hideSnackbar"
-    />
+    <Snackbar :visible="uiStore.snackbar.visible" :message="uiStore.snackbar.message" :type="uiStore.snackbar.type"
+      @update:visible="uiStore.hideSnackbar" />
     <AppFooter />
   </div>
 </template>

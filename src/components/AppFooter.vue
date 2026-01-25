@@ -1,88 +1,63 @@
 <template>
-  <footer class="bg-brand-gris-claro border-t border-gray-200">
+  <footer class="bg-brand-negro text-white pt-10 pb-6 font-sans">
+    <div class="container mx-auto max-w-7xl px-6">
 
-    <!-- Footer Principal -->
-    <div class="bg-brand-negro text-brand-gris-claro py-10 px-4 sm:px-6 lg:px-8">
-      <div class="container mx-auto max-w-7xl">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          <!-- Columna 1: Marca y Descripción -->
-          <div class="space-y-4">
-            <h3 class="text-xl font-bold text-white flex items-center gap-2">
-              <MusicalNoteIcon class="h-6 w-6 text-brand-camel" />
-              <span>LaBarca Producciones</span>
-            </h3>
-            <p class="text-sm text-gray-400">
-              Conectando corazones a través de la música y eventos que inspiran.
-            </p>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-white/5 pb-8 items-start">
+
+        <div class="md:col-span-4 space-y-3">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-[1px] bg-brand-camel"></div>
+            <span class="text-brand-camel uppercase tracking-[0.4em] text-[8px] font-bold">La Barca</span>
           </div>
+          <h3 class="font-playfair text-2xl italic leading-tight text-white/90">
+            Música que <span class="text-brand-camel">trasciende</span>.
+          </h3>
+          <p class="text-gray-500 text-[11px] leading-relaxed max-w-xs">
+            Comunidad dedicada a equipar a la iglesia y potenciar el talento artístico con excelencia.
+          </p>
+        </div>
 
-          <!-- Columna 2: Navegación Rápida -->
-          <div class="md:justify-self-center">
-            <h4 class="font-semibold text-white mb-4 uppercase tracking-wider flex items-center gap-2">
-              <MapIcon class="h-5 w-5" />
-              <span>Navegación</span>
-            </h4>
-            <ul class="space-y-2 text-sm">
-              <li><router-link to="/eventos" class="hover:text-brand-camel transition-colors">Eventos</router-link></li>
-              <li><router-link to="/artistas" class="hover:text-brand-camel transition-colors">Artistas</router-link></li>
-              <li><router-link to="/lanzamientos" class="hover:text-brand-camel transition-colors">Lanzamientos</router-link></li>
-              <li><router-link to="/comunidad" class="hover:text-brand-camel transition-colors">Comunidad</router-link></li>
+        <div class="md:col-span-4 grid grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <h4 class="text-[9px] uppercase tracking-[0.3em] font-bold text-brand-camel">Explorar</h4>
+            <ul class="space-y-2 text-[12px] text-gray-400">
+              <li><router-link to="/artistas" class="hover:text-white transition-colors">Artistas</router-link></li>
+              <li><router-link to="/lanzamientos" class="hover:text-white transition-colors">Música</router-link></li>
             </ul>
           </div>
-
-          <!-- Columna 3: Sobre Nosotros -->
-          <div class="md:justify-self-center">
-            <h4 class="font-semibold text-white mb-4 uppercase tracking-wider flex items-center gap-2">
-              <InformationCircleIcon class="h-5 w-5" />
-              <span>Nosotros</span>
-            </h4>
-            <ul class="space-y-2 text-sm">
-              <li><router-link to="/about" class="hover:text-brand-camel transition-colors">Sobre LaBarca</router-link></li>
-              <li><router-link to="/contacto" class="hover:text-brand-camel transition-colors">Contacto</router-link></li>
-              <li><router-link to="/privacidad" class="hover:text-brand-camel transition-colors">Política de Privacidad</router-link></li>
+          <div class="space-y-3">
+            <h4 class="text-[9px] uppercase tracking-[0.3em] font-bold text-brand-camel">Info</h4>
+            <ul class="space-y-2 text-[12px] text-gray-400">
+              <li><router-link to="/eventos" class="hover:text-white transition-colors">Eventos</router-link></li>
+              <li><router-link to="/comunidad" class="hover:text-white transition-colors">Comunidad</router-link></li>
             </ul>
-          </div>
-
-          <!-- Columna 4: Redes Sociales -->
-          <div class="md:justify-self-end">
-            <h4 class="font-semibold text-white mb-4 uppercase tracking-wider flex items-center gap-2">
-              <ShareIcon class="h-5 w-5" />
-              <span>Síguenos</span>
-            </h4>
-            <div class="flex space-x-4">
-              <a href="#" class="text-gray-400 hover:text-brand-camel transition-colors" aria-label="Facebook">
-                <span class="sr-only">Facebook</span>
-                <UsersIcon class="w-6 h-6" />
-              </a>
-              <a href="#" class="text-gray-400 hover:text-brand-camel transition-colors" aria-label="Instagram">
-                <span class="sr-only">Instagram</span>
-                <CameraIcon class="w-6 h-6" />
-              </a>
-              <a href="#" class="text-gray-400 hover:text-brand-camel transition-colors" aria-label="YouTube">
-                <span class="sr-only">YouTube</span>
-                <VideoCameraIcon class="w-6 h-6" />
-              </a>
-            </div>
           </div>
         </div>
 
-        <!-- Barra Inferior con Copyright -->
-        <div class="border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
-          <p>&copy; {{ new Date().getFullYear() }} LaBarca Producciones. Todos los derechos reservados.</p>
+        <div class="md:col-span-4 md:text-right space-y-4">
+          <h4 class="text-[9px] uppercase tracking-[0.3em] font-bold text-brand-camel">Conecta</h4>
+          <a href="mailto:info@labarcamusic.com"
+            class="block text-lg font-playfair italic hover:text-brand-camel transition-colors">
+            info@labarcamusic.com
+          </a>
+          <div class="flex md:justify-end gap-4">
+            <a href="#"
+              class="text-[9px] font-bold uppercase tracking-widest text-gray-500 hover:text-white">Instagram</a>
+            <a href="#"
+              class="text-[9px] font-bold uppercase tracking-widest text-gray-500 hover:text-white">YouTube</a>
+          </div>
         </div>
       </div>
+
+      <div
+        class="pt-6 flex flex-col md:flex-row justify-between items-center gap-2 text-[8px] uppercase tracking-[0.2em] font-bold text-gray-600">
+        <p>&copy; {{ new Date().getFullYear() }} La Barca Music.</p>
+        <div class="flex gap-4">
+          <router-link to="/privacidad" class="hover:text-white">Privacidad</router-link>
+          <router-link to="/terminos" class="hover:text-white">Términos</router-link>
+        </div>
+      </div>
+
     </div>
   </footer>
 </template>
-
-<script setup lang="ts">
-import {
-  MusicalNoteIcon,
-  MapIcon,
-  InformationCircleIcon,
-  ShareIcon,
-  UsersIcon,
-  CameraIcon,
-  VideoCameraIcon
-} from '@heroicons/vue/24/outline';
-</script>

@@ -3,14 +3,14 @@
     <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestión de Artistas</h1>
 
     <!-- Controles Superiores: Búsqueda y Botón de Crear -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="w-1/3">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div class="w-full md:w-1/3">
         <input
 v-model="searchTerm" type="text" placeholder="Buscar por nombre..."
           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-camel focus:border-brand-camel transition-shadow" />
       </div>
       <button
-class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center"
+class="w-full md:w-auto bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80 transition-colors font-medium flex items-center justify-center"
         @click="openCreateModal">
         <PlusIcon class="h-5 w-5 mr-2" />
         Crear Artista
@@ -18,10 +18,10 @@ class="bg-brand-verde-oscuro text-white py-2 px-5 rounded-md hover:bg-opacity-80
     </div>
 
     <!-- Tabla de Artistas -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="bg-white rounded-xl shadow-md overflow-x-auto">
       <div v-if="isLoading" class="p-8 text-center text-gray-500">Cargando artistas...</div>
       <div v-else-if="error" class="p-8 text-center text-red-500">{{ error }}</div>
-      <table v-else-if="filteredArtistas.length" class="min-w-full divide-y divide-gray-200">
+      <table v-else-if="filteredArtistas.length" class="min-w-full divide-y divide-gray-200 min-w-[520px]">
         <thead class="bg-gray-50">
           <tr>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

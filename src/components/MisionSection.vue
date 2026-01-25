@@ -1,43 +1,51 @@
 <template>
   <AnimatedSection>
-    <section class="bg-brand-cream dark:bg-brand-negro py-section-md px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center">
-          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro dark:text-white mb-10 md:mb-12 flex items-center justify-center gap-3">
-            <SparklesIcon class="h-8 w-8 text-brand-camel" />
-            <span>Somos un Eco de Su Voz</span>
-            <SparklesIcon class="h-8 w-8 text-brand-camel" />
-          </h2>
-          <p class="mt-4 font-inter text-lg text-brand-camel italic">
-            "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos." - Mateo 18:20
-          </p>
-        </div>
+    <section class="bg-transparent py-16 md:py-24 px-6 overflow-hidden font-sans">
+      <div class="container mx-auto max-w-7xl">
 
-        <div class="mt-16 grid md:grid-cols-2 gap-12 items-center">
-          <div class="text-brand-negro dark:text-gray-200 font-inter text-base leading-relaxed">
+        <header class="text-center mb-16 md:mb-20 space-y-4">
+          <span class="text-brand-camel uppercase tracking-[0.5em] text-[10px] font-bold block">Nuestro Propósito</span>
+          <h2 class="font-playfair text-4xl md:text-6xl text-brand-negro italic leading-tight">
+            Somos un Eco de Su Voz
+          </h2>
+          <div class="w-20 h-[1px] bg-brand-camel/30 mx-auto mt-6"></div>
+          <p class="mt-8 font-playfair text-xl md:text-2xl text-brand-camel italic max-w-3xl mx-auto leading-relaxed">
+            "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos."
+            <span class="block text-[10px] uppercase tracking-widest mt-2 font-sans font-bold not-italic">— Mateo
+              18:20</span>
+          </p>
+        </header>
+
+        <div class="grid md:grid-cols-12 gap-12 lg:gap-20 items-center">
+
+          <div class="md:col-span-7 space-y-8 text-gray-600 leading-relaxed text-base md:text-lg italic">
             <p>
-              Creemos firmemente que la música es más que melodía y armonía; es un vehículo divino para la transformación,
-              una herramienta poderosa para conectar corazones y proclamar la verdad del Evangelio. En La Barca, nuestra
-              misión es ser un eco de la voz de Dios en la tierra, creando producciones que no solo deleiten el oído, sino
-              que alimenten el espíritu.
+              Creemos firmemente que la música es más que melodía y armonía; es un <span
+                class="text-brand-negro font-semibold not-italic tracking-tight">vehículo divino para la
+                transformación</span>, una herramienta poderosa para conectar corazones y proclamar la verdad del
+              Evangelio.
             </p>
-            <p class="mt-6">
-              Nuestra visión es equipar a la iglesia local con recursos de excelencia que inspiren una adoración auténtica
-              y profunda. Buscamos cultivar una comunidad de artistas, músicos y creativos que, con pasión y talento,
-              sirvan a Dios y a su pueblo, creando espacios para un encuentro genuino con Su presencia.
+            <p>
+              Nuestra visión es equipar a la iglesia local con recursos de excelencia que inspiren una adoración
+              auténtica y profunda. Buscamos cultivar una comunidad de creativos que, con pasión y talento, sirvan a
+              Dios y a su pueblo.
             </p>
-            <p class="mt-6">
-              Valoramos la excelencia, la integridad y la unción en todo lo que hacemos. Cada canción, cada evento, cada
-              recurso es una ofrenda de adoración, diseñada para glorificar a Aquel que nos llamó de las tinieblas a su
-              luz admirable.
+            <p class="text-sm not-italic font-bold uppercase tracking-[0.2em] text-brand-camel pt-4">
+              Excelencia · Integridad · Unción
             </p>
           </div>
-          <div class="w-full h-full">
-            <img
-              src="@/assets/fotohomeversiculo.png"
-              alt="Comunidad en adoración"
-              class="object-cover w-full h-full max-h-[500px] rounded-lg shadow-card filter grayscale-20">
+
+          <div class="md:col-span-5">
+            <div class="relative group">
+              <div
+                class="absolute -inset-4 border border-brand-camel/10 rounded-2xl translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700">
+              </div>
+
+              <img src="@/assets/fotohomeversiculo.png" alt="Comunidad en adoración"
+                class="relative z-10 object-cover w-full h-[400px] md:h-[550px] rounded-2xl shadow-card grayscale-[30%] hover:grayscale-0 transition-all duration-1000 group-hover:shadow-card-hover">
+            </div>
           </div>
+
         </div>
       </div>
     </section>

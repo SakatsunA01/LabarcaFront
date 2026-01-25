@@ -1,60 +1,84 @@
 <template>
-  <div class="bg-brand-gris-claro min-h-screen py-section-md px-4 sm:px-6 lg:px-8">
+  <div class="bg-brand-gris-claro min-h-screen py-12 md:py-20 px-6">
     <div v-if="lanzamiento" class="max-w-5xl mx-auto">
 
-      <router-link to="/lanzamientos" class="inline-flex items-center text-brand-camel hover:text-brand-borgona mb-8 font-inter font-semibold group">
-        <ArrowLeftIcon class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" />
-        Volver a Lanzamientos
+      <router-link to="/lanzamientos"
+        class="inline-flex items-center text-[10px] uppercase tracking-[0.3em] text-brand-camel hover:text-brand-negro mb-12 font-bold transition-colors group">
+        <ArrowLeftIcon class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:-translate-x-1" />
+        Volver al catálogo
       </router-link>
 
-      <div class="grid md:grid-cols-3 gap-8 md:gap-12">
-        <!-- Columna de la Portada -->
-        <div class="md:col-span-1">
-          <img :src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : ''" :alt="lanzamiento.titulo" class="w-full h-auto rounded-lg shadow-card object-cover aspect-square">
+      <div class="grid md:grid-cols-12 gap-12 lg:gap-20 items-start">
+        <div class="md:col-span-5 lg:col-span-4">
+          <div class="sticky top-24">
+            <img :src="lanzamiento.cover_image_url ? `${API_BASE_URL}${lanzamiento.cover_image_url}` : ''"
+              :alt="lanzamiento.titulo"
+              class="w-full h-auto rounded-2xl shadow-card object-cover aspect-square transition-transform duration-700 hover:scale-[1.02]">
+            <div class="mt-8 space-y-2 opacity-50">
+              <p class="text-[9px] uppercase tracking-widest font-bold text-brand-negro">Fecha de Lanzamiento</p>
+              <p class="font-playfair text-sm italic">{{ formatDate(lanzamiento.fecha_lanzamiento) }}</p>
+            </div>
+          </div>
         </div>
 
-        <!-- Columna de la Información -->
-        <div class="md:col-span-2">
-          <h1 class="text-4xl md:text-5xl font-bold font-playfair text-brand-negro">{{ lanzamiento.titulo }}</h1>
-          <h2 class="text-2xl font-inter text-brand-camel mt-2">{{ lanzamiento.artista?.name }}</h2>
+        <div class="md:col-span-7 lg:col-span-8">
+          <header class="mb-12">
+            <h1 class="text-5xl md:text-7xl font-playfair text-brand-negro italic leading-tight mb-4">
+              {{ lanzamiento.titulo }}
+            </h1>
+            <h2 class="text-[12px] uppercase tracking-[0.5em] font-bold text-brand-camel">
+              {{ lanzamiento.artista?.name }}
+            </h2>
+          </header>
 
-          <!-- Plataformas de Streaming -->
-          <div class="mt-8">
-            <h3 class="font-inter text-lg font-bold text-brand-negro mb-4">Escúchalo ahora:</h3>
-            <div class="flex items-center space-x-4">
-              <a v-if="lanzamiento.spotify_link" :href="lanzamiento.spotify_link" target="_blank" class="inline-flex items-center justify-center bg-green-500 text-white font-bold py-3 px-6 rounded-full hover:bg-green-600 transition-colors duration-300 shadow-lg">
-                <PlayCircleIcon class="h-6 w-6 mr-2" />
-                Spotify
+          <div class="mb-16">
+            <div class="flex flex-wrap gap-4">
+              <a v-if="lanzamiento.spotify_link" :href="lanzamiento.spotify_link" target="_blank"
+                class="flex items-center px-8 py-3 rounded-full border border-black/5 bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 text-[10px] uppercase tracking-widest font-bold text-brand-negro">
+                <PlayCircleIcon class="h-5 w-5 mr-3 text-[#1DB954]" />
+                Escuchar en Spotify
               </a>
-              <a v-if="lanzamiento.youtube_link" :href="lanzamiento.youtube_link" target="_blank" class="inline-flex items-center justify-center bg-red-600 text-white font-bold py-3 px-6 rounded-full hover:bg-red-700 transition-colors duration-300 shadow-lg">
-                <VideoCameraIcon class="h-6 w-6 mr-2" />
-                YouTube
+              <a v-if="lanzamiento.youtube_link" :href="lanzamiento.youtube_link" target="_blank"
+                class="flex items-center px-8 py-3 rounded-full border border-black/5 bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 text-[10px] uppercase tracking-widest font-bold text-brand-negro">
+                <VideoCameraIcon class="h-5 w-5 mr-3 text-[#FF0000]" />
+                Ver en YouTube
               </a>
             </div>
           </div>
 
-          <!-- Lista de Canciones -->
-          <div class="md:col-span-3 mt-16 pt-8 border-t border-gray-200">
-            <h3 class="font-playfair text-2xl font-bold text-brand-negro mb-6">Lista de Canciones</h3>
-            <ul class="space-y-4">
-              <li v-for="(track, index) in lanzamiento.tracks" :key="index" class="flex items-center justify-between p-3 rounded-lg hover:bg-black/5 transition-colors duration-200">
-                <div class="flex items-center">
-                  <span class="font-inter text-brand-camel w-8 text-center">{{ index + 1 }}</span>
-                  <p class="font-inter text-brand-negro ml-4">{{ track.titulo }}</p>
+          <section class="mt-20">
+            <div class="flex items-center gap-6 mb-10">
+              <h3 class="font-playfair text-3xl text-brand-negro italic shrink-0">Tracklist</h3>
+              <div class="h-[1px] w-full bg-brand-camel/10"></div>
+            </div>
+
+            <div class="space-y-1">
+              <div v-for="(track, index) in lanzamiento.tracks" :key="index"
+                class="group flex items-center justify-between py-4 px-6 rounded-xl hover:bg-white hover:shadow-card transition-all duration-300">
+                <div class="flex items-center gap-6">
+                  <span
+                    class="font-playfair italic text-lg text-brand-camel/40 group-hover:text-brand-camel transition-colors w-6">
+                    {{ (index + 1).toString().padStart(2, '0') }}
+                  </span>
+                  <p class="font-inter text-brand-negro text-sm tracking-wide font-medium">
+                    {{ track.titulo }}
+                  </p>
                 </div>
-                <span class="font-inter text-brand-camel">{{ track.duracion }}</span>
-              </li>
-            </ul>
-          </div>
+                <div class="flex items-center gap-4">
+                  <span class="font-inter text-[10px] text-gray-400 tracking-widest">
+                    {{ track.duracion }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
-    <div v-else-if="isLoading" class="text-center py-20">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
-      <p class="mt-4 text-brand-negro font-inter">Cargando lanzamiento...</p>
-    </div>
-    <div v-else class="text-center py-20">
-      <p class="text-brand-negro font-inter">{{ error || 'Lanzamiento no encontrado.' }}</p>
+
+    <div v-else-if="isLoading" class="flex flex-col items-center justify-center py-40">
+      <div class="w-10 h-10 border-2 border-brand-camel border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-6 text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold">Preparando la experiencia</p>
     </div>
   </div>
 </template>
@@ -74,7 +98,7 @@ interface Lanzamiento {
   youtube_link?: string | null;
   spotify_link?: string | null;
   tracks: Track[];
-  artista: { 
+  artista: {
     id: number;
     name: string;
   };
@@ -92,6 +116,9 @@ const error = ref<string | null>(null);
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${API_BASE_URL}/api`;
+
+const formatDate = (date: string) =>
+  new Date(date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
 
 onMounted(async () => {
   window.scrollTo(0, 0);

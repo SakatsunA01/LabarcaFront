@@ -184,9 +184,8 @@ watch(() => props.show, (newVal) => {
     if (newVal) {
         errorMessage.value = '';
         if (props.evento) {
-            // Format date for datetime-local input
-            const date = new Date(props.evento.fecha);
-            const formattedDate = date.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
+            // Format date for datetime-local input using local time
+            const formattedDate = toLocalDateTimeInput(props.evento.fecha);
             formData.value = { ...defaultFormData, ...props.evento, fecha: formattedDate };
         } else {
             formData.value = { ...defaultFormData };
@@ -199,6 +198,13 @@ watch(() => props.show, (newVal) => {
 
 const formatPrice = (value: number) => {
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(value);
+};
+
+const toLocalDateTimeInput = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    const pad = (num: number) => String(num).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
 const handleFileChange = (file: File | null, fieldName: string) => {

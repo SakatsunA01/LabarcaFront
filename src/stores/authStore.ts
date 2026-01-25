@@ -21,7 +21,8 @@ export interface AuthState {
 }
 
 // Usa env en desarrollo/producción; fallback a prod si no está definido
-const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://api.labarcaministerio.com/api'
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://api.labarcaministerio.com';
+const API_URL = `${API_BASE_URL}/api`;
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
@@ -40,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true
       this.error = null
       try {
-        await axios.get('https://api.labarcaministerio.com/sanctum/csrf-cookie', { withCredentials: true })
+        await axios.get(`${API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 
         const response = await axios.post(`${API_URL}/login`, credentials, {
           withCredentials: true,
@@ -78,7 +79,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true;
       this.error = null;
       try {
-        await axios.get('https://api.labarcaministerio.com/sanctum/csrf-cookie', { withCredentials: true });
+        await axios.get(`${API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true });
         const response = await axios.post(`${API_URL}/register`, userInfo, { withCredentials: true });
         
         // Después de un registro exitoso, intentar loguear al usuario
@@ -182,3 +183,9 @@ export const useAuthStore = defineStore('auth', {
     },
   },
 })
+
+
+
+
+
+

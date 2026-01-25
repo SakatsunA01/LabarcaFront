@@ -2,6 +2,31 @@
   <div class="admin-ticket-orders-view p-4">
     <h1 class="text-2xl font-bold mb-4">Ventas de Entradas</h1>
 
+    <div v-if="!isLoading && !error" class="mb-4 flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        class="px-3 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full border transition-colors"
+        :class="selectedStatus === 'all'
+          ? 'bg-brand-camel text-white border-brand-camel'
+          : 'bg-white text-gray-600 border-gray-200 hover:text-brand-negro'"
+        @click="selectedStatus = 'all'"
+      >
+        Todas
+      </button>
+      <button
+        v-for="status in availableStatuses"
+        :key="status"
+        type="button"
+        class="px-3 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full border transition-colors"
+        :class="selectedStatus === status
+          ? 'bg-brand-negro text-white border-brand-negro'
+          : 'bg-white text-gray-600 border-gray-200 hover:text-brand-negro'"
+        @click="selectedStatus = status"
+      >
+        {{ status }}
+      </button>
+    </div>
+
     <div v-if="isLoading" class="text-center py-10">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel"></div>
       <p class="mt-4 text-brand-negro">Cargando ventas...</p>
@@ -11,7 +36,7 @@
       <p class="text-lg text-red-600">{{ error }}</p>
     </div>
 
-    <div v-else-if="orders.length > 0" class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <div v-else-if="filteredOrders.length > 0" class="overflow-x-auto bg-white shadow-md rounded-lg">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -26,7 +51,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="order in orders" :key="order.id" class="hover:bg-gray-50">
+          <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ order.mp_payment_id || order.id }}
             </td>
@@ -61,13 +86,17 @@
       </table>
     </div>
     <div v-else class="text-center py-10 bg-white shadow-md rounded-lg">
-      <p class="text-lg text-gray-600">Todavia no hay ventas registradas.</p>
+      <p class="text-lg text-gray-600">
+        {{ selectedStatus === 'all'
+          ? 'Todavia no hay ventas registradas.'
+          : 'No hay ventas con este estado.' }}
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
 interface TicketOrder {
@@ -85,6 +114,7 @@ interface TicketOrder {
 const orders = ref<TicketOrder[]>([]);
 const isLoading = ref(true);
 const error = ref('');
+const selectedStatus = ref<'all' | string>('all');
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${API_BASE_URL}/api`;
@@ -110,6 +140,19 @@ const formatPrice = (value: number) => {
 const formatDate = (value: string) => {
   return new Date(value.replace(/-/g, '/')).toLocaleString('es-AR');
 };
+
+const availableStatuses = computed(() => {
+  const statuses = new Set<string>();
+  orders.value.forEach((order) => {
+    if (order.status) statuses.add(order.status);
+  });
+  return Array.from(statuses).sort();
+});
+
+const filteredOrders = computed(() => {
+  if (selectedStatus.value === 'all') return orders.value;
+  return orders.value.filter((order) => order.status === selectedStatus.value);
+});
 
 onMounted(fetchOrders);
 </script>

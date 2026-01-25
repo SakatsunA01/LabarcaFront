@@ -1,38 +1,45 @@
 <template>
-  <div class="artistas-view bg-brand-gris-claro min-h-screen py-section-md">
-    <div class="container mx-auto px-4 max-w-5xl">
-      <header class="mb-6 md:mb-10 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-brand-negro">Nuestros Artistas</h1>
+  <div class="artistas-view bg-brand-gris-claro min-h-screen py-12 md:py-16">
+    <div class="container mx-auto px-6 max-w-5xl">
+
+      <header class="mb-10 text-center space-y-2">
+        <span class="text-brand-camel uppercase tracking-[0.4em] text-[9px] font-bold">Talento que Inspira</span>
+        <h1 class="text-4xl md:text-5xl font-playfair text-brand-negro italic">Nuestros Artistas</h1>
       </header>
 
-      <!-- Filtro de Búsqueda -->
-      <section class="mb-6 md:mb-8 p-3 md:p-4 bg-white rounded-xl shadow-lg">
-        <input
-v-model="terminoBusqueda" type="text" placeholder="Buscar artista por nombre..."
-          class="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-brand-camel focus:border-brand-camel transition-colors" />
+      <section class="mb-10 max-w-xl mx-auto">
+        <div class="relative group">
+          <input v-model="terminoBusqueda" type="text" placeholder="Buscar artista por nombre..."
+            class="w-full px-6 py-3 bg-white rounded-full shadow-card border border-gray-100 focus:ring-1 focus:ring-brand-camel outline-none transition-all placeholder:text-gray-300 font-sans text-sm" />
+          <div
+            class="absolute right-5 top-1/2 -translate-y-1/2 text-brand-camel opacity-30 group-focus-within:opacity-100 transition-opacity">
+            <MagnifyingGlassIcon class="w-4 h-4" />
+          </div>
+        </div>
       </section>
 
-      <!-- Lista de Artistas -->
       <transition name="fade" mode="out-in">
-        <div v-if="isLoading" class="text-center py-10">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-camel">
-          </div>
-          <p class="mt-4 text-brand-negro">Cargando artistas...</p>
+        <div v-if="isLoading" class="flex flex-col items-center justify-center py-10">
+          <div class="w-10 h-10 border-2 border-brand-camel border-t-transparent rounded-full animate-spin"></div>
         </div>
-        <div v-else-if="Object.keys(artistasAgrupados).length > 0" class="space-y-10">
+
+        <div v-else-if="Object.keys(artistasAgrupados).length > 0" class="space-y-12">
           <div v-for="(artistasPorLetra, letra) in artistasAgrupados" :key="letra">
-            <h2
-              class="text-2xl md:text-3xl font-semibold text-brand-verde-oscuro mb-4 md:mb-6 border-b-2 border-brand-camel pb-2 sticky top-0 bg-brand-gris-claro py-2 z-10">
-              {{ letra }}
-            </h2>
+
+            <div class="flex items-center gap-4 mb-4">
+              <h2 class="text-3xl font-playfair text-brand-camel italic opacity-40">{{ letra }}</h2>
+              <div class="h-[1px] flex-1 bg-brand-camel/10"></div>
+            </div>
+
             <div class="space-y-6">
               <ArtistaCardHorizontal v-for="artista in artistasPorLetra" :key="artista.id" :artista="artista" />
             </div>
           </div>
         </div>
-        <div v-else class="text-center py-10 bg-white rounded-xl shadow-md">
-          <p class="text-xl text-brand-negro">No se encontraron artistas.</p>
-          <p v-if="terminoBusqueda" class="text-gray-600 mt-2">Intenta con otro término de búsqueda.</p>
+
+        <div v-else class="text-center py-16 bg-white rounded-3xl shadow-card border border-gray-50 max-w-2xl mx-auto">
+          <p class="text-lg font-playfair text-brand-negro italic">No se encontraron artistas</p>
+          <p class="text-[9px] uppercase tracking-widest text-gray-400 mt-1">Refina tu búsqueda</p>
         </div>
       </transition>
     </div>
@@ -40,92 +47,80 @@ v-model="terminoBusqueda" type="text" placeholder="Buscar artista por nombre..."
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import ArtistaCardHorizontal from '@/components/ArtistaCardHorizontal.vue';
+import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import axios from 'axios';
 import { useUiStore } from '@/stores/uiStore';
 
-interface Artista {
-  id: string | number;
-  name: string;
-  imageUrl?: string | null;
-  description?: string | null;
-  social_instagram?: string | null;
-  social_facebook?: string | null;
-  social_youtubeChannel?: string | null;
-  social_tiktok?: string | null;
-  social_spotifyProfile?: string | null;
-  // Añade más campos si es necesario
-}
-
-interface ArtistasAgrupados {
-  [letra: string]: Artista[];
-}
-
-const todosLosArtistas = ref<Artista[]>([]);
-const terminoBusqueda = ref('');
+const letraActiva = ref('');
+const scrollProgress = ref(0);
 const isLoading = ref(true);
+const todosLosArtistas = ref<any[]>([]);
+const terminoBusqueda = ref('');
 const uiStore = useUiStore();
 
+// Calibración precisa del scroll
+const handleScroll = () => {
+  const sections = document.querySelectorAll('.letra-section');
+  const scrollPosition = window.scrollY + (window.innerHeight / 3); // Detección anticipada
+
+  sections.forEach((section) => {
+    const sectionTop = (section as HTMLElement).offsetTop;
+    if (scrollPosition >= sectionTop) {
+      letraActiva.value = section.id.replace('letra-', '');
+    }
+  });
+
+  const winScroll = document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  scrollProgress.value = (winScroll / height) * 100;
+};
+
+const irALetra = (letra: string) => {
+  const el = document.getElementById(`letra-${letra}`);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
 onMounted(async () => {
+  window.addEventListener('scroll', handleScroll);
   isLoading.value = true;
   try {
     const response = await axios.get('https://api.labarcaministerio.com/api/artistas');
     todosLosArtistas.value = response.data;
+    // Inicializar la primera letra como activa
+    if (todosLosArtistas.value.length > 0) {
+      const primeraLetra = todosLosArtistas.value[0].name.charAt(0).toUpperCase();
+      letraActiva.value = primeraLetra;
+    }
   } catch (error) {
-    console.error("Error al cargar artistas:", error);
+    console.error("Error:", error);
+  } finally {
+    isLoading.value = false;
+    uiStore.setRouteLoading(false);
   }
-  isLoading.value = false;
-  uiStore.setRouteLoading(false);
 });
 
+onUnmounted(() => window.removeEventListener('scroll', handleScroll));
+
+// Agrupación y filtrado (se mantienen según tu lógica anterior)
 const artistasFiltrados = computed(() => {
-  if (!terminoBusqueda.value) {
-    return todosLosArtistas.value;
-  }
-  return todosLosArtistas.value.filter(artista =>
-    artista.name.toLowerCase().includes(terminoBusqueda.value.toLowerCase())
-  );
+  if (!terminoBusqueda.value) return todosLosArtistas.value;
+  return todosLosArtistas.value.filter(a => a.name.toLowerCase().includes(terminoBusqueda.value.toLowerCase()));
 });
 
 const artistasAgrupados = computed(() => {
-  const agrupados: ArtistasAgrupados = {};
-  const artistasOrdenados = [...artistasFiltrados.value].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-
-  artistasOrdenados.forEach(artista => {
-    const primeraLetra = artista.name.charAt(0).toUpperCase();
-    if (!agrupados[primeraLetra]) {
-      agrupados[primeraLetra] = [];
-    }
-    agrupados[primeraLetra].push(artista);
+  const agrupados: any = {};
+  const ordenados = [...artistasFiltrados.value].sort((a, b) => a.name.localeCompare(b.name));
+  ordenados.forEach(a => {
+    const letra = a.name.charAt(0).toUpperCase();
+    if (!agrupados[letra]) agrupados[letra] = [];
+    agrupados[letra].push(a);
   });
   return agrupados;
 });
 
+const todasLasLetras = computed(() => Object.keys(artistasAgrupados.value));
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Estilo para que el encabezado de la letra sea pegajoso */
-.sticky {
-  /* Tailwind ya provee 'sticky top-0', pero puedes añadir más estilos si es necesario */
-}
-</style>

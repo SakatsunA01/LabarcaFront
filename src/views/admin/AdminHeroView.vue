@@ -2,9 +2,9 @@
   <div class="admin-hero-view p-4">
     <h1 class="text-2xl font-bold mb-4">Gestión de Hero Carousel</h1>
 
-    <div class="mb-4 flex justify-end">
+    <div class="mb-4 flex flex-col sm:flex-row sm:justify-end gap-3">
       <button
-class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
+class="w-full sm:w-auto bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
         @click="openCreateModal">
         Crear Nuevo Slide
       </button>
@@ -16,7 +16,7 @@ class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transi
     </div>
 
     <div v-else-if="slides.length > 0" class="overflow-x-auto bg-white shadow-md rounded-lg">
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 min-w-[720px]">
         <thead class="bg-gray-50">
           <tr>
             <th

@@ -2,12 +2,12 @@
   <div :class="['min-h-screen flex', uiStore.theme === 'dark' ? 'bg-brand-carbon text-white' : 'bg-gray-100 text-brand-negro']">
     <!-- Overlay para móviles -->
     <div
-v-if="sidebarOpen" class="fixed inset-0 bg-brand-negro bg-opacity-50 z-40 md:hidden"
+v-if="sidebarOpen" class="fixed top-20 inset-x-0 bottom-0 bg-brand-negro bg-opacity-50 z-40 md:hidden"
       @click="sidebarOpen = false"></div>
 
     <!-- Sidebar -->
     <aside
-      class="fixed h-screen top-0 left-0 w-64 p-4 flex flex-col z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0"
+      class="fixed h-[calc(100vh-5rem)] top-20 left-0 w-64 p-4 flex flex-col z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0"
       :class="[
         uiStore.theme === 'dark' ? 'bg-brand-negro text-brand-gris-claro' : 'bg-brand-negro text-brand-gris-claro',
         { '-translate-x-full': !sidebarOpen },
@@ -81,10 +81,10 @@ class="w-full flex items-center p-2 rounded-md hover:bg-red-700 transition-color
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-6 md:p-10 w-full md:ml-64 overflow-x-auto">
+    <main class="flex-1 p-6 md:p-10 pt-20 w-full md:ml-64 overflow-x-auto">
       <!-- Botón de hamburguesa para móviles -->
       <button
-class="md:hidden fixed top-4 left-4 z-50 bg-brand-camel text-white p-2 rounded-md shadow-lg"
+class="md:hidden fixed top-24 left-4 z-50 bg-brand-camel text-white p-2 rounded-md shadow-lg"
         @click="sidebarOpen = true">
         <Bars3Icon class="h-6 w-6" />
       </button>

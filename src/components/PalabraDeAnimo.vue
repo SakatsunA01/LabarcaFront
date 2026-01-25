@@ -1,140 +1,143 @@
 <template>
   <AnimatedSection>
-    <section :id="id" :style="sectionStyle" class="py-section-md px-4 sm:px-6 lg:px-8 animated-gradient-bg">
-      <div class="container mx-auto max-w-4xl">
-        <header class="text-center mb-10 md:mb-12">
-          <h2 class="font-playfair text-3xl md:text-4xl font-bold text-brand-negro mb-4">Palabra de Ánimo</h2>
-          <p class="text-lg text-gray-700">
-            Selecciona cómo te sientes para recibir un versículo de fortaleza.
+    <section :id="id" :style="sectionStyle" class="py-16 md:py-24 px-6 overflow-hidden animated-gradient-bg relative">
+      <div
+        class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/p6.png')]">
+      </div>
+
+      <div class="container mx-auto max-w-7xl relative z-10">
+        <header class="text-center mb-16 space-y-4">
+          <span class="text-brand-camel uppercase tracking-[0.5em] text-[10px] font-bold block">Refugio
+            Espiritual</span>
+          <h2 class="font-playfair text-4xl md:text-6xl text-brand-negro italic leading-tight">Palabra de Ánimo</h2>
+          <p class="text-gray-500 font-sans max-w-xl mx-auto italic">
+            Selecciona cómo se siente tu corazón hoy para recibir una promesa de fortaleza.
           </p>
         </header>
 
-        <div class="max-w-3xl mx-auto">
-          <!-- Mood Carousel -->
-          <section class="mb-10">
-            <div class="relative">
-              <div class="flex space-x-4 overflow-x-auto pb-4 scroll-snap-x-mandatory">
-                <div v-for="mood in moodOptions" :key="mood.key"
-                  class="flex-shrink-0 scroll-snap-align-center">
-                  <button type="button"
-                    class="flex flex-col items-center justify-center w-24 h-24 rounded-2xl transition-all duration-300 ease-in-out transform focus:outline-none"
-                    :class="[
-                      activeMoodKey === mood.key
-                        ? `${mood.bgColor} text-white shadow-lg scale-110`
-                        : 'bg-white/70 hover:bg-white text-brand-negro shadow-md hover:scale-105',
-                      isLoadingVerse ? 'opacity-50 cursor-not-allowed' : ''
-                    ]" :aria-pressed="activeMoodKey === mood.key" :disabled="isLoadingVerse"
-                    @click="handleMoodButtonClick(mood)">
+        <section class="mb-12 relative group/carousel px-4">
+          <button @click="scrollCarousel('left')"
+            class="absolute -left-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition-all opacity-0 group-hover/carousel:opacity-100 hidden md:block border border-gray-100">
+            <ChevronLeftIcon class="w-4 h-4 text-brand-negro" />
+          </button>
 
-                    <component :is="mood.iconComponent" class="w-8 h-8 mb-1" />
-                    <span class="text-xs font-medium">{{ mood.text }}</span>
-
-                  </button>
+          <div ref="moodScrollContainer"
+            class="flex space-x-6 overflow-x-auto py-6 mask-fade-edges hide-scrollbar scroll-smooth">
+            <div v-for="mood in moodOptions" :key="mood.key" class="flex-shrink-0 p-2">
+              <button type="button" @click="handleMoodButtonClick(mood)" :disabled="isLoadingVerse"
+                class="group flex flex-col items-center justify-center w-24 h-28 rounded-2xl transition-all duration-700 ease-out border border-white/20 shadow-card"
+                :class="[
+                  activeMoodKey === mood.key
+                    ? 'bg-white shadow-xl scale-110 -translate-y-3 border-brand-camel/30'
+                    : 'bg-white/40 backdrop-blur-md hover:bg-white/60'
+                ]">
+                <div
+                  class="w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-colors duration-500 shadow-inner"
+                  :class="activeMoodKey === mood.key ? mood.bgColor : 'bg-gray-100/50 text-gray-400 group-hover:text-brand-camel'">
+                  <component :is="mood.iconComponent" class="w-15 h-15"
+                    :class="activeMoodKey === mood.key ? 'text-white' : ''" />
                 </div>
-              </div>
+                <span class="text-[9px] uppercase tracking-widest font-bold"
+                  :class="activeMoodKey === mood.key ? 'text-brand-negro' : 'text-gray-500'">
+                  {{ mood.text }}
+                </span>
+              </button>
             </div>
-          </section>
+          </div>
 
-          <!-- Verse Display Area -->
-          <transition name="fade-slide" mode="out-in">
-            <section :key="currentState"
-              class="verse-display-area bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-2xl flex flex-col justify-center items-center text-center min-h-[350px] border border-white/30 shadow-lg">
-              <div v-if="currentState === 'initial'" class="text-gray-500">
+          <button @click="scrollCarousel('right')"
+            class="absolute -right-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition-all opacity-0 group-hover/carousel:opacity-100 hidden md:block border border-gray-100">
+            <ChevronRightIcon class="w-4 h-4 text-brand-negro" />
+          </button>
+        </section>
 
-                <LightBulbIcon class="w-16 h-16 mx-auto mb-3 opacity-50" />
-                <p class="italic text-xl">Desliza y elige un estado de ánimo.</p>
-
+        <transition name="fade-slide" mode="out-in">
+          <section :key="currentState"
+            class="relative bg-white/60 backdrop-blur-xl p-8 md:p-16 rounded-[2.5rem] flex flex-col justify-center items-center text-center min-h-[450px] border border-white/40 shadow-card-hover">
+            <div v-if="currentState === 'initial'" class="space-y-6">
+              <div
+                class="w-20 h-20 bg-brand-camel/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
+                <SparklesIcon class="w-10 h-10 text-brand-camel" />
               </div>
+              <p class="font-playfair text-2xl text-gray-400 italic">Desliza y elige un estado de ánimo para
+                comenzar...</p>
+            </div>
 
-              <div v-if="currentState === 'loadingVerse'" class="w-full text-brand-camel">
+            <div v-if="currentState === 'loadingVerse'" class="flex flex-col items-center">
+              <div class="w-12 h-12 border-2 border-brand-camel border-t-transparent rounded-full animate-spin"></div>
+              <p class="text-[10px] uppercase tracking-[0.4em] text-brand-camel font-bold mt-8">Buscando en las
+                Escrituras</p>
+            </div>
 
-                <ArrowPathIcon class="animate-spin h-12 w-12 mx-auto text-brand-camel" />
-                <p class="italic mt-3 text-lg">Buscando un versículo para ti...</p>
-
-              </div>
-
-              <div v-if="currentState === 'verseContentLoaded' && verseData" class="w-full">
-
-                <BookOpenIcon class="w-12 h-12 mx-auto mb-4 text-brand-verde-oscuro opacity-80" />
-                <blockquote class="text-xl md:text-2xl italic text-brand-negro mb-4 leading-relaxed">
+            <div v-if="currentState === 'verseContentLoaded' && verseData" class="w-full space-y-8">
+              <div class="flex flex-col items-center space-y-6">
+                <div class="h-[1px] w-12 bg-brand-camel/30"></div>
+                <blockquote class="font-playfair text-3xl md:text-5xl text-brand-negro leading-tight italic">
                   "{{ verseData.verseText }}"
                 </blockquote>
-                <p class="font-semibold text-brand-verde-oscuro text-lg mb-5">
-                  {{ verseData.verseCitation }} (RVR1960)
+                <p class="text-brand-camel font-bold uppercase tracking-[0.3em] text-[11px]">
+                  {{ verseData.verseCitation }} <span class="opacity-50 font-light ml-2">RVR1960</span>
                 </p>
+              </div>
 
-                <hr class="w-3/4 border-brand-camel/50 my-5 mx-auto" />
-                <p class="text-gray-700 leading-relaxed text-base text-justify"
+              <div class="max-w-5xl mx-auto pt-8 border-t border-black/5">
+                <p class="text-gray-600 leading-relaxed text-lg font-sans italic text-center"
                   v-html="formatText(verseData.initialReflection)"></p>
-
               </div>
 
-              <div v-if="currentState === 'errorVerse'" class="w-full text-red-700">
-
-                <ExclamationTriangleIcon class="w-12 h-12 mx-auto mb-3 opacity-80" />
-                <p class="font-semibold">Error al buscar versículo</p>
-                <p class="text-sm mt-2">{{ errorVerseMessage }}</p>
-
-              </div>
-            </section>
-          </transition>
-
-          <!-- Exploration Buttons -->
-          <transition name="fade-slide">
-            <div v-if="currentState === 'verseContentLoaded' && verseData" class="mt-8 text-center">
-              <div class="flex justify-center items-center space-x-4">
+              <div class="flex flex-wrap justify-center gap-4 pt-8">
                 <button @click="generateContext" :disabled="isLoadingContext"
-                  class="exploration-button bg-brand-verde-oscuro">
-                  <span v-if="!isLoadingContext">Profundizar en el Contexto</span>
-
-                  <ArrowPathIcon v-else class="animate-spin h-5 w-5" />
-
+                  class="btn-editorial bg-brand-negro text-white">
+                  <span v-if="!isLoadingContext">Profundizar Contexto</span>
+                  <ArrowPathIcon v-else class="animate-spin h-4 w-4" />
                 </button>
                 <button @click="generatePrayer" :disabled="isLoadingPrayer"
-                  class="exploration-button bg-brand-camel">
-                  <span v-if="!isLoadingPrayer">Generar una Oración</span>
-
-                  <ArrowPathIcon v-else class="animate-spin h-5 w-5" />
-
+                  class="btn-editorial border border-brand-camel text-brand-camel hover:bg-brand-camel hover:text-white">
+                  <span v-if="!isLoadingPrayer">Generar Oración</span>
+                  <ArrowPathIcon v-else class="animate-spin h-4 w-4" />
                 </button>
               </div>
-
-              <!-- Context Display -->
-              <transition name="fade-slide">
-                <div v-if="contextData"
-                  class="mt-6 p-5 rounded-2xl text-base text-brand-negro leading-relaxed text-left bg-white/50 backdrop-blur-sm border border-white/30 shadow-lg">
-                  <h3 class="font-playfair font-bold text-lg mb-2 text-brand-negro">Contexto del
-                    Versículo</h3>
-                  <div class="space-y-3">
-                    <div>
-                      <h4 class="font-semibold">Autoría y Fecha:</h4>
-                      <p>{{ contextData.authorAndDate }}</p>
-                    </div>
-                    <div>
-                      <h4 class="font-semibold">Contexto de la Época:</h4>
-                      <p>{{ contextData.locationAndSociety }}</p>
-                    </div>
-                    <div>
-                      <h4 class="font-semibold">Significado Original:</h4>
-                      <p>{{ contextData.originalMeaning }}</p>
-                    </div>
-                  </div>
-                </div>
-              </transition>
-
-              <!-- Prayer Display -->
-              <transition name="fade-slide">
-                <div v-if="prayerData"
-                  class="mt-6 p-5 rounded-2xl text-base text-brand-negro leading-relaxed text-left bg-white/50 backdrop-blur-sm border border-white/30 shadow-lg">
-                  <h3 class="font-playfair font-bold text-lg mb-2 text-brand-negro">Una Oración para
-                    Ti</h3>
-                  <p v-html="formatText(prayerData)"></p>
-                </div>
-              </transition>
-
             </div>
-          </transition>
-        </div>
+
+            <div v-if="currentState === 'errorVerse'" class="text-center space-y-4">
+              <ExclamationCircleIcon class="w-12 h-12 text-red-300 mx-auto" />
+              <p class="font-playfair text-xl text-red-900">No pudimos conectar con la Palabra</p>
+              <p class="text-xs text-red-400 uppercase tracking-widest">{{ errorVerseMessage }}</p>
+            </div>
+          </section>
+        </transition>
+
+        <transition-group name="fade-slide">
+          <div v-if="contextData" key="context"
+            class="mt-8 p-10 rounded-3xl bg-white shadow-card border border-gray-50 text-left space-y-6">
+            <div class="flex items-center gap-4 border-b border-gray-50 pb-4">
+              <BookOpenIcon class="w-5 h-5 text-brand-camel" />
+              <h3 class="font-playfair text-2xl text-brand-negro italic">Contexto Histórico</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 text-sm">
+              <div v-for="(val, key) in contextData" :key="key" class="space-y-2">
+                <h4 class="font-bold text-brand-camel uppercase tracking-widest text-[9px]">
+                  {{ key === 'authorAndDate' ? 'Origen' : key === 'locationAndSociety' ? 'Sociedad' : 'Significado' }}
+                </h4>
+                <p class="text-gray-600 leading-relaxed italic">{{ val }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="prayerData" key="prayer"
+            class="mt-8 p-10 rounded-3xl bg-brand-negro text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-10">
+              <HandRaisedIcon class="w-32 h-32" />
+            </div>
+            <div class="relative z-10 space-y-6">
+              <div class="flex items-center gap-4 border-b border-white/10 pb-4">
+                <SparklesIcon class="w-5 h-5 text-brand-camel" />
+                <h3 class="font-playfair text-2xl italic">Una Oración para Ti</h3>
+              </div>
+              <p class="text-white/80 leading-relaxed text-lg font-sans italic" v-html="formatText(prayerData)"></p>
+            </div>
+          </div>
+        </transition-group>
       </div>
     </section>
   </AnimatedSection>
@@ -146,7 +149,8 @@ import {
   FaceFrownIcon, ExclamationTriangleIcon, FaceSmileIcon, HeartIcon, UserMinusIcon, BoltIcon,
   LightBulbIcon, ArrowPathIcon, BookOpenIcon, StarIcon, UserGroupIcon, QuestionMarkCircleIcon,
   HandThumbDownIcon, FireIcon, ShieldExclamationIcon, ScaleIcon, SunIcon, MapIcon, SparklesIcon,
-  HandRaisedIcon, TrophyIcon, MagnifyingGlassIcon, ArrowPathIcon as RenewIcon
+  HandRaisedIcon, TrophyIcon, MagnifyingGlassIcon, ArrowPathIcon as RenewIcon,
+  ChevronLeftIcon, ChevronRightIcon
 } from '@heroicons/vue/24/outline'
 import AnimatedSection from '@/components/AnimatedSection.vue';
 
@@ -196,6 +200,34 @@ const moodOptions = ref([
   { key: 'renovacion', text: 'Renovación', iconComponent: shallowRef(RenewIcon), bgColor: 'bg-indigo-600', colors: { a: '#e0e7ff', b: '#a5b4fc' } },
   { key: 'busqueda', text: 'Búsqueda de Dios', iconComponent: shallowRef(MagnifyingGlassIcon), bgColor: 'bg-zinc-600', colors: { a: '#f4f4f5', b: '#d4d4d8' } },
 ])
+
+const moodScrollContainer = ref<HTMLElement | null>(null);
+
+// Función para mover el scroll manualmente con los botones
+const scrollCarousel = (direction: 'left' | 'right') => {
+  const container = moodScrollContainer.value;
+  if (!container) return;
+
+  const scrollAmount = 300;
+  const maxScrollLeft = container.scrollWidth - container.clientWidth;
+  const atStart = container.scrollLeft <= 1;
+  const atEnd = container.scrollLeft >= maxScrollLeft - 1;
+
+  if (direction === 'right' && atEnd) {
+    container.scrollTo({ left: 0, behavior: 'smooth' });
+    return;
+  }
+
+  if (direction === 'left' && atStart) {
+    container.scrollTo({ left: maxScrollLeft, behavior: 'smooth' });
+    return;
+  }
+
+  container.scrollBy({
+    left: direction === 'left' ? -scrollAmount : scrollAmount,
+    behavior: 'smooth',
+  });
+};
 
 const currentState = ref('initial')
 const activeMoodKey = ref<string | null>(null)
@@ -323,65 +355,67 @@ const generatePrayer = async () => {
 </script>
 
 <style scoped>
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
+/* Estilos de botones editoriales */
+.btn-editorial {
+  @apply px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center;
 }
 
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+/* Ocultar scrollbar pero mantener funcionalidad */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.scroll-snap-x-mandatory {
-  scroll-snap-type: x mandatory;
-}
-
-.scroll-snap-align-center {
-  scroll-snap-align: center;
-}
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.fade-slide-enter-from,
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(15px);
-}
-
-.exploration-button {
-  @apply text-white py-2 px-5 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md flex items-center justify-center font-medium;
+.mask-fade-edges {
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
 
 .animated-gradient-bg {
-  background: radial-gradient(circle, var(--color-a), var(--color-b));
-  background-size: 200% 200%;
-  transition: background 2s ease-in-out;
-  animation: gradient-flow 10s ease infinite;
+  background: radial-gradient(circle at center, var(--color-a) 0%, var(--color-b) 100%);
+  background-size: 150% 150%;
+  transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ocean-flow 15s ease infinite;
 }
 
-@keyframes gradient-flow {
+@keyframes ocean-flow {
   0% {
-    background-position: 50% 0%;
+    background-position: 0% 50%;
   }
 
   50% {
-    background-position: 50% 100%;
+    background-position: 100% 50%;
   }
 
   100% {
-    background-position: 50% 0%;
+    background-position: 0% 50%;
   }
+}
+
+/* Transiciones de contenido */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.98);
+}
+
+.shadow-card {
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.05);
+}
+
+.shadow-card-hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
 }
 </style>

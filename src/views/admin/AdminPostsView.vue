@@ -2,15 +2,15 @@
     <div class="p-6 md:p-8">
         <h1 class="text-3xl font-bold text-brand-negro mb-6">Gestion de Hitosrias</h1>
 
-        <div class="flex justify-end mb-6">
-            <button class="bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors" @click="openModal(null)">
+        <div class="flex flex-col sm:flex-row sm:justify-end gap-3 mb-6">
+            <button class="w-full sm:w-auto bg-brand-camel text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors" @click="openModal(null)">
                 Crear Nueva Historia
             </button>
         </div>
 
         <!-- Tabla de Posts -->
         <div class="bg-white rounded-lg shadow-md overflow-x-auto">
-            <table class="w-full table-auto">
+            <table class="w-full table-auto min-w-[640px]">
                 <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-600">
                     <tr>
                         <th class="p-4">TÃ­tulo</th>
@@ -24,10 +24,12 @@
                         <td class="p-4">{{ post.titulo }}</td>
                         <td class="p-4">{{ post.autor || 'N/A' }}</td>
                         <td class="p-4">{{ post.fecha_publicacion ? formatDate(post.fecha_publicacion) : 'No publicada' }}</td>
-                        <td class="p-4 flex items-center space-x-2">
-                            <button class="bg-blue-600 text-white py-1 px-2 rounded-md hover:bg-blue-700 transition-colors" @click="openModal(post)">Editar</button>
-                            <button class="bg-red-600 text-white py-1 px-2 rounded-md hover:bg-red-700 transition-colors" @click="confirmDelete(post)">Eliminar</button>
-                            <button class="bg-brand-camel text-white py-1 px-2 rounded-md hover:bg-opacity-90 transition-colors" @click="openPreview(post)">Vista previa</button>
+                        <td class="p-4">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button class="bg-blue-600 text-white py-1 px-2 rounded-md hover:bg-blue-700 transition-colors" @click="openModal(post)">Editar</button>
+                                <button class="bg-red-600 text-white py-1 px-2 rounded-md hover:bg-red-700 transition-colors" @click="confirmDelete(post)">Eliminar</button>
+                                <button class="bg-brand-camel text-white py-1 px-2 rounded-md hover:bg-opacity-90 transition-colors" @click="openPreview(post)">Vista previa</button>
+                            </div>
                         </td>
                     </tr>
                     <tr v-if="posts.length === 0">
